@@ -1,0 +1,11 @@
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles/test.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles/edit_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles/rebuild_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared/CMakeFiles/shared.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared/CMakeFiles/test.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared/CMakeFiles/edit_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared/CMakeFiles/rebuild_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/CMakeFiles/all_tests.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/CMakeFiles/test.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/CMakeFiles/edit_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/CMakeFiles/rebuild_cache.dir
