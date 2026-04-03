@@ -1,0 +1,5 @@
+if(EXISTS "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/all_tests[1]_tests.cmake")
+  include("/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/all_tests[1]_tests.cmake")
+else()
+  add_test(all_tests_NOT_BUILT all_tests_NOT_BUILT)
+endif()

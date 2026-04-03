@@ -1,0 +1,30 @@
+Start testing: Apr 04 00:37 EET
+----------------------------------------------------------
+1/1 Testing: Dummy.AlwaysPasses
+1/1 Test: Dummy.AlwaysPasses
+Command: "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/all_tests" "--gtest_filter=Dummy.AlwaysPasses" "--gtest_also_run_disabled_tests"
+Directory: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests
+"Dummy.AlwaysPasses" start time: Apr 04 00:37 EET
+Output:
+----------------------------------------------------------
+Running main() from ./googletest/src/gtest_main.cc
+Note: Google Test filter = Dummy.AlwaysPasses
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Dummy
+[ RUN      ] Dummy.AlwaysPasses
+[       OK ] Dummy.AlwaysPasses (0 ms)
+[----------] 1 test from Dummy (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"Dummy.AlwaysPasses" end time: Apr 04 00:37 EET
+"Dummy.AlwaysPasses" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Apr 04 00:37 EET
