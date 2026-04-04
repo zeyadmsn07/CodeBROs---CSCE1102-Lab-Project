@@ -152,6 +152,45 @@ all_tests/fast:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/build
 .PHONY : all_tests/fast
 
+#=============================================================================
+# Target rules for targets named client
+
+# Build rule for target.
+client: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client
+.PHONY : client
+
+# fast build rule for target.
+client/fast:
+	$(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/build
+.PHONY : client/fast
+
+#=============================================================================
+# Target rules for targets named client_autogen_timestamp_deps
+
+# Build rule for target.
+client_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_autogen_timestamp_deps
+.PHONY : client_autogen_timestamp_deps
+
+# fast build rule for target.
+client_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen_timestamp_deps.dir/build.make client/CMakeFiles/client_autogen_timestamp_deps.dir/build
+.PHONY : client_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named client_autogen
+
+# Build rule for target.
+client_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_autogen
+.PHONY : client_autogen
+
+# fast build rule for target.
+client_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen.dir/build.make client/CMakeFiles/client_autogen.dir/build
+.PHONY : client_autogen/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -161,7 +200,10 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... client_autogen"
+	@echo "... client_autogen_timestamp_deps"
 	@echo "... all_tests"
+	@echo "... client"
 	@echo "... shared"
 .PHONY : help
 
