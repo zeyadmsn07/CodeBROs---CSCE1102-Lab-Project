@@ -191,6 +191,32 @@ client_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen.dir/build.make client/CMakeFiles/client_autogen.dir/build
 .PHONY : client_autogen/fast
 
+#=============================================================================
+# Target rules for targets named server
+
+# Build rule for target.
+server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+#=============================================================================
+# Target rules for targets named client_test
+
+# Build rule for target.
+client_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_test
+.PHONY : client_test
+
+# fast build rule for target.
+client_test/fast:
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/build
+.PHONY : client_test/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -204,6 +230,8 @@ help:
 	@echo "... client_autogen_timestamp_deps"
 	@echo "... all_tests"
 	@echo "... client"
+	@echo "... client_test"
+	@echo "... server"
 	@echo "... shared"
 .PHONY : help
 

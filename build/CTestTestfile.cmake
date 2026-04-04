@@ -7,3 +7,4 @@
 subdirs("shared")
 subdirs("tests")
 subdirs("client")
+subdirs("server")

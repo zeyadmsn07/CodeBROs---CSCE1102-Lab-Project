@@ -68,9 +68,9 @@ include client/CMakeFiles/client_autogen_timestamp_deps.dir/progress.make
 
 client/CMakeFiles/client_autogen_timestamp_deps: shared/libshared.a
 client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/qt6/libexec/moc
-client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
 client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/qt6/libexec/uic
 client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Network.so.6.4.2
+client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
 
 client_autogen_timestamp_deps: client/CMakeFiles/client_autogen_timestamp_deps
 client_autogen_timestamp_deps: client/CMakeFiles/client_autogen_timestamp_deps.dir/build.make

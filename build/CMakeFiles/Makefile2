@@ -66,18 +66,21 @@ CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
 all: shared/all
 all: tests/all
 all: client/all
+all: server/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
 preinstall: shared/preinstall
 preinstall: tests/preinstall
 preinstall: client/preinstall
+preinstall: server/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: shared/clean
 clean: tests/clean
 clean: client/clean
+clean: server/clean
 .PHONY : clean
 
 #=============================================================================
@@ -96,6 +99,23 @@ client/clean: client/CMakeFiles/client.dir/clean
 client/clean: client/CMakeFiles/client_autogen_timestamp_deps.dir/clean
 client/clean: client/CMakeFiles/client_autogen.dir/clean
 .PHONY : client/clean
+
+#=============================================================================
+# Directory level rules for directory server
+
+# Recursive "all" directory target.
+server/all: server/CMakeFiles/server.dir/all
+server/all: server/CMakeFiles/client_test.dir/all
+.PHONY : server/all
+
+# Recursive "preinstall" directory target.
+server/preinstall:
+.PHONY : server/preinstall
+
+# Recursive "clean" directory target.
+server/clean: server/CMakeFiles/server.dir/clean
+server/clean: server/CMakeFiles/client_test.dir/clean
+.PHONY : server/clean
 
 #=============================================================================
 # Directory level rules for directory shared
@@ -134,7 +154,7 @@ tests/clean: tests/CMakeFiles/all_tests.dir/clean
 shared/CMakeFiles/shared.dir/all:
 	$(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/depend
 	$(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=11,12 "Built target shared"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=15,16 "Built target shared"
 .PHONY : shared/CMakeFiles/shared.dir/all
 
 # Build rule for subdir invocation for target.
@@ -258,6 +278,58 @@ client_autogen: client/CMakeFiles/client_autogen.dir/rule
 client/CMakeFiles/client_autogen.dir/clean:
 	$(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen.dir/build.make client/CMakeFiles/client_autogen.dir/clean
 .PHONY : client/CMakeFiles/client_autogen.dir/clean
+
+#=============================================================================
+# Target rules for target server/CMakeFiles/server.dir
+
+# All Build rule for target.
+server/CMakeFiles/server.dir/all:
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/depend
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=13,14 "Built target server"
+.PHONY : server/CMakeFiles/server.dir/all
+
+# Build rule for subdir invocation for target.
+server/CMakeFiles/server.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/CMakeFiles/server.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
+.PHONY : server/CMakeFiles/server.dir/rule
+
+# Convenience name for target.
+server: server/CMakeFiles/server.dir/rule
+.PHONY : server
+
+# clean rule for target.
+server/CMakeFiles/server.dir/clean:
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/clean
+.PHONY : server/CMakeFiles/server.dir/clean
+
+#=============================================================================
+# Target rules for target server/CMakeFiles/client_test.dir
+
+# All Build rule for target.
+server/CMakeFiles/client_test.dir/all:
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/depend
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=11,12 "Built target client_test"
+.PHONY : server/CMakeFiles/client_test.dir/all
+
+# Build rule for subdir invocation for target.
+server/CMakeFiles/client_test.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/CMakeFiles/client_test.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
+.PHONY : server/CMakeFiles/client_test.dir/rule
+
+# Convenience name for target.
+client_test: server/CMakeFiles/client_test.dir/rule
+.PHONY : client_test
+
+# clean rule for target.
+server/CMakeFiles/client_test.dir/clean:
+	$(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/clean
+.PHONY : server/CMakeFiles/client_test.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
