@@ -9,3 +9,14 @@
 /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/CMakeFiles/test.dir
 /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/CMakeFiles/edit_cache.dir
 /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests/CMakeFiles/rebuild_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/test.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/edit_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/rebuild_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen_timestamp_deps.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server/CMakeFiles/server.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server/CMakeFiles/client_test.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server/CMakeFiles/test.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server/CMakeFiles/edit_cache.dir
+/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server/CMakeFiles/rebuild_cache.dir

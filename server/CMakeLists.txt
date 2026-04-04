@@ -1,0 +1,5 @@
+find_package(Boost REQUIRED COMPONENTS system)
+add_executable(server server.cpp)
+target_link_libraries(server PRIVATE Boost::system pthread)
+add_executable(client_test client_test.cpp)
+target_link_libraries(client_test PRIVATE Boost::system pthread)
