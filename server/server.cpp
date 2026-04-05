@@ -8,29 +8,20 @@
 #include <deque>
 #include <mutex>
 #include <algorithm>
-
 #include "MessageTypes.h"
 #include "MessageFactory.h"
 #include "Message.h"
-
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
 
-// ─────────────────────────────────────────────
-//  Forward declaration — Session needs Server complete later
-// ─────────────────────────────────────────────
 class Server;
-
-// ═════════════════════════════════════════════
-//  Session — one connected client
-// ═════════════════════════════════════════════
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
     Session(tcp::socket socket, Server& server)
         : socket_(std::move(socket)), server_(server) {}
 
-    ~Session();   // defined after Server is complete
+    ~Session();
 
     void start()
     {
@@ -38,8 +29,6 @@ public:
                   << socket_.remote_endpoint() << "\n";
         read_next();
     }
-
-    // Called by Server::broadcast() — may be called on any session in the room
     void send(const std::string& msg)
     {
         write_queue_.push_back(msg);
@@ -50,7 +39,6 @@ public:
     std::string partyId()  const { return partyId_;  }
 
 private:
-    // ── async read loop ──────────────────────
     void read_next()
     {
         auto self = shared_from_this();
@@ -60,19 +48,17 @@ private:
                 if (ec) {
                     std::cout << "[server] client disconnected ("
                               << self->username_ << ")\n";
-                    return;   // shared_ptr drops → destructor broadcasts LEAVE
+                    return;
                 }
                 std::istream stream(&self->buf_);
                 std::string line;
                 std::getline(stream, line);
 
                 self->dispatch(line);
-                self->read_next();   // keep reading
+                self->read_next();
             });
     }
 
-    // ── async write queue ────────────────────
-    //  Never call async_write twice concurrently — queue handles that
     void do_write()
     {
         if (write_queue_.empty()) { writing_ = false; return; }
@@ -84,19 +70,14 @@ private:
         boost::asio::async_write(socket_, boost::asio::buffer(*data),
             [self, data](boost::system::error_code ec, std::size_t)
             {
-                if (!ec) self->do_write();   // send next in queue
-                // on error: stop writing; destructor will clean up the room
+                if (!ec) self->do_write();
             });
     }
-
-    // ── message dispatch ─────────────────────
     void dispatch(const std::string& line);
     void handle_join      (const Message& msg);
     void handle_chat      (const Message& msg);
     void handle_leave     (const Message& msg);
     void handle_code_sync (const Message& msg);
-
-    // ── members ──────────────────────────────
     tcp::socket             socket_;
     boost::asio::streambuf  buf_;
     Server&                 server_;
@@ -107,10 +88,6 @@ private:
     std::deque<std::string> write_queue_;
     bool                    writing_ = false;
 };
-
-// ═════════════════════════════════════════════
-//  Server — owns the rooms map and acceptor
-// ═════════════════════════════════════════════
 class Server
 {
 public:
@@ -121,8 +98,6 @@ public:
         accept_next();
     }
 
-    // ── room management ──────────────────────
-
     void addToRoom(const std::string& partyId,
                    std::shared_ptr<Session> session)
     {
@@ -131,9 +106,6 @@ public:
         std::cout << "[server] room " << partyId
                   << " now has " << rooms_[partyId].size() << " member(s)\n";
     }
-
-    // Removes this raw pointer from every room it appears in.
-    // Called from Session destructor (raw ptr is safe, shared_ptr already dying).
     void removeFromAllRooms(Session* raw)
     {
         std::lock_guard<std::mutex> lock(rooms_mutex_);
@@ -146,18 +118,11 @@ public:
                     }),
                 sessions.end());
         }
-        // Delete empty rooms so the map does not grow unboundedly
         for (auto it = rooms_.begin(); it != rooms_.end(); ) {
             it = it->second.empty() ? rooms_.erase(it) : std::next(it);
         }
     }
-
-    // ── broadcast ────────────────────────────
-    // Sends serialized msg to everyone in partyId EXCEPT exclude.
-    // Also purges dead weak_ptrs it finds along the way (critical warning).
-    void broadcast(const std::string& partyId,
-                   const json&        msg,
-                   Session*           exclude)
+    void broadcast(const std::string& partyId, const json& msg, Session* exclude)
     {
         std::string serialized = msg.dump() + "\n";
         std::lock_guard<std::mutex> lock(rooms_mutex_);
@@ -171,11 +136,11 @@ public:
         for (auto& wp : sessions) {
             auto sp = wp.lock();
             if (!sp) continue;           // dead → drop from room (purge)
-            alive.push_back(wp);         // keep alive sessions
+            alive.push_back(wp);         
             if (sp.get() != exclude)
-                sp->send(serialized);    // send only to others
+                sp->send(serialized);    
         }
-        sessions = std::move(alive);     // replace with purged list
+        sessions = std::move(alive);     
     }
 
     // Sends updated MEMBER_LIST to every client in the room (including sender).
@@ -223,12 +188,6 @@ private:
     std::mutex rooms_mutex_;
 };
 
-// ═════════════════════════════════════════════
-//  Session method bodies (Server is now complete)
-// ═════════════════════════════════════════════
-
-// Destructor: fires when async read gets an error (client dropped).
-// Removes self from room and tells remaining members.
 Session::~Session()
 {
     if (!partyId_.empty()) {
@@ -293,9 +252,6 @@ void Session::handle_code_sync(const Message& msg)
     server_.broadcast(msg.partyId, MessageFactory::toJson(msg), this);
 }
 
-// ═════════════════════════════════════════════
-//  Entry point
-// ═════════════════════════════════════════════
 int main()
 {
     try {
