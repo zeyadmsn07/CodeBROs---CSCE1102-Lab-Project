@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -97,14 +97,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/tests//CMakeFiles/progress.marks
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/tests//CMakeFiles/progress.marks
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/clean
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/clean
 .PHONY : clean
 
 # The main clean target
@@ -113,22 +113,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 tests/CMakeFiles/all_tests.dir/rule:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/all_tests.dir/rule
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/all_tests.dir/rule
 .PHONY : tests/CMakeFiles/all_tests.dir/rule
 
 # Convenience name for target.
@@ -137,7 +137,7 @@ all_tests: tests/CMakeFiles/all_tests.dir/rule
 
 # fast build rule for target.
 all_tests/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/build
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/build
 .PHONY : all_tests/fast
 
 dummy_test.o: dummy_test.cpp.o
@@ -145,7 +145,7 @@ dummy_test.o: dummy_test.cpp.o
 
 # target to build an object file
 dummy_test.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/dummy_test.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/dummy_test.cpp.o
 .PHONY : dummy_test.cpp.o
 
 dummy_test.i: dummy_test.cpp.i
@@ -153,7 +153,7 @@ dummy_test.i: dummy_test.cpp.i
 
 # target to preprocess a source file
 dummy_test.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/dummy_test.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/dummy_test.cpp.i
 .PHONY : dummy_test.cpp.i
 
 dummy_test.s: dummy_test.cpp.s
@@ -161,7 +161,7 @@ dummy_test.s: dummy_test.cpp.s
 
 # target to generate assembly for a file
 dummy_test.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/dummy_test.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_tests.dir/build.make tests/CMakeFiles/all_tests.dir/dummy_test.cpp.s
 .PHONY : dummy_test.cpp.s
 
 # Help Target
@@ -188,6 +188,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

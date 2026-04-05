@@ -1,12 +1,12 @@
 {
-	"BUILD_DIR" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen",
-	"CMAKE_BINARY_DIR" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build",
-	"CMAKE_CURRENT_BINARY_DIR" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client",
-	"CMAKE_CURRENT_SOURCE_DIR" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client",
+	"BUILD_DIR" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen",
+	"CMAKE_BINARY_DIR" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client",
 	"CMAKE_EXECUTABLE" : "/usr/bin/cmake",
 	"CMAKE_LIST_FILES" : 
 	[
-		"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/CMakeLists.txt",
+		"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/CMakeLists.txt",
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6ConfigVersion.cmake",
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6ConfigVersionImpl.cmake",
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Config.cmake",
@@ -166,29 +166,29 @@
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkTargets-none.cmake",
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkAdditionalTargetInfo.cmake",
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkVersionlessTargets.cmake",
-		"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/resources.qrc"
+		"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/resources.qrc"
 	],
-	"CMAKE_SOURCE_DIR" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project",
-	"DEP_FILE" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/deps",
+	"CMAKE_SOURCE_DIR" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project",
+	"DEP_FILE" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "client_autogen/timestamp",
 	"HEADERS" : 
 	[
 		[
-			"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h",
+			"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h",
 			"MU",
 			"EWIEGA46WW/moc_LoginWidget.cpp",
 			null
 		],
 		[
-			"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.h",
+			"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.h",
 			"MU",
 			"EWIEGA46WW/moc_MainWindow.cpp",
 			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
-	"INCLUDE_DIR" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/include",
-	"MOC_COMPILATION_FILE" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp",
+	"INCLUDE_DIR" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/include",
+	"MOC_COMPILATION_FILE" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
 		"QT_CORE_LIB",
@@ -206,7 +206,7 @@
 	],
 	"MOC_INCLUDES" : 
 	[
-		"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/include",
+		"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared/include",
 		"/usr/include/x86_64-linux-gnu/qt6/QtWidgets",
 		"/usr/include/x86_64-linux-gnu/qt6",
 		"/usr/include/x86_64-linux-gnu/qt6/QtCore",
@@ -240,31 +240,31 @@
 		"-c",
 		"/usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp"
 	],
-	"MOC_PREDEFS_FILE" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/moc_predefs.h",
+	"MOC_PREDEFS_FILE" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/moc_predefs.h",
 	"MOC_RELAXED_MODE" : false,
 	"MOC_SKIP" : [],
 	"MULTI_CONFIG" : false,
-	"PARALLEL" : 8,
-	"PARSE_CACHE_FILE" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/ParseCache.txt",
+	"PARALLEL" : 20,
+	"PARSE_CACHE_FILE" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "/usr/lib/qt6/libexec/moc",
 	"QT_UIC_EXECUTABLE" : "/usr/lib/qt6/libexec/uic",
 	"QT_VERSION_MAJOR" : 6,
 	"QT_VERSION_MINOR" : 4,
-	"SETTINGS_FILE" : "/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE" : "/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
 		[
-			"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp",
+			"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp",
+			"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/main.cpp",
+			"/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/main.cpp",
 			"MU",
 			null
 		]

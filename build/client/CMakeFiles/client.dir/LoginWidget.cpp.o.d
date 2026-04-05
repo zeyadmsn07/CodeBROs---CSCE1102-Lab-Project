@@ -1,7 +1,7 @@
 client/CMakeFiles/client.dir/LoginWidget.cpp.o: \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp \
  /usr/include/stdc-predef.h \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 # Utility rule file for client_autogen_timestamp_deps.
 
@@ -68,9 +68,9 @@ include client/CMakeFiles/client_autogen_timestamp_deps.dir/progress.make
 
 client/CMakeFiles/client_autogen_timestamp_deps: shared/libshared.a
 client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/qt6/libexec/moc
+client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
 client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/qt6/libexec/uic
 client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Network.so.6.4.2
-client/CMakeFiles/client_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
 
 client_autogen_timestamp_deps: client/CMakeFiles/client_autogen_timestamp_deps
 client_autogen_timestamp_deps: client/CMakeFiles/client_autogen_timestamp_deps.dir/build.make
@@ -81,10 +81,10 @@ client/CMakeFiles/client_autogen_timestamp_deps.dir/build: client_autogen_timest
 .PHONY : client/CMakeFiles/client_autogen_timestamp_deps.dir/build
 
 client/CMakeFiles/client_autogen_timestamp_deps.dir/clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -P CMakeFiles/client_autogen_timestamp_deps.dir/cmake_clean.cmake
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -P CMakeFiles/client_autogen_timestamp_deps.dir/cmake_clean.cmake
 .PHONY : client/CMakeFiles/client_autogen_timestamp_deps.dir/clean
 
 client/CMakeFiles/client_autogen_timestamp_deps.dir/depend:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : client/CMakeFiles/client_autogen_timestamp_deps.dir/depend
 

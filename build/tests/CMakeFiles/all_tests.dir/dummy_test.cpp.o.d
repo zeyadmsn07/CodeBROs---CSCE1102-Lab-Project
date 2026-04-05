@@ -1,5 +1,5 @@
 tests/CMakeFiles/all_tests.dir/dummy_test.cpp.o: \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/tests/dummy_test.cpp \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/tests/dummy_test.cpp \
  /usr/include/stdc-predef.h /usr/include/gtest/gtest.h \
  /usr/include/c++/13/cstddef \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \

@@ -1,7 +1,7 @@
 client/CMakeFiles/client.dir/main.cpp.o: \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/main.cpp \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/main.cpp \
  /usr/include/stdc-predef.h \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.h \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmainwindow.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
@@ -340,7 +340,7 @@ client/CMakeFiles/client.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QStackedWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstackedwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLineEdit \

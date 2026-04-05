@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared/include
 
 CXX_FLAGS = -std=gnu++17
 

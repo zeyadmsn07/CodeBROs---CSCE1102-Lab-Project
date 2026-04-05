@@ -1,5 +1,5 @@
-/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/moc_LoginWidget.cpp: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h \
-  /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/moc_predefs.h \
+/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/moc_LoginWidget.cpp: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.h \
+  /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/moc_predefs.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 # Include any dependencies generated for this target.
 include server/CMakeFiles/client_test.dir/depend.make
@@ -70,18 +70,18 @@ include server/CMakeFiles/client_test.dir/progress.make
 include server/CMakeFiles/client_test.dir/flags.make
 
 server/CMakeFiles/client_test.dir/client_test.cpp.o: server/CMakeFiles/client_test.dir/flags.make
-server/CMakeFiles/client_test.dir/client_test.cpp.o: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp
+server/CMakeFiles/client_test.dir/client_test.cpp.o: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp
 server/CMakeFiles/client_test.dir/client_test.cpp.o: server/CMakeFiles/client_test.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object server/CMakeFiles/client_test.dir/client_test.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT server/CMakeFiles/client_test.dir/client_test.cpp.o -MF CMakeFiles/client_test.dir/client_test.cpp.o.d -o CMakeFiles/client_test.dir/client_test.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object server/CMakeFiles/client_test.dir/client_test.cpp.o"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT server/CMakeFiles/client_test.dir/client_test.cpp.o -MF CMakeFiles/client_test.dir/client_test.cpp.o.d -o CMakeFiles/client_test.dir/client_test.cpp.o -c /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp
 
 server/CMakeFiles/client_test.dir/client_test.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client_test.dir/client_test.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp > CMakeFiles/client_test.dir/client_test.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp > CMakeFiles/client_test.dir/client_test.cpp.i
 
 server/CMakeFiles/client_test.dir/client_test.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client_test.dir/client_test.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp -o CMakeFiles/client_test.dir/client_test.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/server/client_test.cpp -o CMakeFiles/client_test.dir/client_test.cpp.s
 
 # Object files for target client_test
 client_test_OBJECTS = \
@@ -94,18 +94,18 @@ server/client_test: server/CMakeFiles/client_test.dir/client_test.cpp.o
 server/client_test: server/CMakeFiles/client_test.dir/build.make
 server/client_test: /usr/lib/x86_64-linux-gnu/libboost_system.so.1.83.0
 server/client_test: server/CMakeFiles/client_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable client_test"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client_test.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable client_test"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client_test.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 server/CMakeFiles/client_test.dir/build: server/client_test
 .PHONY : server/CMakeFiles/client_test.dir/build
 
 server/CMakeFiles/client_test.dir/clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server && $(CMAKE_COMMAND) -P CMakeFiles/client_test.dir/cmake_clean.cmake
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server && $(CMAKE_COMMAND) -P CMakeFiles/client_test.dir/cmake_clean.cmake
 .PHONY : server/CMakeFiles/client_test.dir/clean
 
 server/CMakeFiles/client_test.dir/depend:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/server /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server/CMakeFiles/client_test.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/server /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server/CMakeFiles/client_test.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : server/CMakeFiles/client_test.dir/depend
 

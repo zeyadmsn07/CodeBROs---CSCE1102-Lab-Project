@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 # Include any dependencies generated for this target.
 include shared/CMakeFiles/shared.dir/depend.make
@@ -70,18 +70,18 @@ include shared/CMakeFiles/shared.dir/progress.make
 include shared/CMakeFiles/shared.dir/flags.make
 
 shared/CMakeFiles/shared.dir/src/trial.cpp.o: shared/CMakeFiles/shared.dir/flags.make
-shared/CMakeFiles/shared.dir/src/trial.cpp.o: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp
+shared/CMakeFiles/shared.dir/src/trial.cpp.o: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp
 shared/CMakeFiles/shared.dir/src/trial.cpp.o: shared/CMakeFiles/shared.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object shared/CMakeFiles/shared.dir/src/trial.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT shared/CMakeFiles/shared.dir/src/trial.cpp.o -MF CMakeFiles/shared.dir/src/trial.cpp.o.d -o CMakeFiles/shared.dir/src/trial.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object shared/CMakeFiles/shared.dir/src/trial.cpp.o"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT shared/CMakeFiles/shared.dir/src/trial.cpp.o -MF CMakeFiles/shared.dir/src/trial.cpp.o.d -o CMakeFiles/shared.dir/src/trial.cpp.o -c /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp
 
 shared/CMakeFiles/shared.dir/src/trial.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/shared.dir/src/trial.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp > CMakeFiles/shared.dir/src/trial.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp > CMakeFiles/shared.dir/src/trial.cpp.i
 
 shared/CMakeFiles/shared.dir/src/trial.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/shared.dir/src/trial.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp -o CMakeFiles/shared.dir/src/trial.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp -o CMakeFiles/shared.dir/src/trial.cpp.s
 
 # Object files for target shared
 shared_OBJECTS = \
@@ -93,19 +93,19 @@ shared_EXTERNAL_OBJECTS =
 shared/libshared.a: shared/CMakeFiles/shared.dir/src/trial.cpp.o
 shared/libshared.a: shared/CMakeFiles/shared.dir/build.make
 shared/libshared.a: shared/CMakeFiles/shared.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libshared.a"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && $(CMAKE_COMMAND) -P CMakeFiles/shared.dir/cmake_clean_target.cmake
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/shared.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libshared.a"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared && $(CMAKE_COMMAND) -P CMakeFiles/shared.dir/cmake_clean_target.cmake
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/shared.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 shared/CMakeFiles/shared.dir/build: shared/libshared.a
 .PHONY : shared/CMakeFiles/shared.dir/build
 
 shared/CMakeFiles/shared.dir/clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && $(CMAKE_COMMAND) -P CMakeFiles/shared.dir/cmake_clean.cmake
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared && $(CMAKE_COMMAND) -P CMakeFiles/shared.dir/cmake_clean.cmake
 .PHONY : shared/CMakeFiles/shared.dir/clean
 
 shared/CMakeFiles/shared.dir/depend:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared/CMakeFiles/shared.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/shared/CMakeFiles/shared.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : shared/CMakeFiles/shared.dir/depend
 

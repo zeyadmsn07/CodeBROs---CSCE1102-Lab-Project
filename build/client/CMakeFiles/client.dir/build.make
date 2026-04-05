@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 # Include any dependencies generated for this target.
 include client/CMakeFiles/client.dir/depend.make
@@ -69,82 +69,82 @@ include client/CMakeFiles/client.dir/progress.make
 # Include the compile flags for this target's objects.
 include client/CMakeFiles/client.dir/flags.make
 
-client/client_autogen/EWIEGA46WW/qrc_resources.cpp: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/resources.qrc
+client/client_autogen/EWIEGA46WW/qrc_resources.cpp: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/resources.qrc
 client/client_autogen/EWIEGA46WW/qrc_resources.cpp: client/CMakeFiles/client_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json
-client/client_autogen/EWIEGA46WW/qrc_resources.cpp: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/images/background.png.png
+client/client_autogen/EWIEGA46WW/qrc_resources.cpp: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/images/background.png.png
 client/client_autogen/EWIEGA46WW/qrc_resources.cpp: /usr/lib/qt6/libexec/rcc
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic RCC for resources.qrc"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/cmake -E cmake_autorcc /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json 
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic RCC for resources.qrc"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/cmake -E cmake_autorcc /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json 
 
 client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o: client/CMakeFiles/client.dir/flags.make
 client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o: client/client_autogen/mocs_compilation.cpp
 client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o: client/CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o -MF CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o.d -o CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o -MF CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o.d -o CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o -c /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp
 
 client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp > CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp > CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.i
 
 client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp -o CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp -o CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.s
 
 client/CMakeFiles/client.dir/main.cpp.o: client/CMakeFiles/client.dir/flags.make
-client/CMakeFiles/client.dir/main.cpp.o: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/main.cpp
+client/CMakeFiles/client.dir/main.cpp.o: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/main.cpp
 client/CMakeFiles/client.dir/main.cpp.o: client/CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object client/CMakeFiles/client.dir/main.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/main.cpp.o -MF CMakeFiles/client.dir/main.cpp.o.d -o CMakeFiles/client.dir/main.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object client/CMakeFiles/client.dir/main.cpp.o"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/main.cpp.o -MF CMakeFiles/client.dir/main.cpp.o.d -o CMakeFiles/client.dir/main.cpp.o -c /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/main.cpp
 
 client/CMakeFiles/client.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/main.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/main.cpp > CMakeFiles/client.dir/main.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/main.cpp > CMakeFiles/client.dir/main.cpp.i
 
 client/CMakeFiles/client.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/main.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/main.cpp -o CMakeFiles/client.dir/main.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/main.cpp -o CMakeFiles/client.dir/main.cpp.s
 
 client/CMakeFiles/client.dir/MainWindow.cpp.o: client/CMakeFiles/client.dir/flags.make
-client/CMakeFiles/client.dir/MainWindow.cpp.o: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp
+client/CMakeFiles/client.dir/MainWindow.cpp.o: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp
 client/CMakeFiles/client.dir/MainWindow.cpp.o: client/CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object client/CMakeFiles/client.dir/MainWindow.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/MainWindow.cpp.o -MF CMakeFiles/client.dir/MainWindow.cpp.o.d -o CMakeFiles/client.dir/MainWindow.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object client/CMakeFiles/client.dir/MainWindow.cpp.o"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/MainWindow.cpp.o -MF CMakeFiles/client.dir/MainWindow.cpp.o.d -o CMakeFiles/client.dir/MainWindow.cpp.o -c /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp
 
 client/CMakeFiles/client.dir/MainWindow.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/MainWindow.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp > CMakeFiles/client.dir/MainWindow.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp > CMakeFiles/client.dir/MainWindow.cpp.i
 
 client/CMakeFiles/client.dir/MainWindow.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/MainWindow.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp -o CMakeFiles/client.dir/MainWindow.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/MainWindow.cpp -o CMakeFiles/client.dir/MainWindow.cpp.s
 
 client/CMakeFiles/client.dir/LoginWidget.cpp.o: client/CMakeFiles/client.dir/flags.make
-client/CMakeFiles/client.dir/LoginWidget.cpp.o: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp
+client/CMakeFiles/client.dir/LoginWidget.cpp.o: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp
 client/CMakeFiles/client.dir/LoginWidget.cpp.o: client/CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object client/CMakeFiles/client.dir/LoginWidget.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/LoginWidget.cpp.o -MF CMakeFiles/client.dir/LoginWidget.cpp.o.d -o CMakeFiles/client.dir/LoginWidget.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object client/CMakeFiles/client.dir/LoginWidget.cpp.o"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/LoginWidget.cpp.o -MF CMakeFiles/client.dir/LoginWidget.cpp.o.d -o CMakeFiles/client.dir/LoginWidget.cpp.o -c /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp
 
 client/CMakeFiles/client.dir/LoginWidget.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/LoginWidget.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp > CMakeFiles/client.dir/LoginWidget.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp > CMakeFiles/client.dir/LoginWidget.cpp.i
 
 client/CMakeFiles/client.dir/LoginWidget.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/LoginWidget.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp -o CMakeFiles/client.dir/LoginWidget.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client/LoginWidget.cpp -o CMakeFiles/client.dir/LoginWidget.cpp.s
 
 client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o: client/CMakeFiles/client.dir/flags.make
 client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o: client/client_autogen/EWIEGA46WW/qrc_resources.cpp
 client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o: client/CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o -MF CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o.d -o CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/qrc_resources.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o -MF CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o.d -o CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o -c /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/qrc_resources.cpp
 
 client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/qrc_resources.cpp > CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/qrc_resources.cpp > CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.i
 
 client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/qrc_resources.cpp -o CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/qrc_resources.cpp -o CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.s
 
 # Object files for target client
 client_OBJECTS = \
@@ -171,18 +171,18 @@ client/client: /usr/lib/x86_64-linux-gnu/libGLX.so
 client/client: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 client/client: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.4.2
 client/client: client/CMakeFiles/client.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable client"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable client"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 client/CMakeFiles/client.dir/build: client/client
 .PHONY : client/CMakeFiles/client.dir/build
 
 client/CMakeFiles/client.dir/clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -P CMakeFiles/client.dir/cmake_clean.cmake
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -P CMakeFiles/client.dir/cmake_clean.cmake
 .PHONY : client/CMakeFiles/client.dir/clean
 
 client/CMakeFiles/client.dir/depend: client/client_autogen/EWIEGA46WW/qrc_resources.cpp
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : client/CMakeFiles/client.dir/depend
 

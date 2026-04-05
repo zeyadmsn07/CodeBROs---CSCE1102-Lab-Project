@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -97,14 +97,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client//CMakeFiles/progress.marks
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client//CMakeFiles/progress.marks
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/clean
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/clean
 .PHONY : clean
 
 # The main clean target
@@ -113,22 +113,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/preinstall
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/preinstall
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 client/CMakeFiles/client.dir/rule:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/CMakeFiles/client.dir/rule
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/CMakeFiles/client.dir/rule
 .PHONY : client/CMakeFiles/client.dir/rule
 
 # Convenience name for target.
@@ -137,12 +137,12 @@ client: client/CMakeFiles/client.dir/rule
 
 # fast build rule for target.
 client/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/build
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/build
 .PHONY : client/fast
 
 # Convenience name for target.
 client/CMakeFiles/client_autogen_timestamp_deps.dir/rule:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/CMakeFiles/client_autogen_timestamp_deps.dir/rule
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/CMakeFiles/client_autogen_timestamp_deps.dir/rule
 .PHONY : client/CMakeFiles/client_autogen_timestamp_deps.dir/rule
 
 # Convenience name for target.
@@ -151,12 +151,12 @@ client_autogen_timestamp_deps: client/CMakeFiles/client_autogen_timestamp_deps.d
 
 # fast build rule for target.
 client_autogen_timestamp_deps/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen_timestamp_deps.dir/build.make client/CMakeFiles/client_autogen_timestamp_deps.dir/build
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen_timestamp_deps.dir/build.make client/CMakeFiles/client_autogen_timestamp_deps.dir/build
 .PHONY : client_autogen_timestamp_deps/fast
 
 # Convenience name for target.
 client/CMakeFiles/client_autogen.dir/rule:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/CMakeFiles/client_autogen.dir/rule
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client/CMakeFiles/client_autogen.dir/rule
 .PHONY : client/CMakeFiles/client_autogen.dir/rule
 
 # Convenience name for target.
@@ -165,7 +165,7 @@ client_autogen: client/CMakeFiles/client_autogen.dir/rule
 
 # fast build rule for target.
 client_autogen/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen.dir/build.make client/CMakeFiles/client_autogen.dir/build
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client_autogen.dir/build.make client/CMakeFiles/client_autogen.dir/build
 .PHONY : client_autogen/fast
 
 LoginWidget.o: LoginWidget.cpp.o
@@ -173,7 +173,7 @@ LoginWidget.o: LoginWidget.cpp.o
 
 # target to build an object file
 LoginWidget.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/LoginWidget.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/LoginWidget.cpp.o
 .PHONY : LoginWidget.cpp.o
 
 LoginWidget.i: LoginWidget.cpp.i
@@ -181,7 +181,7 @@ LoginWidget.i: LoginWidget.cpp.i
 
 # target to preprocess a source file
 LoginWidget.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/LoginWidget.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/LoginWidget.cpp.i
 .PHONY : LoginWidget.cpp.i
 
 LoginWidget.s: LoginWidget.cpp.s
@@ -189,7 +189,7 @@ LoginWidget.s: LoginWidget.cpp.s
 
 # target to generate assembly for a file
 LoginWidget.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/LoginWidget.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/LoginWidget.cpp.s
 .PHONY : LoginWidget.cpp.s
 
 MainWindow.o: MainWindow.cpp.o
@@ -197,7 +197,7 @@ MainWindow.o: MainWindow.cpp.o
 
 # target to build an object file
 MainWindow.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/MainWindow.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/MainWindow.cpp.o
 .PHONY : MainWindow.cpp.o
 
 MainWindow.i: MainWindow.cpp.i
@@ -205,7 +205,7 @@ MainWindow.i: MainWindow.cpp.i
 
 # target to preprocess a source file
 MainWindow.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/MainWindow.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/MainWindow.cpp.i
 .PHONY : MainWindow.cpp.i
 
 MainWindow.s: MainWindow.cpp.s
@@ -213,7 +213,7 @@ MainWindow.s: MainWindow.cpp.s
 
 # target to generate assembly for a file
 MainWindow.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/MainWindow.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/MainWindow.cpp.s
 .PHONY : MainWindow.cpp.s
 
 client_autogen/EWIEGA46WW/qrc_resources.o: client_autogen/EWIEGA46WW/qrc_resources.cpp.o
@@ -221,7 +221,7 @@ client_autogen/EWIEGA46WW/qrc_resources.o: client_autogen/EWIEGA46WW/qrc_resourc
 
 # target to build an object file
 client_autogen/EWIEGA46WW/qrc_resources.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.o
 .PHONY : client_autogen/EWIEGA46WW/qrc_resources.cpp.o
 
 client_autogen/EWIEGA46WW/qrc_resources.i: client_autogen/EWIEGA46WW/qrc_resources.cpp.i
@@ -229,7 +229,7 @@ client_autogen/EWIEGA46WW/qrc_resources.i: client_autogen/EWIEGA46WW/qrc_resourc
 
 # target to preprocess a source file
 client_autogen/EWIEGA46WW/qrc_resources.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.i
 .PHONY : client_autogen/EWIEGA46WW/qrc_resources.cpp.i
 
 client_autogen/EWIEGA46WW/qrc_resources.s: client_autogen/EWIEGA46WW/qrc_resources.cpp.s
@@ -237,7 +237,7 @@ client_autogen/EWIEGA46WW/qrc_resources.s: client_autogen/EWIEGA46WW/qrc_resourc
 
 # target to generate assembly for a file
 client_autogen/EWIEGA46WW/qrc_resources.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/EWIEGA46WW/qrc_resources.cpp.s
 .PHONY : client_autogen/EWIEGA46WW/qrc_resources.cpp.s
 
 client_autogen/mocs_compilation.o: client_autogen/mocs_compilation.cpp.o
@@ -245,7 +245,7 @@ client_autogen/mocs_compilation.o: client_autogen/mocs_compilation.cpp.o
 
 # target to build an object file
 client_autogen/mocs_compilation.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o
 .PHONY : client_autogen/mocs_compilation.cpp.o
 
 client_autogen/mocs_compilation.i: client_autogen/mocs_compilation.cpp.i
@@ -253,7 +253,7 @@ client_autogen/mocs_compilation.i: client_autogen/mocs_compilation.cpp.i
 
 # target to preprocess a source file
 client_autogen/mocs_compilation.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.i
 .PHONY : client_autogen/mocs_compilation.cpp.i
 
 client_autogen/mocs_compilation.s: client_autogen/mocs_compilation.cpp.s
@@ -261,7 +261,7 @@ client_autogen/mocs_compilation.s: client_autogen/mocs_compilation.cpp.s
 
 # target to generate assembly for a file
 client_autogen/mocs_compilation.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.s
 .PHONY : client_autogen/mocs_compilation.cpp.s
 
 main.o: main.cpp.o
@@ -269,7 +269,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/main.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -277,7 +277,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/main.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -285,7 +285,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/main.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f client/CMakeFiles/client.dir/build.make client/CMakeFiles/client.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -326,6 +326,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -97,14 +97,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/server//CMakeFiles/progress.marks
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/server//CMakeFiles/progress.marks
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/clean
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/clean
 .PHONY : clean
 
 # The main clean target
@@ -113,22 +113,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/preinstall
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/preinstall
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 server/CMakeFiles/server.dir/rule:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/CMakeFiles/server.dir/rule
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/CMakeFiles/server.dir/rule
 .PHONY : server/CMakeFiles/server.dir/rule
 
 # Convenience name for target.
@@ -137,12 +137,12 @@ server: server/CMakeFiles/server.dir/rule
 
 # fast build rule for target.
 server/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/build
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/build
 .PHONY : server/fast
 
 # Convenience name for target.
 server/CMakeFiles/client_test.dir/rule:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/CMakeFiles/client_test.dir/rule
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server/CMakeFiles/client_test.dir/rule
 .PHONY : server/CMakeFiles/client_test.dir/rule
 
 # Convenience name for target.
@@ -151,7 +151,7 @@ client_test: server/CMakeFiles/client_test.dir/rule
 
 # fast build rule for target.
 client_test/fast:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/build
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/build
 .PHONY : client_test/fast
 
 client_test.o: client_test.cpp.o
@@ -159,7 +159,7 @@ client_test.o: client_test.cpp.o
 
 # target to build an object file
 client_test.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/client_test.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/client_test.cpp.o
 .PHONY : client_test.cpp.o
 
 client_test.i: client_test.cpp.i
@@ -167,7 +167,7 @@ client_test.i: client_test.cpp.i
 
 # target to preprocess a source file
 client_test.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/client_test.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/client_test.cpp.i
 .PHONY : client_test.cpp.i
 
 client_test.s: client_test.cpp.s
@@ -175,7 +175,7 @@ client_test.s: client_test.cpp.s
 
 # target to generate assembly for a file
 client_test.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/client_test.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/client_test.dir/build.make server/CMakeFiles/client_test.dir/client_test.cpp.s
 .PHONY : client_test.cpp.s
 
 server.o: server.cpp.o
@@ -183,7 +183,7 @@ server.o: server.cpp.o
 
 # target to build an object file
 server.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/server.cpp.o
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/server.cpp.o
 .PHONY : server.cpp.o
 
 server.i: server.cpp.i
@@ -191,7 +191,7 @@ server.i: server.cpp.i
 
 # target to preprocess a source file
 server.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/server.cpp.i
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/server.cpp.i
 .PHONY : server.cpp.i
 
 server.s: server.cpp.s
@@ -199,7 +199,7 @@ server.s: server.cpp.s
 
 # target to generate assembly for a file
 server.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/server.cpp.s
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f server/CMakeFiles/server.dir/build.make server/CMakeFiles/server.dir/server.cpp.s
 .PHONY : server.cpp.s
 
 # Help Target
@@ -230,6 +230,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

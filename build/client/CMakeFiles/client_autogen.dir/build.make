@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project
+CMAKE_SOURCE_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build
+CMAKE_BINARY_DIR = /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build
 
 # Utility rule file for client_autogen.
 
@@ -71,9 +71,9 @@ client/CMakeFiles/client_autogen: client/client_autogen/timestamp
 client/client_autogen/timestamp: /usr/lib/qt6/libexec/moc
 client/client_autogen/timestamp: /usr/lib/qt6/libexec/uic
 client/client_autogen/timestamp: client/CMakeFiles/client_autogen.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target client"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/cmake -E cmake_autogen /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/AutogenInfo.json ""
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/cmake -E touch /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/timestamp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target client"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/cmake -E cmake_autogen /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/AutogenInfo.json ""
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && /usr/bin/cmake -E touch /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/timestamp
 
 client_autogen: client/CMakeFiles/client_autogen
 client_autogen: client/client_autogen/timestamp
@@ -85,10 +85,10 @@ client/CMakeFiles/client_autogen.dir/build: client_autogen
 .PHONY : client/CMakeFiles/client_autogen.dir/build
 
 client/CMakeFiles/client_autogen.dir/clean:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -P CMakeFiles/client_autogen.dir/cmake_clean.cmake
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client && $(CMAKE_COMMAND) -P CMakeFiles/client_autogen.dir/cmake_clean.cmake
 .PHONY : client/CMakeFiles/client_autogen.dir/clean
 
 client/CMakeFiles/client_autogen.dir/depend:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/client /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/client /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/CMakeFiles/client_autogen.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : client/CMakeFiles/client_autogen.dir/depend
 

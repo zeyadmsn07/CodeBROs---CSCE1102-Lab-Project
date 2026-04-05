@@ -1,7 +1,7 @@
 client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o: \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/mocs_compilation.cpp \
  /usr/include/stdc-predef.h \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/moc_LoginWidget.cpp \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/moc_LoginWidget.cpp \
  /usr/include/c++/13/memory /usr/include/c++/13/bits/memoryfwd.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
@@ -116,7 +116,7 @@ client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o: \
  /usr/include/c++/13/backward/auto_ptr.h \
  /usr/include/c++/13/pstl/glue_memory_defs.h \
  /usr/include/c++/13/pstl/execution_defs.h \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/../../../../client/LoginWidget.h \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/../../../../client/LoginWidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
@@ -357,11 +357,11 @@ client/CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/moc_MainWindow.cpp \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/../../../../client/MainWindow.h \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/moc_MainWindow.cpp \
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/../../../../client/MainWindow.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmainwindow.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QStackedWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstackedwidget.h \
- /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/../../../../client/LoginWidget.h
+ /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/build/client/client_autogen/EWIEGA46WW/../../../../client/LoginWidget.h

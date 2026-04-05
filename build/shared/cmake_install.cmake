@@ -1,4 +1,4 @@
-# Install script for directory: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared
+# Install script for directory: /mnt/c/Users/OMAR/Documents/CodeBROs---CSCE1102-Lab-Project/shared
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
