@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/shared.dir/src/trial.cpp.o"
-  "CMakeFiles/shared.dir/src/trial.cpp.o.d"
+  "CMakeFiles/shared.dir/src/MessageFactory.cpp.o"
+  "CMakeFiles/shared.dir/src/MessageFactory.cpp.o.d"
   "libshared.a"
   "libshared.pdb"
 )

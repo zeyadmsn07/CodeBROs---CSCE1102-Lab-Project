@@ -69,28 +69,28 @@ include shared/CMakeFiles/shared.dir/progress.make
 # Include the compile flags for this target's objects.
 include shared/CMakeFiles/shared.dir/flags.make
 
-shared/CMakeFiles/shared.dir/src/trial.cpp.o: shared/CMakeFiles/shared.dir/flags.make
-shared/CMakeFiles/shared.dir/src/trial.cpp.o: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp
-shared/CMakeFiles/shared.dir/src/trial.cpp.o: shared/CMakeFiles/shared.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object shared/CMakeFiles/shared.dir/src/trial.cpp.o"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT shared/CMakeFiles/shared.dir/src/trial.cpp.o -MF CMakeFiles/shared.dir/src/trial.cpp.o.d -o CMakeFiles/shared.dir/src/trial.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp
+shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.o: shared/CMakeFiles/shared.dir/flags.make
+shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.o: /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/MessageFactory.cpp
+shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.o: shared/CMakeFiles/shared.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.o"
+	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.o -MF CMakeFiles/shared.dir/src/MessageFactory.cpp.o.d -o CMakeFiles/shared.dir/src/MessageFactory.cpp.o -c /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/MessageFactory.cpp
 
-shared/CMakeFiles/shared.dir/src/trial.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/shared.dir/src/trial.cpp.i"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp > CMakeFiles/shared.dir/src/trial.cpp.i
+shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/shared.dir/src/MessageFactory.cpp.i"
+	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/MessageFactory.cpp > CMakeFiles/shared.dir/src/MessageFactory.cpp.i
 
-shared/CMakeFiles/shared.dir/src/trial.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/shared.dir/src/trial.cpp.s"
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/trial.cpp -o CMakeFiles/shared.dir/src/trial.cpp.s
+shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/shared.dir/src/MessageFactory.cpp.s"
+	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/shared && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/shared/src/MessageFactory.cpp -o CMakeFiles/shared.dir/src/MessageFactory.cpp.s
 
 # Object files for target shared
 shared_OBJECTS = \
-"CMakeFiles/shared.dir/src/trial.cpp.o"
+"CMakeFiles/shared.dir/src/MessageFactory.cpp.o"
 
 # External object files for target shared
 shared_EXTERNAL_OBJECTS =
 
-shared/libshared.a: shared/CMakeFiles/shared.dir/src/trial.cpp.o
+shared/libshared.a: shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.o
 shared/libshared.a: shared/CMakeFiles/shared.dir/build.make
 shared/libshared.a: shared/CMakeFiles/shared.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libshared.a"

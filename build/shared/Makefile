@@ -140,29 +140,29 @@ shared/fast:
 	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/build
 .PHONY : shared/fast
 
-src/trial.o: src/trial.cpp.o
-.PHONY : src/trial.o
+src/MessageFactory.o: src/MessageFactory.cpp.o
+.PHONY : src/MessageFactory.o
 
 # target to build an object file
-src/trial.cpp.o:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/src/trial.cpp.o
-.PHONY : src/trial.cpp.o
+src/MessageFactory.cpp.o:
+	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.o
+.PHONY : src/MessageFactory.cpp.o
 
-src/trial.i: src/trial.cpp.i
-.PHONY : src/trial.i
+src/MessageFactory.i: src/MessageFactory.cpp.i
+.PHONY : src/MessageFactory.i
 
 # target to preprocess a source file
-src/trial.cpp.i:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/src/trial.cpp.i
-.PHONY : src/trial.cpp.i
+src/MessageFactory.cpp.i:
+	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.i
+.PHONY : src/MessageFactory.cpp.i
 
-src/trial.s: src/trial.cpp.s
-.PHONY : src/trial.s
+src/MessageFactory.s: src/MessageFactory.cpp.s
+.PHONY : src/MessageFactory.s
 
 # target to generate assembly for a file
-src/trial.cpp.s:
-	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/src/trial.cpp.s
-.PHONY : src/trial.cpp.s
+src/MessageFactory.cpp.s:
+	cd /home/zeyad/CBs/CodeBROs---CSCE1102-Lab-Project/build && $(MAKE) $(MAKESILENT) -f shared/CMakeFiles/shared.dir/build.make shared/CMakeFiles/shared.dir/src/MessageFactory.cpp.s
+.PHONY : src/MessageFactory.cpp.s
 
 # Help Target
 help:
@@ -174,9 +174,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... shared"
-	@echo "... src/trial.o"
-	@echo "... src/trial.i"
-	@echo "... src/trial.s"
+	@echo "... src/MessageFactory.o"
+	@echo "... src/MessageFactory.i"
+	@echo "... src/MessageFactory.s"
 .PHONY : help
 
 

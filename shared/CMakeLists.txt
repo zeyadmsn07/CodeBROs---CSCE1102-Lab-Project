@@ -1,7 +1,7 @@
 add_library(shared STATIC)
 
 target_sources(shared PRIVATE
-    src/trial.cpp
+    src/MessageFactory.cpp
 )
 
 target_include_directories(shared PUBLIC
