@@ -2,6 +2,7 @@ add_library(shared STATIC)
 
 target_sources(shared PRIVATE
     src/MessageFactory.cpp
+    src/UserStore.cpp
 )
 
 target_include_directories(shared PUBLIC
