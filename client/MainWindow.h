@@ -8,6 +8,7 @@
 #include "RegisterWidget.h"
 #include "UserStore.h"
 #include "SessionStore.h"
+#include "NetworkClient.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -31,6 +32,7 @@ private:
 
     UserStore*    userStore;
     SessionStore* sessions;
+    NetworkClient* network;
     QString       currentUser;
 
     void setupDebugToolbar();

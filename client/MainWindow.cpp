@@ -13,10 +13,9 @@ MainWindow::MainWindow(QWidget* parent)
 
     userStore = new UserStore("data/users.json");
     sessions  = new SessionStore("data/sessions.json");
-
+    network = new NetworkClient();
     stack = new QStackedWidget(this);
     setCentralWidget(stack);
-
     loginPage     = new LoginWidget();
     registerPage  = new RegisterWidget();
     dashboardPage = new QWidget();
@@ -37,6 +36,15 @@ MainWindow::MainWindow(QWidget* parent)
     stack->addWidget(taskPage);      // 3
 
     stack->setCurrentIndex(0);
+
+    network->onMessageReceived = [this](nlohmann::json j) {
+    QString str = QString::fromStdString(j.dump());
+    QMetaObject::invokeMethod(this, [this, str]() {
+        auto msg = nlohmann::json::parse(str.toStdString());
+        // handle incoming messages here in later tasks
+        qDebug() << "received:" << str;
+    }, Qt::QueuedConnection);
+};
 
     connect(loginPage, &LoginWidget::goToRegisterRequested,
             [this]{ stack->setCurrentIndex(1); });
@@ -94,6 +102,7 @@ void MainWindow::onRegisterAttempt(const QString& username,
 void MainWindow::goToDashboard(const QString& username)
 {
     currentUser = username;
+    network->connect("127.0.0.1", 12345);
     stack->setCurrentIndex(2);
 }
 
@@ -105,6 +114,7 @@ void MainWindow::autoLogin(const QString& username)
 
 void MainWindow::logout()
 {
+    network->disconnect();
     sessions->clearSession();
     currentUser.clear();
     stack->setCurrentIndex(0);
@@ -121,6 +131,7 @@ void MainWindow::setupDebugToolbar()
 
 MainWindow::~MainWindow()
 {
+    delete network;
     delete userStore;
     delete sessions;
 }
