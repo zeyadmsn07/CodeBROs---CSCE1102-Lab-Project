@@ -1,6 +1,6 @@
 #include "MainWindow.h"
-#include <QApplication>
 #include "SessionStore.h"
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
@@ -10,11 +10,9 @@ int main(int argc, char *argv[])
     std::string savedUser = sessions.checkSession();
 
     MainWindow w;
-
     if (!savedUser.empty())
         w.autoLogin(QString::fromStdString(savedUser));
 
     w.show();
     return app.exec();
 }
-
