@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 #include "LoginWidget.h"
+#include "RegisterWidget.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -15,7 +16,7 @@ public:
 private:
     QStackedWidget* stack;
     LoginWidget*    loginPage;
-    QWidget*        registerPage;
+    RegisterWidget*  registerPage;
     QWidget*        dashboardPage;
     QWidget*        taskPage;
 

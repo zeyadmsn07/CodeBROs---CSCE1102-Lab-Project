@@ -175,7 +175,7 @@ void LoginWidget::applyStyles()
 void LoginWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
-    QPixmap bg(":/images/background.png.png");
+    QPixmap bg(":/images/background.jpg");
     painter.drawPixmap(
         this->rect(),
         bg.scaled(this->size(),

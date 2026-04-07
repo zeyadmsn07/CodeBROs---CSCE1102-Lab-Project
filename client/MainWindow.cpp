@@ -14,21 +14,17 @@ MainWindow::MainWindow(QWidget* parent)
 
     loginPage = new LoginWidget();
 
-    registerPage   = new QWidget();
+    registerPage   = new RegisterWidget();
     dashboardPage  = new QWidget();
     taskPage       = new QWidget();
 
-    QLabel* l2 = new QLabel("Register Page", registerPage);
     QLabel* l3 = new QLabel("Dashboard Page", dashboardPage);
     QLabel* l4 = new QLabel("Tasks Page", taskPage);
-    l2->setAlignment(Qt::AlignCenter);
     l3->setAlignment(Qt::AlignCenter);
     l4->setAlignment(Qt::AlignCenter);
 
-    QVBoxLayout* lay2 = new QVBoxLayout(registerPage);
     QVBoxLayout* lay3 = new QVBoxLayout(dashboardPage);
     QVBoxLayout* lay4 = new QVBoxLayout(taskPage);
-    lay2->addWidget(l2);
     lay3->addWidget(l3);
     lay4->addWidget(l4);
 
@@ -39,13 +35,20 @@ MainWindow::MainWindow(QWidget* parent)
 
     stack->setCurrentIndex(0);
 
-    connect(loginPage, &LoginWidget::goToRegisterRequested,
+	connect(loginPage, &LoginWidget::goToRegisterRequested,
             [this](){ stack->setCurrentIndex(1); });
 
-    connect(loginPage, &LoginWidget::loginRequested,
+	connect(loginPage, &LoginWidget::loginRequested,
             [this](QString u, QString p){
                 stack->setCurrentIndex(2);
             });
+	connect(registerPage, &RegisterWidget::goToLoginRequested,
+        [this](){ stack->setCurrentIndex(0); });
+
+	connect(registerPage, &RegisterWidget::registerRequested,
+        [this](QString username, QString password){
+            stack->setCurrentIndex(0);
+        });
 
     setupDebugToolbar();
 }
