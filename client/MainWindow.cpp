@@ -66,4 +66,10 @@ void MainWindow::setupDebugToolbar()
         [this]{ stack->setCurrentIndex(3); });
 }
 
+void MainWindow::autoLogin(const QString& usr)
+{
+    currentUser= usr;
+    stack->setCurrentIndex(2);
+}
+
 MainWindow::~MainWindow() {}

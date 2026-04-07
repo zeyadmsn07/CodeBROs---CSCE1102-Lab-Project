@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
+#include <QString>
 #include "LoginWidget.h"
 #include "RegisterWidget.h"
 
@@ -13,12 +14,16 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+    void autoLogin(const QString& username);
+
 private:
-    QStackedWidget* stack;
-    LoginWidget*    loginPage;
+    QStackedWidget*  stack;
+    LoginWidget*     loginPage;
     RegisterWidget*  registerPage;
-    QWidget*        dashboardPage;
-    QWidget*        taskPage;
+    QWidget*         dashboardPage;
+    QWidget*         taskPage;
+
+    QString currentUser;
 
     void setupDebugToolbar();
 };

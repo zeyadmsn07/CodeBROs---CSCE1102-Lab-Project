@@ -1,9 +1,6 @@
 add_library(shared STATIC)
 
-target_sources(shared PRIVATE
-    src/MessageFactory.cpp
-    src/UserStore.cpp
-)
+target_sources(shared PRIVATE src/MessageFactory.cpp src/UserStore.cpp src/SessionStore.cpp)
 
 target_include_directories(shared PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
