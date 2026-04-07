@@ -1,7 +1,6 @@
-enable_testing()
-
 add_executable(all_tests
     dummy_test.cpp
+    test_auth.cpp
 )
 
 target_link_libraries(all_tests
@@ -11,4 +10,3 @@ target_link_libraries(all_tests
 
 include(GoogleTest)
 gtest_discover_tests(all_tests)
-
