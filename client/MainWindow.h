@@ -34,11 +34,13 @@ private:
     UserStore*     userStore;
     SessionStore*  sessions;
     NetworkClient* network;
-    QString        currentUser;
+    QString currentUser;
+    QString currentPartyId;
 
     void setupDebugToolbar();
     void goToDashboard(const QString& username);
     void logout();
+    void onNetworkMessage(const nlohmann::json& msg);
 };
 
 #endif

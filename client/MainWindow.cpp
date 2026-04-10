@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "MessageFactory.h"
 #include <QToolBar>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -35,13 +36,12 @@ MainWindow::MainWindow(QWidget* parent)
 
     stack->setCurrentIndex(0);
 
-    // ── NetworkClient callback ────────────────────────────────
     network->onMessageReceived = [this](nlohmann::json j) {
-        QString str = QString::fromStdString(j.dump());
-        QMetaObject::invokeMethod(this, [this, str]() {
-            // Will be fully dispatched in Task 15/16
-            qDebug() << "received:" << str;
-        }, Qt::QueuedConnection);
+    QString raw = QString::fromStdString(j.dump());
+    QMetaObject::invokeMethod(this, [this, raw]() {
+        auto msg = nlohmann::json::parse(raw.toStdString());
+        onNetworkMessage(msg);
+    }, Qt::QueuedConnection);
     };
 
     // ── LoginWidget signals ───────────────────────────────────
@@ -61,6 +61,26 @@ MainWindow::MainWindow(QWidget* parent)
             [this]{ stack->setCurrentIndex(3); });
     connect(dashboardPage, &DashboardWidget::logoutRequested,
             this, &MainWindow::logout);
+    connect(dashboardPage, &DashboardWidget::chatMessageEntered,
+    [this](QString text) {
+        auto msg = MessageFactory::buildChat(
+            currentUser.toStdString(),
+            currentPartyId.toStdString(),
+            text.toStdString());
+        network->sendMessage(MessageFactory::toJson(msg));
+
+        // show your own message locally too
+        dashboardPage->appendChatMessage(currentUser, text);
+    });
+
+connect(dashboardPage, &DashboardWidget::codeSyncTriggered,
+    [this](QString code) {
+        auto msg = MessageFactory::buildCodeSync(
+            currentUser.toStdString(),
+            currentPartyId.toStdString(),
+            code.toStdString());
+        network->sendMessage(MessageFactory::toJson(msg));
+    });
 
     // ── Menu bar logout ───────────────────────────────────────
     auto* logoutAction = menuBar()->addAction("Log Out");
@@ -104,9 +124,16 @@ void MainWindow::onRegisterAttempt(const QString& username,
 
 void MainWindow::goToDashboard(const QString& username)
 {
-    currentUser = username;
-    dashboardPage->setRoomCode("Not in a room");
+    currentUser    = username;
+    currentPartyId = "ROOM01";
+
     network->connect("127.0.0.1", 12345);
+    auto join = MessageFactory::buildJoin(
+        currentUser.toStdString(),
+        currentPartyId.toStdString());
+    network->sendMessage(MessageFactory::toJson(join));
+
+    dashboardPage->setRoomCode(currentPartyId);
     stack->setCurrentIndex(2);
 }
 
@@ -134,6 +161,44 @@ void MainWindow::setupDebugToolbar()
     bar->addAction("Register",  [this]{ stack->setCurrentIndex(1); });
     bar->addAction("Dashboard", [this]{ stack->setCurrentIndex(2); });
     bar->addAction("Tasks",     [this]{ stack->setCurrentIndex(3); });
+}
+
+void MainWindow::onNetworkMessage(const nlohmann::json& msg)
+{
+    std::string type = msg.value("type", "");
+
+    if (type == "MEMBER_LIST") {
+        auto arr = nlohmann::json::parse(
+            msg.value("payload", "[]"));
+        QStringList members;
+        for (auto& m : arr)
+            members << QString::fromStdString(m.get<std::string>());
+        dashboardPage->updateMemberList(members);
+        return;
+    }
+
+    if (type == "CHAT") {
+        QString sender = QString::fromStdString(
+            msg.value("sender", ""));
+        QString text = QString::fromStdString(
+            msg.value("payload", ""));
+        dashboardPage->appendChatMessage(sender, text);
+        return;
+    }
+
+    if (type == "TYPING") {
+        QString sender = QString::fromStdString(
+            msg.value("sender", ""));
+        dashboardPage->showTypingIndicator(sender);
+        return;
+    }
+
+    if (type == "CODE_SYNC") {
+        QString code = QString::fromStdString(
+            msg.value("payload", ""));
+        dashboardPage->applyRemoteCode(code);
+        return;
+    }
 }
 
 MainWindow::~MainWindow()
