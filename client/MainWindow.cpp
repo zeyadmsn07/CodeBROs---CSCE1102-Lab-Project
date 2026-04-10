@@ -13,52 +13,56 @@ MainWindow::MainWindow(QWidget* parent)
 
     userStore = new UserStore("data/users.json");
     sessions  = new SessionStore("data/sessions.json");
-    network = new NetworkClient();
+    network   = new NetworkClient();
+
     stack = new QStackedWidget(this);
     setCentralWidget(stack);
+
     loginPage     = new LoginWidget();
     registerPage  = new RegisterWidget();
-    dashboardPage = new QWidget();
-    taskPage      = new QWidget();
+    dashboardPage = new DashboardWidget();   // ← real widget now
 
-    QLabel* l3 = new QLabel("Dashboard Page", dashboardPage);
-    QLabel* l4 = new QLabel("Tasks Page", taskPage);
-    l3->setAlignment(Qt::AlignCenter);
-    l4->setAlignment(Qt::AlignCenter);
-    new QVBoxLayout(dashboardPage);
-    static_cast<QVBoxLayout*>(dashboardPage->layout())->addWidget(l3);
-    new QVBoxLayout(taskPage);
-    static_cast<QVBoxLayout*>(taskPage->layout())->addWidget(l4);
+    taskPage = new QWidget();
+    QLabel* taskLabel = new QLabel("Tasks Page — coming soon", taskPage);
+    taskLabel->setAlignment(Qt::AlignCenter);
+    QVBoxLayout* tl = new QVBoxLayout(taskPage);
+    tl->addWidget(taskLabel);
 
-    stack->addWidget(loginPage);     // 0
-    stack->addWidget(registerPage);  // 1
-    stack->addWidget(dashboardPage); // 2
-    stack->addWidget(taskPage);      // 3
+    stack->addWidget(loginPage);      // 0
+    stack->addWidget(registerPage);   // 1
+    stack->addWidget(dashboardPage);  // 2
+    stack->addWidget(taskPage);       // 3
 
     stack->setCurrentIndex(0);
 
+    // ── NetworkClient callback ────────────────────────────────
     network->onMessageReceived = [this](nlohmann::json j) {
-    QString str = QString::fromStdString(j.dump());
-    QMetaObject::invokeMethod(this, [this, str]() {
-        auto msg = nlohmann::json::parse(str.toStdString());
-        // handle incoming messages here in later tasks
-        qDebug() << "received:" << str;
-    }, Qt::QueuedConnection);
-};
+        QString str = QString::fromStdString(j.dump());
+        QMetaObject::invokeMethod(this, [this, str]() {
+            // Will be fully dispatched in Task 15/16
+            qDebug() << "received:" << str;
+        }, Qt::QueuedConnection);
+    };
 
+    // ── LoginWidget signals ───────────────────────────────────
     connect(loginPage, &LoginWidget::goToRegisterRequested,
             [this]{ stack->setCurrentIndex(1); });
-
-    connect(loginPage,    &LoginWidget::loginRequested,
+    connect(loginPage, &LoginWidget::loginRequested,
             this, &MainWindow::onLoginAttempt);
 
+    // ── RegisterWidget signals ────────────────────────────────
     connect(registerPage, &RegisterWidget::goToLoginRequested,
             [this]{ stack->setCurrentIndex(0); });
-
     connect(registerPage, &RegisterWidget::registerRequested,
             this, &MainWindow::onRegisterAttempt);
 
-    // logout in the menu bar
+    // ── DashboardWidget signals ───────────────────────────────
+    connect(dashboardPage, &DashboardWidget::openTasksRequested,
+            [this]{ stack->setCurrentIndex(3); });
+    connect(dashboardPage, &DashboardWidget::logoutRequested,
+            this, &MainWindow::logout);
+
+    // ── Menu bar logout ───────────────────────────────────────
     auto* logoutAction = menuBar()->addAction("Log Out");
     connect(logoutAction, &QAction::triggered, this, &MainWindow::logout);
 
@@ -94,7 +98,6 @@ void MainWindow::onRegisterAttempt(const QString& username,
         return;
     }
 
-    // registration worked — go to login and let them sign in
     stack->setCurrentIndex(0);
     loginPage->showError("Account created! You can now log in.");
 }
@@ -102,6 +105,7 @@ void MainWindow::onRegisterAttempt(const QString& username,
 void MainWindow::goToDashboard(const QString& username)
 {
     currentUser = username;
+    dashboardPage->setRoomCode("Not in a room");
     network->connect("127.0.0.1", 12345);
     stack->setCurrentIndex(2);
 }
@@ -109,6 +113,7 @@ void MainWindow::goToDashboard(const QString& username)
 void MainWindow::autoLogin(const QString& username)
 {
     currentUser = username;
+    dashboardPage->setRoomCode("Not in a room");
     stack->setCurrentIndex(2);
 }
 
@@ -117,6 +122,8 @@ void MainWindow::logout()
     network->disconnect();
     sessions->clearSession();
     currentUser.clear();
+    loginPage->setLoading(false);   
+    loginPage->clearError();        
     stack->setCurrentIndex(0);
 }
 

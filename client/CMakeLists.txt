@@ -13,10 +13,12 @@ add_executable(client
     LoginWidget.h
     RegisterWidget.cpp
     RegisterWidget.h
+    DashboardWidget.cpp
+    DashboardWidget.h
     NetworkClient.cpp
     NetworkClient.h
     resources.qrc
-) #remember to move all .h files to a directory at the end
+)
 
 target_link_libraries(client PRIVATE
     Qt6::Widgets
