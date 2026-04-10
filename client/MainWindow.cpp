@@ -144,8 +144,8 @@ void MainWindow::onRegisterAttempt(const QString& username,
 void MainWindow::goToDashboard(const QString& username)
 {
     currentUser    = username;
-    currentPartyId = generatePartyCode();   // each login gets a fresh party
-
+    // currentPartyId = generatePartyCode();   // each login gets a fresh party
+    currentPartyId = "TESTROOM";
     try {
         network->connect("127.0.0.1", 12345);
     }

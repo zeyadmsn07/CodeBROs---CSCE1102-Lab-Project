@@ -11,10 +11,12 @@
 #include "MessageTypes.h"
 #include "MessageFactory.h"
 #include "Message.h"
+
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
 
 class Server;
+
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
@@ -29,6 +31,7 @@ public:
                   << socket_.remote_endpoint() << "\n";
         read_next();
     }
+
     void send(const std::string& msg)
     {
         write_queue_.push_back(msg);
@@ -53,7 +56,6 @@ private:
                 std::istream stream(&self->buf_);
                 std::string line;
                 std::getline(stream, line);
-
                 self->dispatch(line);
                 self->read_next();
             });
@@ -73,21 +75,22 @@ private:
                 if (!ec) self->do_write();
             });
     }
+
     void dispatch(const std::string& line);
-    void handle_join      (const Message& msg);
-    void handle_chat      (const Message& msg);
-    void handle_leave     (const Message& msg);
-    void handle_code_sync (const Message& msg);
+    void handle_join     (const Message& msg);
+    void handle_chat     (const Message& msg);
+    void handle_leave    (const Message& msg);
+    void handle_code_sync(const Message& msg);
+
     tcp::socket             socket_;
     boost::asio::streambuf  buf_;
     Server&                 server_;
-
     std::string             username_;
     std::string             partyId_;
-
     std::deque<std::string> write_queue_;
     bool                    writing_ = false;
 };
+
 class Server
 {
 public:
@@ -98,14 +101,21 @@ public:
         accept_next();
     }
 
+    // Adds session to room then broadcasts updated member list
     void addToRoom(const std::string& partyId,
                    std::shared_ptr<Session> session)
     {
-        std::lock_guard<std::mutex> lock(rooms_mutex_);
-        rooms_[partyId].push_back(session);
-        std::cout << "[server] room " << partyId
-                  << " now has " << rooms_[partyId].size() << " member(s)\n";
+        {
+            std::lock_guard<std::mutex> lock(rooms_mutex_);
+            rooms_[partyId].push_back(session);
+            std::cout << "[server] room " << partyId
+                      << " now has " << rooms_[partyId].size()
+                      << " member(s)\n";
+        }
+        // Lock released — safe to call broadcastMemberList now
+        broadcastMemberList(partyId);
     }
+
     void removeFromAllRooms(Session* raw)
     {
         std::lock_guard<std::mutex> lock(rooms_mutex_);
@@ -114,15 +124,17 @@ public:
                 std::remove_if(sessions.begin(), sessions.end(),
                     [raw](const std::weak_ptr<Session>& wp) {
                         auto sp = wp.lock();
-                        return !sp || sp.get() == raw;   // purge dead OR this session
+                        return !sp || sp.get() == raw;
                     }),
                 sessions.end());
         }
-        for (auto it = rooms_.begin(); it != rooms_.end(); ) {
+        for (auto it = rooms_.begin(); it != rooms_.end(); )
             it = it->second.empty() ? rooms_.erase(it) : std::next(it);
-        }
     }
-    void broadcast(const std::string& partyId, const json& msg, Session* exclude)
+
+    void broadcast(const std::string& partyId,
+                   const json& msg,
+                   Session* exclude)
     {
         std::string serialized = msg.dump() + "\n";
         std::lock_guard<std::mutex> lock(rooms_mutex_);
@@ -132,52 +144,52 @@ public:
 
         auto& sessions = it->second;
         std::vector<std::weak_ptr<Session>> alive;
-
         for (auto& wp : sessions) {
             auto sp = wp.lock();
-            if (!sp) continue;           // dead → drop from room (purge)
-            alive.push_back(wp);         
+            if (!sp) continue;
+            alive.push_back(wp);
             if (sp.get() != exclude)
-                sp->send(serialized);    
+                sp->send(serialized);
         }
-        sessions = std::move(alive);     
+        sessions = std::move(alive);
     }
 
-    // Sends updated MEMBER_LIST to every client in the room (including sender).
-    // Used after join, leave, and abrupt disconnect.
+    // Acquires lock then broadcasts member list
     void broadcastMemberList(const std::string& partyId)
     {
         std::lock_guard<std::mutex> lock(rooms_mutex_);
+        broadcastMemberListLocked(partyId);
+    }
 
+private:
+    // Must only be called when rooms_mutex_ is already held
+    void broadcastMemberListLocked(const std::string& partyId)
+    {
         auto it = rooms_.find(partyId);
-        if (it == rooms_.end()) return;  // room is empty / already deleted
+        if (it == rooms_.end()) return;
 
-        // Collect current usernames
         std::vector<std::string> names;
-        for (auto& wp : it->second) {
+        for (auto& wp : it->second)
             if (auto sp = wp.lock())
                 names.push_back(sp->username());
-        }
 
         std::string serialized =
             MessageFactory::toJsonString(
                 MessageFactory::buildMemberList(partyId, names)) + "\n";
 
-        // Send to everyone in the room (including the newly joined client)
-        for (auto& wp : it->second) {
+        for (auto& wp : it->second)
             if (auto sp = wp.lock())
                 sp->send(serialized);
-        }
     }
 
-private:
     void accept_next()
     {
         acceptor_.async_accept(
             [this](boost::system::error_code ec, tcp::socket socket)
             {
                 if (!ec)
-                    std::make_shared<Session>(std::move(socket), *this)->start();
+                    std::make_shared<Session>(
+                        std::move(socket), *this)->start();
                 accept_next();
             });
     }
@@ -215,21 +227,17 @@ void Session::handle_join(const Message& msg)
     username_ = msg.sender;
     partyId_  = msg.partyId;
 
+    // addToRoom already broadcasts the member list — don't call it again
     server_.addToRoom(partyId_, shared_from_this());
 
     std::cout << "[server] JOIN  " << username_
               << " → room " << partyId_ << "\n";
-
-    // Tell everyone in the room (including the joiner) about the new list
-    server_.broadcastMemberList(partyId_);
 }
 
 void Session::handle_chat(const Message& msg)
 {
     std::cout << "[server] CHAT  [" << msg.partyId << "] "
               << msg.sender << ": " << msg.payload << "\n";
-
-    // Forward to everyone in the room EXCEPT the sender
     server_.broadcast(msg.partyId, MessageFactory::toJson(msg), this);
 }
 
@@ -238,17 +246,16 @@ void Session::handle_leave(const Message& msg)
     std::cout << "[server] LEAVE " << msg.sender
               << " ← room " << msg.partyId << "\n";
 
-    std::string oldParty = partyId_;   // save before clearing
+    std::string oldParty = partyId_;
     server_.removeFromAllRooms(this);
     partyId_  = "";
     username_ = "";
 
-    server_.broadcastMemberList(oldParty);  // notify remaining members
+    server_.broadcastMemberList(oldParty);
 }
 
 void Session::handle_code_sync(const Message& msg)
 {
-    // Relay code to everyone in room except sender — no validation
     server_.broadcast(msg.partyId, MessageFactory::toJson(msg), this);
 }
 
