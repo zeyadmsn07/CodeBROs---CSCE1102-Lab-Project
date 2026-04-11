@@ -130,3 +130,37 @@ Message MessageFactory::fromJsonString(const std::string& raw)
         return err;
     }
 }
+nlohmann::json MessageFactory::makeLogin(const std::string& username, const std::string& password) {
+    return { {"type", "login"}, {"username", username}, {"password", password} };
+}
+
+nlohmann::json MessageFactory::makeRegister(const std::string& username, const std::string& password) {
+    return { {"type", "register"}, {"username", username}, {"password", password} };
+}
+
+nlohmann::json MessageFactory::makeGetRooms() {
+    return { {"type", "get_rooms"} };
+}
+
+nlohmann::json MessageFactory::makeCreateRoom(const std::string& roomName) {
+    return { {"type", "create_room"}, {"name", roomName} };
+}
+
+nlohmann::json MessageFactory::makeJoinRoom(const std::string& roomId) {
+    return { {"type", "join_room"}, {"room_id", roomId} };
+}
+
+nlohmann::json MessageFactory::makeLeaveRoom() {
+    return { {"type", "leave_room"} };
+}
+
+nlohmann::json MessageFactory::makeCodeUpdate(const std::string& roomId, const std::string& code) {
+    return { {"type", "code_update"}, {"room_id", roomId}, {"code", code} };
+}
+
+nlohmann::json MessageFactory::makeChatMsg(const std::string& roomId, const std::string& sender, const std::string& text) {
+    return { {"type", "chat_message"}, {"room_id", roomId}, {"sender", sender}, {"text", text} };
+}
+nlohmann::json MessageFactory::makeSessionRestore(const std::string& username) {
+    return { {"type", "session_restore"}, {"username", username} };
+}

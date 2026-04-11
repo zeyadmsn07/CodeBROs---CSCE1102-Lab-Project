@@ -1,0 +1,3140 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.qt/
+  QtDeploySupport.cmake
+client/
+  images/
+    background.jpg
+    background.png.png
+  CMakeLists.txt
+  CTestTestfile.cmake
+  DashboardWidget.cpp
+  DashboardWidget.h
+  LoginWidget.cpp
+  LoginWidget.h
+  main.cpp
+  MainWindow.cpp
+  MainWindow.h
+  NetworkClient.cpp
+  NetworkClient.h
+  RegisterWidget.cpp
+  RegisterWidget.h
+  resources.qrc
+  RoomWidget.cpp
+  RoomWidget.h
+data/
+  .gitkeep
+docs/
+  .gitkeep
+server/
+  .gitkeep
+  client_test.cpp
+  CMakeLists.txt
+  CTestTestfile.cmake
+  RoomManager.cpp
+  RoomManager.h
+  server.cpp
+shared/
+  include/
+    .gitkeep
+    Message.h
+    MessageFactory.h
+    MessageTypes.h
+    picosha2.h
+    SessionStore.h
+    UserStore.h
+  src/
+    .gitkeep
+    MessageFactory.cpp
+    SessionStore.cpp
+    UserStore.cpp
+  .gitkeep
+  CMakeLists.txt
+  CTestTestfile.cmake
+Testing/
+  Temporary/
+    CTestCostData.txt
+tests/
+  .gitkeep
+  all_tests[1]_include.cmake
+  CMakeLists.txt
+  CTestTestfile.cmake
+  dummy_test.cpp
+  test_auth.cpp
+.gitignore
+CMakeLists.txt
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="client/RoomWidget.cpp">
+#include "RoomWidget.h"
+#include "MessageFactory.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QJsonObject>
+
+RoomWidget::RoomWidget(NetworkClient* net, QWidget* parent)
+    : QWidget(parent), net(net)
+{
+    auto* vbox = new QVBoxLayout(this);
+
+    welcomeLabel = new QLabel("Welcome!", this);
+    QFont f = welcomeLabel->font();
+    f.setPointSize(14);
+    welcomeLabel->setFont(f);
+    vbox->addWidget(welcomeLabel);
+
+    roomList = new QListWidget(this);
+    vbox->addWidget(roomList);
+
+    auto* hbox = new QHBoxLayout;
+    createBtn  = new QPushButton("Create Room", this);
+    joinBtn    = new QPushButton("Join Room",   this);
+    refreshBtn = new QPushButton("Refresh",     this);
+    hbox->addWidget(createBtn);
+    hbox->addWidget(joinBtn);
+    hbox->addWidget(refreshBtn);
+    vbox->addLayout(hbox);
+
+    connect(createBtn,  &QPushButton::clicked, this, &RoomWidget::onCreateClicked);
+    connect(joinBtn,    &QPushButton::clicked, this, &RoomWidget::onJoinClicked);
+    connect(refreshBtn, &QPushButton::clicked, this, &RoomWidget::refresh);
+
+    connect(net, &NetworkClient::roomListReceived, this, &RoomWidget::onRoomList);
+    connect(net, &NetworkClient::roomCreated,      this, &RoomWidget::onRoomCreated);
+    connect(net, &NetworkClient::roomJoined,       this, &RoomWidget::onRoomJoined);
+    connect(net, &NetworkClient::joinFailed,       this, &RoomWidget::onJoinFailed);
+}
+
+void RoomWidget::setUsername(const QString& name) {
+    welcomeLabel->setText("Welcome, " + name + "!");
+}
+
+void RoomWidget::refresh() {
+    net->sendMessage(MessageFactory::makeGetRooms());
+}
+
+void RoomWidget::onCreateClicked() {
+    bool ok;
+    QString name = QInputDialog::getText(this, "New Room",
+                       "Room name:", QLineEdit::Normal, "", &ok);
+    if (!ok || name.trimmed().isEmpty()) return;
+    net->sendMessage(MessageFactory::makeCreateRoom(name.toStdString()));
+}
+
+void RoomWidget::onJoinClicked() {
+    QListWidgetItem* item = roomList->currentItem();
+    if (!item) {
+        QMessageBox::warning(this, "No selection", "Pick a room first.");
+        return;
+    }
+    QString roomId = item->data(Qt::UserRole).toString();
+    net->sendMessage(MessageFactory::makeJoinRoom(roomId.toStdString()));
+}
+
+void RoomWidget::onRoomList(QJsonArray rooms) {
+    roomList->clear();
+    for (auto val : rooms) {
+        QJsonObject r = val.toObject();
+        QString label = r["name"].toString()
+                      + "  [" + QString::number(r["members"].toInt()) + " online]";
+        auto* item = new QListWidgetItem(label, roomList);
+        item->setData(Qt::UserRole, r["id"].toString());
+    }
+}
+
+void RoomWidget::onRoomCreated(QString roomId, QString name) {
+    emit roomEntered(roomId, "");
+}
+
+void RoomWidget::onRoomJoined(QString roomId, QString code) {
+    emit roomEntered(roomId, code);
+}
+
+void RoomWidget::onJoinFailed(QString reason) {
+    QMessageBox::warning(this, "Join failed", reason);
+}
+</file>
+
+<file path="client/RoomWidget.h">
+#ifndef ROOMWIDGET_H
+#define ROOMWIDGET_H
+
+#include <QWidget>
+#include <QListWidget>
+#include <QPushButton>
+#include <QLabel>
+#include <QJsonArray>
+#include "NetworkClient.h"
+
+class RoomWidget : public QWidget {
+    Q_OBJECT
+public:
+    explicit RoomWidget(NetworkClient* net, QWidget* parent = nullptr);
+    void setUsername(const QString& name);
+    void refresh();
+
+signals:
+    void roomEntered(const QString& roomId, const QString& initialCode);
+
+private slots:
+    void onCreateClicked();
+    void onJoinClicked();
+    void onRoomList(QJsonArray rooms);
+    void onRoomCreated(QString roomId, QString name);
+    void onRoomJoined(QString roomId, QString code);
+    void onJoinFailed(QString reason);
+
+private:
+    NetworkClient* net;
+    QLabel*        welcomeLabel;
+    QListWidget*   roomList;
+    QPushButton*   createBtn;
+    QPushButton*   joinBtn;
+    QPushButton*   refreshBtn;
+};
+
+#endif
+</file>
+
+<file path=".qt/QtDeploySupport.cmake">
+cmake_minimum_required(VERSION 3.16...3.21)
+
+# These are part of the public API. Projects should use them to provide a
+# consistent set of prefix-relative destinations.
+if(NOT QT_DEPLOY_BIN_DIR)
+    set(QT_DEPLOY_BIN_DIR "bin")
+endif()
+if(NOT QT_DEPLOY_LIB_DIR)
+    set(QT_DEPLOY_LIB_DIR "lib")
+endif()
+if(NOT QT_DEPLOY_PLUGINS_DIR)
+    set(QT_DEPLOY_PLUGINS_DIR "plugins")
+endif()
+if(NOT QT_DEPLOY_QML_DIR)
+    set(QT_DEPLOY_QML_DIR "qml")
+endif()
+if(NOT QT_DEPLOY_PREFIX)
+    set(QT_DEPLOY_PREFIX "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}")
+endif()
+if(QT_DEPLOY_PREFIX STREQUAL "")
+    set(QT_DEPLOY_PREFIX .)
+endif()
+
+# These are internal implementation details. They may be removed at any time.
+set(__QT_DEPLOY_SYSTEM_NAME "Linux")
+set(__QT_DEPLOY_IS_SHARED_LIBS_BUILD "ON")
+set(__QT_DEPLOY_TOOL "")
+set(__QT_DEPLOY_IMPL_DIR "/home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/.qt")
+set(__QT_DEPLOY_VERBOSE "")
+set(__QT_CMAKE_EXPORT_NAMESPACE "Qt6")
+set(__QT_DEPLOY_GENERATOR_IS_MULTI_CONFIG "0")
+set(__QT_DEPLOY_ACTIVE_CONFIG "")
+set(__QT_NO_CREATE_VERSIONLESS_FUNCTIONS "")
+set(__QT_DEFAULT_MAJOR_VERSION "6")
+
+# Define the CMake commands to be made available during deployment.
+set(__qt_deploy_support_files
+    "/usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreDeploySupport.cmake"
+)
+foreach(__qt_deploy_support_file IN LISTS __qt_deploy_support_files)
+    include("${__qt_deploy_support_file}")
+endforeach()
+
+unset(__qt_deploy_support_file)
+unset(__qt_deploy_support_files)
+</file>
+
+<file path="client/CTestTestfile.cmake">
+# CMake generated Testfile for 
+# Source directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/client
+# Build directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/client
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+</file>
+
+<file path="client/DashboardWidget.cpp">
+#include "DashboardWidget.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QSplitter>
+#include <QFont>
+#include <QTime>
+#include <QTimer>
+#include <QTextCursor>
+
+DashboardWidget::DashboardWidget(QWidget* parent)
+    : QWidget(parent)
+{
+    buildUi();
+    applyStyles();
+}
+
+void DashboardWidget::buildUi()
+{
+    // ── code editor ──────────────────────────────────────────
+    codeEditor = new QPlainTextEdit();
+    codeEditor->setObjectName("codeEditor");
+    codeEditor->setFont(QFont("Courier New", 11));
+    codeEditor->setTabStopDistance(40);
+    codeEditor->setLineWrapMode(QPlainTextEdit::NoWrap);
+    codeEditor->setPlaceholderText("// Start coding here...");
+
+    // ── chat list ────────────────────────────────────────────
+    chatList = new QListWidget();
+    chatList->setObjectName("chatList");
+    chatList->setWordWrap(true);
+    chatList->setSpacing(2);
+
+    // ── chat input row ───────────────────────────────────────
+    chatInput = new QLineEdit();
+    chatInput->setObjectName("chatInput");
+    chatInput->setPlaceholderText("Type a message...");
+    chatInput->setMinimumHeight(36);
+
+    sendButton = new QPushButton("Send");
+    sendButton->setObjectName("sendButton");
+    sendButton->setMinimumHeight(36);
+    sendButton->setFixedWidth(70);
+
+    QHBoxLayout* inputRow = new QHBoxLayout();
+    inputRow->setSpacing(6);
+    inputRow->addWidget(chatInput);
+    inputRow->addWidget(sendButton);
+
+    // ── chat area (list + input row) ─────────────────────────
+    QWidget* chatArea = new QWidget();
+    QVBoxLayout* chatLayout = new QVBoxLayout(chatArea);
+    chatLayout->setContentsMargins(0, 0, 0, 0);
+    chatLayout->setSpacing(6);
+    chatLayout->addWidget(chatList);
+    chatLayout->addLayout(inputRow);
+
+    // ── splitter (editor top, chat bottom) ───────────────────
+    QSplitter* splitter = new QSplitter(Qt::Vertical);
+    splitter->addWidget(codeEditor);
+    splitter->addWidget(chatArea);
+    splitter->setStretchFactor(0, 3);
+    splitter->setStretchFactor(1, 1);
+
+    // ── right sidebar ────────────────────────────────────────
+    QLabel* partyLabel = new QLabel("Party");
+    partyLabel->setObjectName("partyLabel");
+
+    roomCodeLabel = new QLabel("—");
+    roomCodeLabel->setObjectName("roomCodeLabel");
+    roomCodeLabel->setWordWrap(true);
+
+    memberList = new QListWidget();
+    memberList->setObjectName("memberList");
+
+    typingLabel = new QLabel();
+    typingLabel->setObjectName("typingLabel");
+    typingLabel->hide();
+
+    tasksButton = new QPushButton("Tasks");
+    tasksButton->setObjectName("tasksButton");
+    tasksButton->setMinimumHeight(36);
+
+    logoutButton = new QPushButton("Log Out");
+    logoutButton->setObjectName("logoutButton");
+    logoutButton->setMinimumHeight(36);
+
+    QVBoxLayout* sidebarLayout = new QVBoxLayout();
+    sidebarLayout->setSpacing(8);
+    sidebarLayout->setContentsMargins(8, 8, 8, 8);
+    sidebarLayout->addWidget(partyLabel);
+    sidebarLayout->addWidget(roomCodeLabel);
+    sidebarLayout->addWidget(memberList);
+    sidebarLayout->addWidget(typingLabel);
+    sidebarLayout->addStretch();
+    sidebarLayout->addWidget(tasksButton);
+    sidebarLayout->addWidget(logoutButton);
+
+    QWidget* sidebar = new QWidget();
+    sidebar->setObjectName("sidebar");
+    sidebar->setLayout(sidebarLayout);
+
+    // ── root layout ──────────────────────────────────────────
+    QHBoxLayout* root = new QHBoxLayout(this);
+    root->setContentsMargins(0, 0, 0, 0);
+    root->setSpacing(0);
+    root->addWidget(splitter, 3);
+    root->addWidget(sidebar,  1);
+
+    // ── sync debounce timer ──────────────────────────────────
+    syncTimer = new QTimer(this);
+    syncTimer->setSingleShot(true);
+    syncTimer->setInterval(300);
+
+    // ── connections ──────────────────────────────────────────
+
+    // Send button + Enter key → emit chatMessageEntered
+    auto sendChat = [this]() {
+        QString text = chatInput->text().trimmed();
+        if (text.isEmpty()) return;
+        chatInput->clear();
+        emit chatMessageEntered(text);
+    };
+    connect(sendButton, &QPushButton::clicked, sendChat);
+    connect(chatInput,  &QLineEdit::returnPressed, sendChat);
+
+    // Code editor changes → debounced sync
+    connect(codeEditor, &QPlainTextEdit::textChanged, [this]() {
+        syncTimer->start();   // restart the 300ms timer on every keystroke
+    });
+    connect(syncTimer, &QTimer::timeout, [this]() {
+        emit codeSyncTriggered(codeEditor->toPlainText());
+    });
+
+    // Sidebar buttons
+    connect(tasksButton,  &QPushButton::clicked,
+            [this]() { emit openTasksRequested(); });
+    connect(logoutButton, &QPushButton::clicked,
+            [this]() { emit logoutRequested(); });
+}
+
+// ── public slots ─────────────────────────────────────────────
+
+void DashboardWidget::appendChatMessage(const QString& sender,
+                                        const QString& text)
+{
+    QString time = QTime::currentTime().toString("HH:mm");
+    chatList->addItem(QString("[%1] %2: %3").arg(time, sender, text));
+    chatList->scrollToBottom();
+}
+
+void DashboardWidget::updateMemberList(const QStringList& members)
+{
+    memberList->clear();
+    for (const QString& m : members)
+        memberList->addItem(m);
+}
+
+void DashboardWidget::showTypingIndicator(const QString& username)
+{
+    typingLabel->setText(username + " is typing...");
+    typingLabel->show();
+    // Auto-hide after 2 seconds
+    QTimer::singleShot(2000, typingLabel, &QLabel::hide);
+}
+
+void DashboardWidget::setRoomCode(const QString& code)
+{
+    roomCodeLabel->setText(code);
+}
+
+// CRITICAL: blockSignals prevents the infinite update loop
+// (remote change → setPlainText → textChanged → emit sync → remote change → ...)
+void DashboardWidget::applyRemoteCode(const QString& code)
+{
+    // Save cursor position so the user's caret doesn't jump
+    int savedPos = codeEditor->textCursor().position();
+
+    codeEditor->blockSignals(true);
+    codeEditor->setPlainText(code);
+    codeEditor->blockSignals(false);
+
+    // Restore cursor to saved position (clamped to document length)
+    int docLen = codeEditor->document()->characterCount();
+    QTextCursor cursor = codeEditor->textCursor();
+    cursor.setPosition(qMin(savedPos, docLen - 1));
+    codeEditor->setTextCursor(cursor);
+}
+
+// ── styles ────────────────────────────────────────────────────
+void DashboardWidget::applyStyles()
+{
+    setStyleSheet(
+        "QPlainTextEdit#codeEditor {"
+        "  background-color: #1e1e1e;"
+        "  color: #d4d4d4;"
+        "  border: none;"
+        "  font-family: 'Courier New';"
+        "  font-size: 11pt;"
+        "}"
+        "QListWidget#chatList {"
+        "  background-color: #252526;"
+        "  color: #cccccc;"
+        "  border: none;"
+        "  font-size: 13px;"
+        "}"
+        "QLineEdit#chatInput {"
+        "  background-color: #3c3c3c;"
+        "  color: #ffffff;"
+        "  border: 1px solid #555555;"
+        "  border-radius: 6px;"
+        "  padding: 0 8px;"
+        "  font-size: 13px;"
+        "}"
+        "QPushButton#sendButton {"
+        "  background-color: #7F77DD;"
+        "  color: #ffffff;"
+        "  border: none;"
+        "  border-radius: 6px;"
+        "  font-weight: bold;"
+        "}"
+        "QPushButton#sendButton:hover  { background-color: #9189E8; }"
+        "QPushButton#sendButton:pressed { background-color: #6B63C4; }"
+        "QWidget#sidebar {"
+        "  background-color: #252526;"
+        "  border-left: 1px solid #3c3c3c;"
+        "}"
+        "QLabel#partyLabel {"
+        "  color: #ffffff;"
+        "  font-size: 14px;"
+        "  font-weight: bold;"
+        "}"
+        "QLabel#roomCodeLabel {"
+        "  color: #AFA9EC;"
+        "  font-size: 13px;"
+        "  font-weight: bold;"
+        "}"
+        "QListWidget#memberList {"
+        "  background-color: transparent;"
+        "  color: #cccccc;"
+        "  border: none;"
+        "  font-size: 13px;"
+        "}"
+        "QLabel#typingLabel {"
+        "  color: #888888;"
+        "  font-size: 12px;"
+        "  font-style: italic;"
+        "}"
+        "QPushButton#tasksButton {"
+        "  background-color: #3c3c3c;"
+        "  color: #ffffff;"
+        "  border: none;"
+        "  border-radius: 6px;"
+        "}"
+        "QPushButton#tasksButton:hover { background-color: #505050; }"
+        "QPushButton#logoutButton {"
+        "  background-color: transparent;"
+        "  color: #F09595;"
+        "  border: 1px solid #F09595;"
+        "  border-radius: 6px;"
+        "}"
+        "QPushButton#logoutButton:hover {"
+        "  background-color: rgba(240,149,149,0.10);"
+        "}"
+    );
+}
+</file>
+
+<file path="client/DashboardWidget.h">
+#ifndef DASHBOARDWIDGET_H
+#define DASHBOARDWIDGET_H
+
+#include <QWidget>
+#include <QPlainTextEdit>
+#include <QListWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QLabel>
+#include <QSplitter>
+#include <QTimer>
+
+class DashboardWidget : public QWidget {
+    Q_OBJECT
+
+public:
+    explicit DashboardWidget(QWidget* parent = nullptr);
+
+public slots:
+    void appendChatMessage(const QString& sender, const QString& text);
+    void updateMemberList(const QStringList& members);
+    void showTypingIndicator(const QString& username);
+    void setRoomCode(const QString& code);
+    void applyRemoteCode(const QString& code);
+
+signals:
+    void chatMessageEntered(const QString& text);
+    void codeSyncTriggered(const QString& code);
+    void openTasksRequested();
+    void logoutRequested();
+
+private:
+    // Left side — editor
+    QPlainTextEdit* codeEditor;
+
+    // Left side — chat
+    QListWidget*    chatList;
+    QLineEdit*      chatInput;
+    QPushButton*    sendButton;
+
+    // Right side — sidebar
+    QLabel*         roomCodeLabel;
+    QListWidget*    memberList;
+    QLabel*         typingLabel;
+    QPushButton*    tasksButton;
+    QPushButton*    logoutButton;
+
+    // Code sync debounce timer
+    QTimer*         syncTimer;
+
+    void buildUi();
+    void applyStyles();
+};
+
+#endif
+</file>
+
+<file path="data/.gitkeep">
+
+</file>
+
+<file path="docs/.gitkeep">
+
+</file>
+
+<file path="server/.gitkeep">
+
+</file>
+
+<file path="server/CTestTestfile.cmake">
+# CMake generated Testfile for 
+# Source directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/server
+# Build directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/server
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+</file>
+
+<file path="server/RoomManager.cpp">
+#include "RoomManager.h"
+#include <algorithm>
+
+std::string RoomManager::createRoom(const std::string& name) {
+    std::string id = "room_" + std::to_string(nextId++);
+    rooms[id] = Room{ id, name, "", {} };
+    return id;
+}
+
+Room* RoomManager::getRoom(const std::string& roomId) {
+    auto it = rooms.find(roomId);
+    if (it == rooms.end()) return nullptr;
+    return &it->second;
+}
+
+std::vector<std::tuple<std::string, std::string, int>> RoomManager::listRooms() {
+    std::vector<std::tuple<std::string, std::string, int>> out;
+    for (auto& [id, r] : rooms) {
+        int alive = 0;
+        for (auto& wp : r.members)
+            if (!wp.expired()) alive++;
+        out.push_back({ id, r.name, alive });
+    }
+    return out;
+}
+
+void RoomManager::addMember(const std::string& roomId, std::shared_ptr<Session> s) {
+    auto* r = getRoom(roomId);
+    if (!r) return;
+    r->members.push_back(s);
+}
+
+void RoomManager::removeMember(const std::string& roomId, std::shared_ptr<Session> s) {
+    auto* r = getRoom(roomId);
+    if (!r) return;
+    // remove expired pointers and the given session
+    r->members.erase(
+        std::remove_if(r->members.begin(), r->members.end(),
+            [&](std::weak_ptr<Session>& wp) {
+                auto sp = wp.lock();
+                return !sp || sp.get() == s.get();
+            }),
+        r->members.end()
+    );
+}
+</file>
+
+<file path="server/RoomManager.h">
+#pragma once
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <mutex>
+
+// forward declare to avoid including Session.h here
+struct Session;
+
+struct Room {
+    std::string id;
+    std::string name;
+    std::string current_code;
+    std::vector<std::weak_ptr<Session>> members;
+};
+
+class RoomManager {
+public:
+    // creates a new room, returns its id
+    std::string createRoom(const std::string& name);
+
+    // returns nullptr if room doesn't exist
+    Room* getRoom(const std::string& roomId);
+
+    // returns list of {id, name, member count}
+    std::vector<std::tuple<std::string, std::string, int>> listRooms();
+
+    void addMember(const std::string& roomId, std::shared_ptr<Session> s);
+    void removeMember(const std::string& roomId, std::shared_ptr<Session> s);
+
+    std::mutex mtx; // lock this before touching rooms
+
+private:
+    std::map<std::string, Room> rooms;
+    int nextId = 1;
+};
+</file>
+
+<file path="shared/include/.gitkeep">
+
+</file>
+
+<file path="shared/src/.gitkeep">
+
+</file>
+
+<file path="shared/src/UserStore.cpp">
+#include "UserStore.h"
+#include "picosha2.h"
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <filesystem>
+#include <ctime>
+#include <algorithm>
+
+using json = nlohmann::json;
+
+static long now() { return static_cast<long>(std::time(nullptr)); }
+
+// ── constructor ──────────────────────────────
+UserStore::UserStore(const std::string& filePath)
+    : filePath_(filePath)
+{
+    // Create file with empty array if it does not exist
+    if (!std::filesystem::exists(filePath_)) {
+        std::filesystem::create_directories(
+            std::filesystem::path(filePath_).parent_path());
+        std::ofstream out(filePath_);
+        out << "[]";
+    }
+    loadFromFile();
+}
+
+// ── private helpers ──────────────────────────
+void UserStore::loadFromFile()
+{
+    std::ifstream in(filePath_);
+    if (!in.is_open()) return;
+
+    try {
+        json arr = json::parse(in);
+        users_.clear();
+        for (auto& obj : arr) {
+            UserRecord r;
+            r.username     = obj.value("username",     "");
+            r.passwordHash = obj.value("passwordHash", "");
+            r.createdAt    = obj.value("createdAt",    0L);
+            r.lastLogin    = obj.value("lastLogin",    0L);
+            users_.push_back(r);
+        }
+    }
+    catch (...) {
+        users_.clear();   // corrupt file — start fresh
+    }
+}
+
+std::string UserStore::hashPassword(const std::string& password) const
+{
+    return picosha2::hash256_hex_string(password);
+}
+
+// ── public methods ───────────────────────────
+bool UserStore::registerUser(const std::string& username,
+                             const std::string& password)
+{
+    // Check for duplicate username
+    auto it = std::find_if(users_.begin(), users_.end(),
+        [&](const UserRecord& r){ return r.username == username; });
+
+    if (it != users_.end()) return false;   // username already taken
+
+    UserRecord r;
+    r.username     = username;
+    r.passwordHash = hashPassword(password);
+    r.createdAt    = now();
+    r.lastLogin    = now();
+    users_.push_back(r);
+
+    saveToFile();
+    return true;
+}
+
+bool UserStore::authenticate(const std::string& username,
+                             const std::string& password)
+{
+    auto it = std::find_if(users_.begin(), users_.end(),
+        [&](const UserRecord& r){ return r.username == username; });
+
+    if (it == users_.end()) return false;
+
+    return it->passwordHash == hashPassword(password);
+}
+
+void UserStore::updateLastLogin(const std::string& username)
+{
+    auto it = std::find_if(users_.begin(), users_.end(),
+        [&](const UserRecord& r){ return r.username == username; });
+
+    if (it == users_.end()) return;
+
+    it->lastLogin = now();
+    saveToFile();
+}
+
+void UserStore::saveToFile()
+{
+    json arr = json::array();
+    for (auto& u : users_) {
+        arr.push_back({
+            { "username",     u.username     },
+            { "passwordHash", u.passwordHash },
+            { "createdAt",    u.createdAt    },
+            { "lastLogin",    u.lastLogin    }
+        });
+    }
+
+    // Atomic write — write to .tmp then rename
+    std::string tmp = filePath_ + ".tmp";
+    std::ofstream out(tmp);
+    out << arr.dump(2);
+    out.close();
+    std::filesystem::rename(tmp, filePath_);
+}
+</file>
+
+<file path="shared/.gitkeep">
+
+</file>
+
+<file path="shared/CTestTestfile.cmake">
+# CMake generated Testfile for 
+# Source directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/shared
+# Build directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/shared
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+</file>
+
+<file path="tests/.gitkeep">
+
+</file>
+
+<file path="tests/all_tests[1]_include.cmake">
+if(EXISTS "/home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/tests/all_tests[1]_tests.cmake")
+  include("/home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/tests/all_tests[1]_tests.cmake")
+else()
+  add_test(all_tests_NOT_BUILT all_tests_NOT_BUILT)
+endif()
+</file>
+
+<file path="tests/CTestTestfile.cmake">
+# CMake generated Testfile for 
+# Source directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/tests
+# Build directory: /home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/tests
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+include("/home/youssef_alfred/teamproject2026/CodeBROs---CSCE1102-Lab-Project/tests/all_tests[1]_include.cmake")
+</file>
+
+<file path="README.md">
+
+</file>
+
+<file path="client/LoginWidget.h">
+#ifndef LOGINWIDGET_H
+#define LOGINWIDGET_H
+
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QLabel>
+
+class LoginWidget : public QWidget {
+    Q_OBJECT
+
+public:
+    explicit LoginWidget(QWidget* parent = nullptr);
+
+    void showError(const QString& message);
+    void clearError();
+    void setLoading(bool loading);
+
+signals:
+    void loginRequested(const QString& username,
+                        const QString& password);
+    void goToRegisterRequested();
+
+protected:
+    void paintEvent(QPaintEvent* event) override;
+
+private:
+    QLineEdit*   usernameInput;
+    QLineEdit*   passwordInput;
+    QPushButton* loginButton;
+    QPushButton* registerLink;
+    QLabel*      errorLabel;
+
+    void setupUi();
+    void applyStyles();
+};
+
+#endif
+</file>
+
+<file path="client/RegisterWidget.cpp">
+#include "RegisterWidget.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QPixmap>
+#include <QRegularExpression>
+
+RegisterWidget::RegisterWidget(QWidget* parent)
+    : QWidget(parent)
+{
+    buildUi();
+    applyStyles();
+}
+
+void RegisterWidget::buildUi()
+{
+    QWidget* card = new QWidget(this);
+    card->setObjectName("card");
+    card->setFixedWidth(380);
+
+    QLabel* title = new QLabel("Create your account", card);
+    title->setObjectName("titleLabel");
+    title->setAlignment(Qt::AlignCenter);
+
+    QLabel* subtitle = new QLabel("Join a party and start coding", card);
+    subtitle->setObjectName("subtitleLabel");
+    subtitle->setAlignment(Qt::AlignCenter);
+
+    QLabel* userLbl = new QLabel("USERNAME", card);
+    userLbl->setObjectName("fieldLabel");
+    usernameInput = new QLineEdit(card);
+    usernameInput->setObjectName("inputField");
+    usernameInput->setPlaceholderText("Choose a username");
+    usernameInput->setMinimumHeight(42);
+
+    QLabel* passLbl = new QLabel("PASSWORD", card);
+    passLbl->setObjectName("fieldLabel");
+    passwordInput = new QLineEdit(card);
+    passwordInput->setObjectName("inputField");
+    passwordInput->setPlaceholderText("Choose a password");
+    passwordInput->setEchoMode(QLineEdit::Password);
+    passwordInput->setMinimumHeight(42);
+
+    QLabel* confirmLbl = new QLabel("CONFIRM PASSWORD", card);
+    confirmLbl->setObjectName("fieldLabel");
+    confirmInput = new QLineEdit(card);
+    confirmInput->setObjectName("inputField");
+    confirmInput->setPlaceholderText("Repeat your password");
+    confirmInput->setEchoMode(QLineEdit::Password);
+    confirmInput->setMinimumHeight(42);
+
+    errorLabel = new QLabel("", card);
+    errorLabel->setObjectName("errorLabel");
+    errorLabel->setAlignment(Qt::AlignCenter);
+    errorLabel->setWordWrap(true);
+    errorLabel->hide();
+
+    registerBtn = new QPushButton("Create Account", card);
+    registerBtn->setObjectName("registerBtn");
+    registerBtn->setMinimumHeight(44);
+    registerBtn->setCursor(Qt::PointingHandCursor);
+
+    backLink = new QPushButton("Already have an account? Log in", card);
+    backLink->setObjectName("backLink");
+    backLink->setFlat(true);
+    backLink->setCursor(Qt::PointingHandCursor);
+
+    QVBoxLayout* cardLayout = new QVBoxLayout(card);
+    cardLayout->setSpacing(10);
+    cardLayout->setContentsMargins(36, 36, 36, 36);
+    cardLayout->addWidget(title);
+    cardLayout->addWidget(subtitle);
+    cardLayout->addSpacing(14);
+    cardLayout->addWidget(userLbl);
+    cardLayout->addWidget(usernameInput);
+    cardLayout->addSpacing(6);
+    cardLayout->addWidget(passLbl);
+    cardLayout->addWidget(passwordInput);
+    cardLayout->addSpacing(6);
+    cardLayout->addWidget(confirmLbl);
+    cardLayout->addWidget(confirmInput);
+    cardLayout->addSpacing(6);
+    cardLayout->addWidget(errorLabel);
+    cardLayout->addSpacing(10);
+    cardLayout->addWidget(registerBtn);
+    cardLayout->addWidget(backLink);
+
+    QVBoxLayout* outer = new QVBoxLayout(this);
+    outer->addStretch();
+    QHBoxLayout* row = new QHBoxLayout();
+    row->addStretch(2);
+    row->addWidget(card);
+    row->addStretch(1);
+    outer->addLayout(row);
+    outer->addStretch();
+
+    connect(registerBtn, &QPushButton::clicked, [this]() {
+        if (!validate()) return;
+        setLoading(true);
+        emit registerRequested(
+            usernameInput->text().trimmed(),
+            passwordInput->text());
+    });
+
+    connect(confirmInput, &QLineEdit::returnPressed,
+            registerBtn, &QPushButton::click);
+
+    connect(backLink, &QPushButton::clicked,
+            [this]() { emit goToLoginRequested(); });
+}
+
+bool RegisterWidget::validate()
+{
+    QString u = usernameInput->text().trimmed();
+    QString p = passwordInput->text();
+    QString c = confirmInput->text();
+
+    if (u.isEmpty() || p.isEmpty() || c.isEmpty()) {
+        showError("Please fill in all fields.");
+        return false;
+    }
+
+    QRegularExpression rx("^[a-zA-Z0-9_]{3,20}$");
+    if (!rx.match(u).hasMatch()) {
+        showError("Username must be 3-20 characters.\nLetters, numbers and _ only.");
+        return false;
+    }
+
+    if (p.length() < 6) {
+        showError("Password must be at least 6 characters.");
+        return false;
+    }
+
+    if (p != c) {
+        showError("Passwords do not match.");
+        return false;
+    }
+
+    clearError();
+    return true;
+}
+
+void RegisterWidget::applyStyles()
+{
+    setStyleSheet(
+        "QWidget#card {"
+        "  background-color: rgba(0,0,0,0.82);"
+        "  border: 1px solid rgba(255,255,255,0.10);"
+        "  border-radius: 18px;"
+        "}"
+        "QLabel#titleLabel {"
+        "  color: #ffffff;"
+        "  font-size: 24px;"
+        "  font-weight: bold;"
+        "}"
+        "QLabel#subtitleLabel {"
+        "  color: rgba(255,255,255,0.45);"
+        "  font-size: 13px;"
+        "}"
+        "QLabel#fieldLabel {"
+        "  color: rgba(255,255,255,0.40);"
+        "  font-size: 11px;"
+        "}"
+        "QLineEdit#inputField {"
+        "  background-color: rgba(255,255,255,0.07);"
+        "  border: 1px solid rgba(255,255,255,0.12);"
+        "  border-radius: 8px;"
+        "  color: #ffffff;"
+        "  font-size: 14px;"
+        "  padding: 0 12px;"
+        "}"
+        "QLineEdit#inputField:focus {"
+        "  border: 1px solid rgba(127,119,221,0.80);"
+        "}"
+        "QPushButton#registerBtn {"
+        "  background-color: #7F77DD;"
+        "  color: #ffffff;"
+        "  border: none;"
+        "  border-radius: 8px;"
+        "  font-size: 15px;"
+        "  font-weight: bold;"
+        "}"
+        "QPushButton#registerBtn:hover {"
+        "  background-color: #9189E8;"
+        "}"
+        "QPushButton#registerBtn:pressed {"
+        "  background-color: #6B63C4;"
+        "}"
+        "QPushButton#registerBtn:disabled {"
+        "  background-color: rgba(127,119,221,0.35);"
+        "}"
+        "QPushButton#backLink {"
+        "  color: #AFA9EC;"
+        "  font-size: 13px;"
+        "  border: none;"
+        "  background: transparent;"
+        "}"
+        "QPushButton#backLink:hover {"
+        "  color: #ffffff;"
+        "}"
+        "QLabel#errorLabel {"
+        "  color: #F09595;"
+        "  font-size: 12px;"
+        "}"
+    );
+}
+
+void RegisterWidget::paintEvent(QPaintEvent* e)
+{
+    QPainter painter(this);
+    QPixmap bg(":/images/background.jpg");
+    painter.drawPixmap(
+        rect(),
+        bg.scaled(size(),
+                  Qt::KeepAspectRatioByExpanding,
+                  Qt::SmoothTransformation));
+    QWidget::paintEvent(e);
+}
+
+void RegisterWidget::showError(const QString& msg)
+{
+    errorLabel->setText(msg);
+    errorLabel->show();
+}
+
+void RegisterWidget::clearError()
+{
+    errorLabel->clear();
+    errorLabel->hide();
+}
+
+void RegisterWidget::setLoading(bool on)
+{
+    registerBtn->setEnabled(!on);
+    registerBtn->setText(on ? "Creating account..." : "Create Account");
+    usernameInput->setEnabled(!on);
+    passwordInput->setEnabled(!on);
+    confirmInput->setEnabled(!on);
+}
+</file>
+
+<file path="client/RegisterWidget.h">
+#ifndef REGISTERWIDGET_H
+#define REGISTERWIDGET_H
+
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QLabel>
+
+class RegisterWidget : public QWidget {
+    Q_OBJECT
+
+public:
+    explicit RegisterWidget(QWidget* parent = nullptr);
+
+    void showError(const QString& msg);
+    void clearError();
+    void setLoading(bool on);
+
+signals:
+    void registerRequested(const QString& username,
+                           const QString& password);
+    void goToLoginRequested();
+
+protected:
+    void paintEvent(QPaintEvent* e) override;
+
+private:
+    QLineEdit*   usernameInput;
+    QLineEdit*   passwordInput;
+    QLineEdit*   confirmInput;
+    QPushButton* registerBtn;
+    QPushButton* backLink;
+    QLabel*      errorLabel;
+
+    void buildUi();
+    void applyStyles();
+    bool validate();
+};
+
+#endif
+</file>
+
+<file path="server/client_test.cpp">
+#include <boost/asio.hpp>
+#include <iostream>
+#include <string>
+
+using boost::asio::ip::tcp;
+
+int main()
+{
+    try
+    {
+        boost::asio::io_context io_ctx;
+
+        tcp::resolver resolver(io_ctx);
+        auto endpoints = resolver.resolve("127.0.0.1", "12345");
+
+        tcp::socket socket(io_ctx);
+        boost::asio::connect(socket, endpoints);
+
+        std::cout << "[client] connected to server\n";
+
+        std::string message = "HELLO\n";
+        boost::asio::write(socket,
+                           boost::asio::buffer(message));
+
+        std::cout << "[client] sent: HELLO\n";
+
+        boost::asio::streambuf response;
+        boost::asio::read_until(socket, response, '\n');
+
+        std::istream stream(&response);
+        std::string reply;
+        std::getline(stream, reply);
+
+        std::cout << "[client] received: " << reply << "\n";
+
+        socket.close();
+        std::cout << "[client] disconnected\n";
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "[client] error: " << e.what() << "\n";
+    }
+
+    return 0;
+}
+</file>
+
+<file path="shared/include/Message.h">
+#ifndef MESSAGE_H
+#define MESSAGE_H
+#include <string>
+#include <ctime>
+
+struct Message
+{
+    std::string type;
+    std::string sender;
+    std::string partyId;
+    std::string payload;
+    long timestamp;
+
+    Message() : timestamp(0) {}
+
+    Message(std::string type, std::string sender, std::string partyId, std::string payload, long timestamp)
+        : type(std::move(type)), sender(std::move(sender)), partyId(std::move(partyId)), payload(std::move(payload))
+        , timestamp(timestamp) {}
+};
+
+#endif
+</file>
+
+<file path="shared/include/MessageFactory.h">
+#ifndef MESSAGEFACTORY_H
+#define MESSAGEFACTORY_H
+#include "Message.h"
+#include "MessageTypes.h"
+#include <nlohmann/json.hpp>
+#include <vector>
+#include <string>
+
+class MessageFactory
+{
+public:
+    static Message buildJoin(const std::string& username, const std::string& partyId);
+    static Message buildLeave(const std::string& username, const std::string& partyId);
+    static Message buildChat(const std::string& sender, const std::string& partyId, const std::string& text);
+    static Message buildMemberList(const std::string& partyId, const std::vector<std::string>& members);
+    static Message buildCodeSync(const std::string& sender, const std::string& partyId, const std::string& code);
+    static Message buildTaskSubmit(const std::string& sender, const std::string& partyId,int taskId, const std::string& answer);
+    static Message buildTaskResult(const std::string& partyId,int taskId,bool passed,const std::string& feedback);
+    static Message buildPing(const std::string& partyId);
+    static Message buildPong(const std::string& partyId);
+    static Message buildAuthOk(const std::string& username);
+    static Message buildAuthFail(const std::string& reason);
+    static Message buildError(const std::string& partyId, const std::string& reason);
+    static nlohmann::json toJson(const Message& msg);
+    static std::string    toJsonString(const Message& msg);
+    static Message fromJson(const nlohmann::json& j);
+    static Message fromJsonString(const std::string& raw);
+    // room + editor methods (task 17)
+    static nlohmann::json makeLogin(const std::string& username, const std::string& password);
+    static nlohmann::json makeRegister(const std::string& username, const std::string& password);
+    static nlohmann::json makeGetRooms();
+    static nlohmann::json makeCreateRoom(const std::string& roomName);
+    static nlohmann::json makeJoinRoom(const std::string& roomId);
+    static nlohmann::json makeLeaveRoom();
+    static nlohmann::json makeCodeUpdate(const std::string& roomId, const std::string& code);
+    static nlohmann::json makeChatMsg(const std::string& roomId, const std::string& sender, const std::string& text);
+};
+
+#endif
+</file>
+
+<file path="shared/include/MessageTypes.h">
+#ifndef MESSAGE_TYPES_H
+#define MESSAGE_TYPES_H
+
+#include <string>
+
+namespace MessageTypes
+{
+    const std::string JOIN = "JOIN";
+    const std::string LEAVE = "LEAVE";
+    const std::string CHAT = "CHAT";
+    const std::string TYPING = "TYPING";
+    const std::string MEMBER_LIST = "MEMBER_LIST";
+    const std::string CODE_SYNC = "CODE_SYNC";
+    const std::string TASK_SUBMIT = "TASK_SUBMIT";
+    const std::string TASK_RESULT = "TASK_RESULT";
+    const std::string PING = "PING";
+    const std::string PONG = "PONG";
+    const std::string AUTH_OK = "AUTH_OK";
+    const std::string AUTH_FAIL = "AUTH_FAIL";
+    const std::string ERROR = "ERROR";
+}
+
+#endif
+</file>
+
+<file path="shared/include/picosha2.h">
+/*
+The MIT License (MIT)
+
+Copyright (C) 2017 okdshin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+#ifndef PICOSHA2_H
+#define PICOSHA2_H
+// picosha2:20140213
+
+#ifndef PICOSHA2_BUFFER_SIZE_FOR_INPUT_ITERATOR
+#define PICOSHA2_BUFFER_SIZE_FOR_INPUT_ITERATOR \
+    1048576  //=1024*1024: default is 1MB memory
+#endif
+
+#include <algorithm>
+#include <cassert>
+#include <iterator>
+#include <sstream>
+#include <vector>
+#include <fstream>
+namespace picosha2 {
+typedef unsigned long word_t;
+typedef unsigned char byte_t;
+
+static const size_t k_digest_size = 32;
+
+namespace detail {
+inline byte_t mask_8bit(byte_t x) { return x & 0xff; }
+
+inline word_t mask_32bit(word_t x) { return x & 0xffffffff; }
+
+const word_t add_constant[64] = {
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
+    0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
+    0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+    0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+    0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
+    0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
+
+const word_t initial_message_digest[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372,
+                                          0xa54ff53a, 0x510e527f, 0x9b05688c,
+                                          0x1f83d9ab, 0x5be0cd19};
+
+inline word_t ch(word_t x, word_t y, word_t z) { return (x & y) ^ ((~x) & z); }
+
+inline word_t maj(word_t x, word_t y, word_t z) {
+    return (x & y) ^ (x & z) ^ (y & z);
+}
+
+inline word_t rotr(word_t x, std::size_t n) {
+    assert(n < 32);
+    return mask_32bit((x >> n) | (x << (32 - n)));
+}
+
+inline word_t bsig0(word_t x) { return rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22); }
+
+inline word_t bsig1(word_t x) { return rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25); }
+
+inline word_t shr(word_t x, std::size_t n) {
+    assert(n < 32);
+    return x >> n;
+}
+
+inline word_t ssig0(word_t x) { return rotr(x, 7) ^ rotr(x, 18) ^ shr(x, 3); }
+
+inline word_t ssig1(word_t x) { return rotr(x, 17) ^ rotr(x, 19) ^ shr(x, 10); }
+
+template <typename RaIter1, typename RaIter2>
+void hash256_block(RaIter1 message_digest, RaIter2 first, RaIter2 last) {
+    assert(first + 64 == last);
+    static_cast<void>(last);  // for avoiding unused-variable warning
+    word_t w[64];
+    std::fill(w, w + 64, word_t(0));
+    for (std::size_t i = 0; i < 16; ++i) {
+        w[i] = (static_cast<word_t>(mask_8bit(*(first + i * 4))) << 24) |
+               (static_cast<word_t>(mask_8bit(*(first + i * 4 + 1))) << 16) |
+               (static_cast<word_t>(mask_8bit(*(first + i * 4 + 2))) << 8) |
+               (static_cast<word_t>(mask_8bit(*(first + i * 4 + 3))));
+    }
+    for (std::size_t i = 16; i < 64; ++i) {
+        w[i] = mask_32bit(ssig1(w[i - 2]) + w[i - 7] + ssig0(w[i - 15]) +
+                          w[i - 16]);
+    }
+
+    word_t a = *message_digest;
+    word_t b = *(message_digest + 1);
+    word_t c = *(message_digest + 2);
+    word_t d = *(message_digest + 3);
+    word_t e = *(message_digest + 4);
+    word_t f = *(message_digest + 5);
+    word_t g = *(message_digest + 6);
+    word_t h = *(message_digest + 7);
+
+    for (std::size_t i = 0; i < 64; ++i) {
+        word_t temp1 = h + bsig1(e) + ch(e, f, g) + add_constant[i] + w[i];
+        word_t temp2 = bsig0(a) + maj(a, b, c);
+        h = g;
+        g = f;
+        f = e;
+        e = mask_32bit(d + temp1);
+        d = c;
+        c = b;
+        b = a;
+        a = mask_32bit(temp1 + temp2);
+    }
+    *message_digest += a;
+    *(message_digest + 1) += b;
+    *(message_digest + 2) += c;
+    *(message_digest + 3) += d;
+    *(message_digest + 4) += e;
+    *(message_digest + 5) += f;
+    *(message_digest + 6) += g;
+    *(message_digest + 7) += h;
+    for (std::size_t i = 0; i < 8; ++i) {
+        *(message_digest + i) = mask_32bit(*(message_digest + i));
+    }
+}
+
+}  // namespace detail
+
+template <typename InIter>
+void output_hex(InIter first, InIter last, std::ostream& os) {
+    os.setf(std::ios::hex, std::ios::basefield);
+    while (first != last) {
+        os.width(2);
+        os.fill('0');
+        os << static_cast<unsigned int>(*first);
+        ++first;
+    }
+    os.setf(std::ios::dec, std::ios::basefield);
+}
+
+template <typename InIter>
+void bytes_to_hex_string(InIter first, InIter last, std::string& hex_str) {
+    std::ostringstream oss;
+    output_hex(first, last, oss);
+    hex_str.assign(oss.str());
+}
+
+template <typename InContainer>
+void bytes_to_hex_string(const InContainer& bytes, std::string& hex_str) {
+    bytes_to_hex_string(bytes.begin(), bytes.end(), hex_str);
+}
+
+template <typename InIter>
+std::string bytes_to_hex_string(InIter first, InIter last) {
+    std::string hex_str;
+    bytes_to_hex_string(first, last, hex_str);
+    return hex_str;
+}
+
+template <typename InContainer>
+std::string bytes_to_hex_string(const InContainer& bytes) {
+    std::string hex_str;
+    bytes_to_hex_string(bytes, hex_str);
+    return hex_str;
+}
+
+class hash256_one_by_one {
+   public:
+    hash256_one_by_one() { init(); }
+
+    void init() {
+        buffer_.clear();
+        std::fill(data_length_digits_, data_length_digits_ + 4, word_t(0));
+        std::copy(detail::initial_message_digest,
+                  detail::initial_message_digest + 8, h_);
+    }
+
+    template <typename RaIter>
+    void process(RaIter first, RaIter last) {
+        add_to_data_length(static_cast<word_t>(std::distance(first, last)));
+        std::copy(first, last, std::back_inserter(buffer_));
+        std::size_t i = 0;
+        for (; i + 64 <= buffer_.size(); i += 64) {
+            detail::hash256_block(h_, buffer_.begin() + i,
+                                  buffer_.begin() + i + 64);
+        }
+        buffer_.erase(buffer_.begin(), buffer_.begin() + i);
+    }
+
+    void finish() {
+        byte_t temp[64];
+        std::fill(temp, temp + 64, byte_t(0));
+        std::size_t remains = buffer_.size();
+        std::copy(buffer_.begin(), buffer_.end(), temp);
+        assert(remains < 64);
+
+        // This branch is not executed actually (`remains` is always lower than 64),
+        // but needed to avoid g++ false-positive warning.
+        // See https://github.com/okdshin/PicoSHA2/issues/25
+        // vvvvvvvvvvvvvvvv
+        if(remains >= 64) {
+            remains = 63;
+        }
+        // ^^^^^^^^^^^^^^^^
+
+        temp[remains] = 0x80;
+
+        if (remains > 55) {
+            std::fill(temp + remains + 1, temp + 64, byte_t(0));
+            detail::hash256_block(h_, temp, temp + 64);
+            std::fill(temp, temp + 64 - 4, byte_t(0));
+        } else {
+            std::fill(temp + remains + 1, temp + 64 - 4, byte_t(0));
+        }
+
+        write_data_bit_length(&(temp[56]));
+        detail::hash256_block(h_, temp, temp + 64);
+    }
+
+    template <typename OutIter>
+    void get_hash_bytes(OutIter first, OutIter last) const {
+        for (const word_t* iter = h_; iter != h_ + 8; ++iter) {
+            for (std::size_t i = 0; i < 4 && first != last; ++i) {
+                *(first++) = detail::mask_8bit(
+                    static_cast<byte_t>((*iter >> (24 - 8 * i))));
+            }
+        }
+    }
+
+   private:
+    void add_to_data_length(word_t n) {
+        word_t carry = 0;
+        data_length_digits_[0] += n;
+        for (std::size_t i = 0; i < 4; ++i) {
+            data_length_digits_[i] += carry;
+            if (data_length_digits_[i] >= 65536u) {
+                carry = data_length_digits_[i] >> 16;
+                data_length_digits_[i] &= 65535u;
+            } else {
+                break;
+            }
+        }
+    }
+    void write_data_bit_length(byte_t* begin) {
+        word_t data_bit_length_digits[4];
+        std::copy(data_length_digits_, data_length_digits_ + 4,
+                  data_bit_length_digits);
+
+        // convert byte length to bit length (multiply 8 or shift 3 times left)
+        word_t carry = 0;
+        for (std::size_t i = 0; i < 4; ++i) {
+            word_t before_val = data_bit_length_digits[i];
+            data_bit_length_digits[i] <<= 3;
+            data_bit_length_digits[i] |= carry;
+            data_bit_length_digits[i] &= 65535u;
+            carry = (before_val >> (16 - 3)) & 65535u;
+        }
+
+        // write data_bit_length
+        for (int i = 3; i >= 0; --i) {
+            (*begin++) = static_cast<byte_t>(data_bit_length_digits[i] >> 8);
+            (*begin++) = static_cast<byte_t>(data_bit_length_digits[i]);
+        }
+    }
+    std::vector<byte_t> buffer_;
+    word_t data_length_digits_[4];  // as 64bit integer (16bit x 4 integer)
+    word_t h_[8];
+};
+
+inline void get_hash_hex_string(const hash256_one_by_one& hasher,
+                                std::string& hex_str) {
+    byte_t hash[k_digest_size];
+    hasher.get_hash_bytes(hash, hash + k_digest_size);
+    return bytes_to_hex_string(hash, hash + k_digest_size, hex_str);
+}
+
+inline std::string get_hash_hex_string(const hash256_one_by_one& hasher) {
+    std::string hex_str;
+    get_hash_hex_string(hasher, hex_str);
+    return hex_str;
+}
+
+namespace impl {
+template <typename RaIter, typename OutIter>
+void hash256_impl(RaIter first, RaIter last, OutIter first2, OutIter last2, int,
+                  std::random_access_iterator_tag) {
+    hash256_one_by_one hasher;
+    // hasher.init();
+    hasher.process(first, last);
+    hasher.finish();
+    hasher.get_hash_bytes(first2, last2);
+}
+
+template <typename InputIter, typename OutIter>
+void hash256_impl(InputIter first, InputIter last, OutIter first2,
+                  OutIter last2, int buffer_size, std::input_iterator_tag) {
+    std::vector<byte_t> buffer(buffer_size);
+    hash256_one_by_one hasher;
+    // hasher.init();
+    while (first != last) {
+        int size = buffer_size;
+        for (int i = 0; i != buffer_size; ++i, ++first) {
+            if (first == last) {
+                size = i;
+                break;
+            }
+            buffer[i] = *first;
+        }
+        hasher.process(buffer.begin(), buffer.begin() + size);
+    }
+    hasher.finish();
+    hasher.get_hash_bytes(first2, last2);
+}
+}
+
+template <typename InIter, typename OutIter>
+void hash256(InIter first, InIter last, OutIter first2, OutIter last2,
+             int buffer_size = PICOSHA2_BUFFER_SIZE_FOR_INPUT_ITERATOR) {
+    picosha2::impl::hash256_impl(
+        first, last, first2, last2, buffer_size,
+        typename std::iterator_traits<InIter>::iterator_category());
+}
+
+template <typename InIter, typename OutContainer>
+void hash256(InIter first, InIter last, OutContainer& dst) {
+    hash256(first, last, dst.begin(), dst.end());
+}
+
+template <typename InContainer, typename OutIter>
+void hash256(const InContainer& src, OutIter first, OutIter last) {
+    hash256(src.begin(), src.end(), first, last);
+}
+
+template <typename InContainer, typename OutContainer>
+void hash256(const InContainer& src, OutContainer& dst) {
+    hash256(src.begin(), src.end(), dst.begin(), dst.end());
+}
+
+template <typename InIter>
+void hash256_hex_string(InIter first, InIter last, std::string& hex_str) {
+    byte_t hashed[k_digest_size];
+    hash256(first, last, hashed, hashed + k_digest_size);
+    std::ostringstream oss;
+    output_hex(hashed, hashed + k_digest_size, oss);
+    hex_str.assign(oss.str());
+}
+
+template <typename InIter>
+std::string hash256_hex_string(InIter first, InIter last) {
+    std::string hex_str;
+    hash256_hex_string(first, last, hex_str);
+    return hex_str;
+}
+
+inline void hash256_hex_string(const std::string& src, std::string& hex_str) {
+    hash256_hex_string(src.begin(), src.end(), hex_str);
+}
+
+template <typename InContainer>
+void hash256_hex_string(const InContainer& src, std::string& hex_str) {
+    hash256_hex_string(src.begin(), src.end(), hex_str);
+}
+
+template <typename InContainer>
+std::string hash256_hex_string(const InContainer& src) {
+    return hash256_hex_string(src.begin(), src.end());
+}
+template<typename OutIter>void hash256(std::ifstream& f, OutIter first, OutIter last){
+    hash256(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>(), first,last);
+
+}
+}// namespace picosha2
+#endif  // PICOSHA2_H
+</file>
+
+<file path="shared/include/SessionStore.h">
+#ifndef SESSIONSTORE_H
+#define SESSIONSTORE_H
+
+#include <string>
+
+class SessionStore {
+public:
+    explicit SessionStore(const std::string& filePath);
+
+    std::string createSession(const std::string& username);
+    std::string checkSession();
+    void        clearSession();
+
+private:
+    std::string filePath_;
+
+    std::string generateToken();
+};
+
+#endif
+</file>
+
+<file path="shared/include/UserStore.h">
+#pragma once
+#include <string>
+#include <vector>
+
+struct UserRecord {
+    std::string username;
+    std::string passwordHash;
+    long        createdAt = 0;
+    long        lastLogin = 0;
+};
+
+class UserStore {
+public:
+    explicit UserStore(const std::string& filePath);
+
+    bool registerUser   (const std::string& username,
+                         const std::string& password);
+    bool authenticate   (const std::string& username,
+                         const std::string& password);
+    void updateLastLogin(const std::string& username);
+    void saveToFile     ();
+
+private:
+    std::string             filePath_;
+    std::vector<UserRecord> users_;
+
+    void        loadFromFile();
+    std::string hashPassword(const std::string& password) const;
+};
+</file>
+
+<file path="shared/src/SessionStore.cpp">
+#include "SessionStore.h"
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <filesystem>
+#include <random>
+#include <sstream>
+#include <iomanip>
+#include <ctime>
+
+using json = nlohmann::json;
+
+static long now() { return static_cast<long>(std::time(nullptr)); }
+
+SessionStore::SessionStore(const std::string& filePath)
+    : filePath_(filePath)
+{}
+
+std::string SessionStore::generateToken()
+{
+    std::mt19937_64 rng{ std::random_device{}() };
+    std::uniform_int_distribution<uint64_t> dist;
+
+    std::ostringstream oss;
+    for (int i = 0; i < 8; i++)
+        oss << std::hex << std::setfill('0')
+            << std::setw(16) << dist(rng);
+
+    return oss.str();
+}
+
+std::string SessionStore::createSession(const std::string& username)
+{
+    std::string token = generateToken();
+    long expiry = now() + 604800; // 7 days
+
+    json obj;
+    obj["username"]  = username;
+    obj["token"]     = token;
+    obj["expiresAt"] = expiry;
+
+    std::string tmp = filePath_ + ".tmp";
+    std::ofstream out(tmp);
+    out << obj.dump(2);
+    out.close();
+    std::filesystem::rename(tmp, filePath_);
+
+    return token;
+}
+
+std::string SessionStore::checkSession()
+{
+    std::ifstream in(filePath_);
+    if (!in.is_open()) return "";
+
+    try {
+        json obj = json::parse(in);
+
+        std::string username = obj.value("username",  "");
+        long expiry = obj.value("expiresAt", 0L);
+
+        if (username.empty() || now() > expiry)
+            return "";
+
+        return username;
+    }
+    catch (...) {
+        return "";
+    }
+}
+
+void SessionStore::clearSession()
+{
+    if (std::filesystem::exists(filePath_))
+        std::filesystem::remove(filePath_);
+}
+</file>
+
+<file path="Testing/Temporary/CTestCostData.txt">
+---
+</file>
+
+<file path="tests/dummy_test.cpp">
+#include <gtest/gtest.h>
+
+TEST(Dummy, AlwaysPasses) {
+    EXPECT_EQ(1, 1);
+}
+</file>
+
+<file path="tests/test_auth.cpp">
+#include <gtest/gtest.h>
+#include "UserStore.h"
+#include "SessionStore.h"
+#include <filesystem>
+#include <fstream>
+
+// wipe test files before and after each test
+class AuthTest : public ::testing::Test {
+protected:
+    const std::string usersFile    = "/tmp/test_users.json";
+    const std::string sessionsFile = "/tmp/test_sessions.json";
+
+    void SetUp() override {
+        // Start with an empty users file
+        std::ofstream(usersFile) << "[]";
+        std::filesystem::remove(sessionsFile);
+    }
+
+    void TearDown() override {
+        std::filesystem::remove(usersFile);
+        std::filesystem::remove(sessionsFile);
+    }
+};
+
+
+TEST_F(AuthTest, RegisterNewUser)
+{
+    UserStore store(usersFile);
+    EXPECT_TRUE(store.registerUser("Zeyad", "shawarma123"));
+}
+
+TEST_F(AuthTest, PreventDuplicateUsernames)
+{
+    UserStore store(usersFile);
+    store.registerUser("Zeyad", "shawarma123");
+
+    EXPECT_FALSE(store.registerUser("Zeyad", "anotherPass"));
+}
+
+TEST_F(AuthTest, AcceptCorrectPassword)
+{
+    UserStore store(usersFile);
+    store.registerUser("Zeyad", "shawarma123");
+
+    EXPECT_TRUE(store.authenticate("Zeyad", "shawarma123"));
+}
+
+TEST_F(AuthTest, RejectIncorrectPassword)
+{
+    UserStore store(usersFile);
+    store.registerUser("Zeyad", "shawarma123");
+
+    EXPECT_FALSE(store.authenticate("Zeyad", "wrongpass"));
+}
+
+TEST_F(AuthTest, RejectNonexistentUser)
+{
+    UserStore store(usersFile);
+
+    EXPECT_FALSE(store.authenticate("UnknownUser", "shawarma123"));
+}
+
+TEST_F(AuthTest, SessionIsCreatedAndRetrieved)
+{
+    SessionStore sessions(sessionsFile);
+
+    sessions.createSession("Zeyad");
+    EXPECT_EQ(sessions.checkSession(), "Zeyad");
+}
+
+TEST_F(AuthTest, NoSessionReturnsEmptyString)
+{
+    SessionStore sessions(sessionsFile);
+
+    EXPECT_EQ(sessions.checkSession(), "");
+}
+
+TEST_F(AuthTest, ClearingSessionRemovesIt)
+{
+    SessionStore sessions(sessionsFile);
+
+    sessions.createSession("Zeyad");
+    sessions.clearSession();
+
+    EXPECT_EQ(sessions.checkSession(), "");
+}
+</file>
+
+<file path=".gitignore">
+build/
+data/users.json
+data/sessions.json
+client/config.h
+*.exe
+*.o
+*.a
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+</file>
+
+<file path="client/LoginWidget.cpp">
+#include "LoginWidget.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QPixmap>
+
+LoginWidget::LoginWidget(QWidget* parent)
+    : QWidget(parent)
+{
+    setupUi();
+    applyStyles();
+}
+
+void LoginWidget::setupUi()
+{
+    QWidget* card = new QWidget(this);
+    card->setObjectName("card");
+    card->setFixedSize(400, 600);
+
+    QLabel* title = new QLabel("CodeBROs", card);
+    title->setObjectName("titleLabel");
+    title->setAlignment(Qt::AlignCenter);
+
+    QLabel* subtitle = new QLabel(
+        "Collaborative coding for beginners", card);
+    subtitle->setObjectName("subtitleLabel");
+    subtitle->setAlignment(Qt::AlignCenter);
+
+    QLabel* userLbl = new QLabel("USERNAME", card);
+    userLbl->setObjectName("fieldLabel");
+
+    usernameInput = new QLineEdit(card);
+    usernameInput->setObjectName("inputField");
+    usernameInput->setPlaceholderText("Enter your username");
+    usernameInput->setMinimumHeight(42);
+
+    QLabel* passLbl = new QLabel("PASSWORD", card);
+    passLbl->setObjectName("fieldLabel");
+
+    passwordInput = new QLineEdit(card);
+    passwordInput->setObjectName("inputField");
+    passwordInput->setPlaceholderText("Enter your password");
+    passwordInput->setEchoMode(QLineEdit::Password);
+    passwordInput->setMinimumHeight(42);
+
+    errorLabel = new QLabel("", card);
+    errorLabel->setObjectName("errorLabel");
+    errorLabel->setAlignment(Qt::AlignCenter);
+    errorLabel->hide();
+
+    loginButton = new QPushButton("Log In", card);
+    loginButton->setObjectName("loginButton");
+    loginButton->setMinimumHeight(44);
+    loginButton->setCursor(Qt::PointingHandCursor);
+
+    registerLink = new QPushButton(
+        "Don't have an account? Create one", card);
+    registerLink->setObjectName("registerLink");
+    registerLink->setFlat(true);
+    registerLink->setCursor(Qt::PointingHandCursor);
+
+    QVBoxLayout* cardLayout = new QVBoxLayout(card);
+    cardLayout->setSpacing(10);
+    cardLayout->setContentsMargins(48, 48, 48, 48); 
+    cardLayout->addWidget(title);
+    cardLayout->addWidget(subtitle);
+    cardLayout->addSpacing(16);
+    cardLayout->addWidget(userLbl);
+    cardLayout->addWidget(usernameInput);
+    cardLayout->addSpacing(6);
+    cardLayout->addWidget(passLbl);
+    cardLayout->addWidget(passwordInput);
+    cardLayout->addSpacing(6);
+    cardLayout->addWidget(errorLabel);
+    cardLayout->addSpacing(10);
+    cardLayout->addWidget(loginButton);
+    cardLayout->addWidget(registerLink);
+
+    QVBoxLayout* outer = new QVBoxLayout(this);
+    outer->addStretch();
+
+    QHBoxLayout* row = new QHBoxLayout();
+    row->addStretch(5); 
+    row->addWidget(card);
+    row->addStretch(1); 
+
+    outer->addLayout(row);
+    outer->addStretch();
+
+    connect(loginButton, &QPushButton::clicked, [this]() {
+        QString u = usernameInput->text().trimmed();
+        QString p = passwordInput->text();
+        if (u.isEmpty() || p.isEmpty()) {
+            showError("Please fill in all fields.");
+            return;
+        }
+        clearError();
+        setLoading(true);
+        emit loginRequested(u, p);
+    });
+
+    connect(passwordInput, &QLineEdit::returnPressed,
+            loginButton, &QPushButton::click);
+
+    connect(registerLink, &QPushButton::clicked,
+            [this](){ emit goToRegisterRequested(); });
+}
+
+void LoginWidget::applyStyles()
+{
+    this->setStyleSheet(
+        "QWidget#card {"
+        "  background-color: rgba(0,0,0,0.82);"
+        "  border: 1px solid rgba(255,255,255,0.10);"
+        "  border-radius: 18px;"
+        "}"
+        "QLabel#titleLabel {"
+        "  color: #ffffff;"
+        "  font-size: 26px;"
+        "  font-weight: bold;"
+        "}"
+        "QLabel#subtitleLabel {"
+        "  color: rgba(255,255,255,0.45);"
+        "  font-size: 13px;"
+        "}"
+        "QLabel#fieldLabel {"
+        "  color: rgba(255,255,255,0.40);"
+        "  font-size: 11px;"
+        "}"
+        "QLineEdit#inputField {"
+        "  background-color: rgba(255,255,255,0.07);"
+        "  border: 1px solid rgba(255,255,255,0.12);"
+        "  border-radius: 8px;"
+        "  color: #ffffff;"
+        "  font-size: 14px;"
+        "  padding: 0 12px;"
+        "}"
+        "QLineEdit#inputField:focus {"
+        "  border: 1px solid rgba(127,119,221,0.80);"
+        "}"
+        "QPushButton#loginButton {"
+        "  background-color: #7F77DD;"
+        "  color: #ffffff;"
+        "  border: none;"
+        "  border-radius: 8px;"
+        "  font-size: 15px;"
+        "  font-weight: bold;"
+        "}"
+        "QPushButton#loginButton:hover {"
+        "  background-color: #9189E8;"
+        "}"
+        "QPushButton#loginButton:pressed {"
+        "  background-color: #6B63C4;"
+        "}"
+        "QPushButton#loginButton:disabled {"
+        "  background-color: rgba(127,119,221,0.35);"
+        "}"
+        "QPushButton#registerLink {"
+        "  color: #AFA9EC;"
+        "  font-size: 13px;"
+        "  border: none;"
+        "  background: transparent;"
+        "}"
+        "QPushButton#registerLink:hover {"
+        "  color: #ffffff;"
+        "}"
+        "QLabel#errorLabel {"
+        "  color: #F09595;"
+        "  font-size: 13px;"
+        "}"
+    );
+}
+
+void LoginWidget::paintEvent(QPaintEvent* event)
+{
+    QPainter painter(this);
+    QPixmap bg(":/images/background.jpg");
+    painter.drawPixmap(
+        this->rect(),
+        bg.scaled(this->size(),
+                  Qt::KeepAspectRatioByExpanding,
+                  Qt::SmoothTransformation));
+    QWidget::paintEvent(event);
+}
+
+void LoginWidget::showError(const QString& message)
+{
+    errorLabel->setText(message);
+    errorLabel->show();
+}
+
+void LoginWidget::clearError()
+{
+    errorLabel->clear();
+    errorLabel->hide();
+}
+
+void LoginWidget::setLoading(bool loading)
+{
+    loginButton->setEnabled(!loading);
+    loginButton->setText(loading ? "Logging in..." : "Log In");
+    usernameInput->setEnabled(!loading);
+    passwordInput->setEnabled(!loading);
+}
+</file>
+
+<file path="client/NetworkClient.cpp">
+#include "NetworkClient.h"
+#include <QMetaObject>
+#include <QJsonObject>
+#include <QString>
+#include <iostream>
+
+NetworkClient::NetworkClient(QObject* parent)
+    : QObject(parent), socket_(io_) {}
+
+NetworkClient::~NetworkClient() { disconnect(); }
+
+void NetworkClient::connect(const std::string& host, int port)
+{
+    tcp::resolver resolver(io_);
+    auto endpoints = resolver.resolve(host, std::to_string(port));
+    boost::asio::connect(socket_, endpoints);
+
+    read_next();
+    ioThread_ = std::thread([this]{ io_.run(); }); // boost runs on its own thread so Qt doesn't freeze
+}
+
+void NetworkClient::disconnect()
+{
+    io_.stop();
+    if (socket_.is_open())
+        socket_.close();
+    if (ioThread_.joinable())
+        ioThread_.join();
+}
+
+void NetworkClient::sendMessage(const nlohmann::json& msg)
+{
+    std::string line = msg.dump() + "\n";
+    auto buf = std::make_shared<std::string>(line);
+    boost::asio::async_write(socket_, boost::asio::buffer(*buf),
+        [buf](boost::system::error_code, std::size_t){});
+}
+
+void NetworkClient::dispatch(const nlohmann::json& j)
+{
+    std::string type = j.value("type", "");
+
+    // boost is on a worker thread, Qt UI is on main thread — invokeMethod bridges that gap
+    if (type == "login_success") {
+        QString u = QString::fromStdString(j.value("username", ""));
+        QMetaObject::invokeMethod(this, [this, u]{ emit loginSuccess(u); }, Qt::QueuedConnection);
+
+    } else if (type == "login_failed") {
+        QString r = QString::fromStdString(j.value("reason", ""));
+        QMetaObject::invokeMethod(this, [this, r]{ emit loginFailed(r); }, Qt::QueuedConnection);
+
+    } else if (type == "register_success") {
+        QMetaObject::invokeMethod(this, [this]{ emit registerSuccess(); }, Qt::QueuedConnection);
+
+    } else if (type == "register_failed") {
+        QString r = QString::fromStdString(j.value("reason", ""));
+        QMetaObject::invokeMethod(this, [this, r]{ emit registerFailed(r); }, Qt::QueuedConnection);
+
+    } else if (type == "room_list") {
+        // nlohmann uses std::string, Qt wants QString — convert each field manually
+        QJsonArray arr;
+        for (auto& item : j["rooms"]) {
+            QJsonObject o;
+            o["id"]      = QString::fromStdString(item.value("id", ""));
+            o["name"]    = QString::fromStdString(item.value("name", ""));
+            o["members"] = item.value("members", 0);
+            arr.append(o);
+        }
+        QMetaObject::invokeMethod(this, [this, arr]{ emit roomListReceived(arr); }, Qt::QueuedConnection);
+
+    } else if (type == "room_created") {
+        QString id   = QString::fromStdString(j.value("room_id", ""));
+        QString name = QString::fromStdString(j.value("name", ""));
+        QMetaObject::invokeMethod(this, [this, id, name]{ emit roomCreated(id, name); }, Qt::QueuedConnection);
+
+    } else if (type == "room_joined") {
+        QString id   = QString::fromStdString(j.value("room_id", ""));
+        QString code = QString::fromStdString(j.value("code", ""));
+        QMetaObject::invokeMethod(this, [this, id, code]{ emit roomJoined(id, code); }, Qt::QueuedConnection);
+
+    } else if (type == "join_failed") {
+        QString r = QString::fromStdString(j.value("reason", ""));
+        QMetaObject::invokeMethod(this, [this, r]{ emit joinFailed(r); }, Qt::QueuedConnection);
+
+    } else if (type == "code_update") {
+        QString code = QString::fromStdString(j.value("code", ""));
+        QMetaObject::invokeMethod(this, [this, code]{ emit codeUpdated(code); }, Qt::QueuedConnection);
+
+    } else if (type == "chat_message") {
+        QString sender = QString::fromStdString(j.value("sender", ""));
+        QString text   = QString::fromStdString(j.value("text", ""));
+        QMetaObject::invokeMethod(this, [this, sender, text]{ emit chatReceived(sender, text); }, Qt::QueuedConnection);
+
+    } else if (type == "user_joined") {
+        QString u = QString::fromStdString(j.value("username", ""));
+        QMetaObject::invokeMethod(this, [this, u]{ emit userJoined(u); }, Qt::QueuedConnection);
+
+    } else if (type == "user_left") {
+        QString u = QString::fromStdString(j.value("username", ""));
+        QMetaObject::invokeMethod(this, [this, u]{ emit userLeft(u); }, Qt::QueuedConnection);
+    }
+}
+
+void NetworkClient::read_next()
+{
+    // keep listening for the next newline-terminated message
+    boost::asio::async_read_until(socket_, buf_, '\n',
+        [this](boost::system::error_code ec, std::size_t)
+        {
+            if (ec) {
+                std::cout << "disconnected from server\n";
+                return;
+            }
+
+            std::istream stream(&buf_);
+            std::string  line;
+            std::getline(stream, line);
+
+            try {
+                dispatch(nlohmann::json::parse(line));
+            }
+            catch (...) {
+                std::cout << "bad json: " << line << "\n";
+            }
+
+            read_next();
+        });
+}
+</file>
+
+<file path="client/NetworkClient.h">
+#ifndef NETWORKCLIENT_H
+#define NETWORKCLIENT_H
+
+#include <QObject>
+#include <QJsonArray>
+#include <QString>
+#include <boost/asio.hpp>
+#include <nlohmann/json.hpp>
+#include <thread>
+#include <string>
+
+using boost::asio::ip::tcp;
+
+class NetworkClient : public QObject {
+    Q_OBJECT
+public:
+    explicit NetworkClient(QObject* parent = nullptr);
+    ~NetworkClient();
+
+    void connect(const std::string& host, int port);
+    void disconnect();
+    void sendMessage(const nlohmann::json& msg);
+
+signals:
+    void loginSuccess(QString username);
+    void loginFailed(QString reason);
+    void registerSuccess();
+    void registerFailed(QString reason);
+
+    void roomListReceived(QJsonArray rooms);
+    void roomCreated(QString roomId, QString roomName);
+    void roomJoined(QString roomId, QString initialCode);
+    void joinFailed(QString reason);
+    void codeUpdated(QString code);
+    void chatReceived(QString sender, QString text);
+    void userJoined(QString username);
+    void userLeft(QString username);
+
+private:
+    void read_next();
+    void dispatch(const nlohmann::json& j);
+
+    boost::asio::io_context io_;
+    tcp::socket             socket_;
+    boost::asio::streambuf  buf_;
+    std::thread             ioThread_;
+};
+
+#endif
+</file>
+
+<file path="client/resources.qrc">
+<RCC>
+  <qresource prefix="/">
+    <file>images/background.jpg</file>
+  </qresource>
+</RCC>
+</file>
+
+<file path="server/CMakeLists.txt">
+find_package(Boost REQUIRED COMPONENTS system)
+
+add_executable(server
+    server.cpp
+    RoomManager.cpp
+)
+
+target_link_libraries(server PRIVATE
+    Boost::system
+    pthread
+    shared          # <── NEW: gives access to MessageFactory, MessageTypes, nlohmann_json
+)
+
+# client_test stays unchanged
+add_executable(client_test
+    client_test.cpp
+)
+
+target_link_libraries(client_test PRIVATE
+    Boost::system
+    pthread
+)
+</file>
+
+<file path="shared/src/MessageFactory.cpp">
+#include "MessageFactory.h"
+#include <ctime>
+#include <stdexcept>
+static long now()
+{
+    return static_cast<long>(std::time(nullptr));
+}
+
+static Message make(const std::string& type, const std::string& sender, const std::string& partyId, const std::string& payload)
+{return Message(type, sender, partyId, payload, now());}
+
+Message MessageFactory::buildJoin(const std::string& username, const std::string& partyId)
+{
+    return make(MessageTypes::JOIN, username, partyId, "");
+}
+
+Message MessageFactory::buildLeave(const std::string& username, const std::string& partyId)
+{
+    return make(MessageTypes::LEAVE, username, partyId, "");
+}
+
+Message MessageFactory::buildChat(const std::string& sender, const std::string& partyId, const std::string& text)
+{
+    return make(MessageTypes::CHAT, sender, partyId, text);
+}
+
+Message MessageFactory::buildMemberList(
+    const std::string& partyId,
+    const std::vector<std::string>& members)
+{
+    nlohmann::json arr = members;
+    return make(MessageTypes::MEMBER_LIST, "", partyId, arr.dump());
+}
+
+Message MessageFactory::buildCodeSync(
+    const std::string& sender,
+    const std::string& partyId,
+    const std::string& code)
+{
+    return make(MessageTypes::CODE_SYNC, sender, partyId, code);
+}
+
+Message MessageFactory::buildTaskSubmit(
+    const std::string& sender,
+    const std::string& partyId,
+    int taskId,
+    const std::string& answer)
+{
+    nlohmann::json p;
+    p["taskId"] = taskId;
+    p["answer"] = answer;
+    return make(MessageTypes::TASK_SUBMIT, sender, partyId, p.dump());
+}
+
+Message MessageFactory::buildTaskResult(const std::string& partyId, int taskId, bool passed, const std::string& feedback)
+{
+    nlohmann::json p;
+    p["taskId"]   = taskId;
+    p["passed"]   = passed;
+    p["feedback"] = feedback;
+    return make(MessageTypes::TASK_RESULT, "", partyId, p.dump());
+}
+
+Message MessageFactory::buildPing(const std::string& partyId)
+{
+    return make(MessageTypes::PING, "", partyId, "");
+}
+
+Message MessageFactory::buildPong(const std::string& partyId)
+{
+    return make(MessageTypes::PONG, "", partyId, "");
+}
+
+Message MessageFactory::buildAuthOk(const std::string& username)
+{
+    return make(MessageTypes::AUTH_OK, username, "", "");
+}
+
+Message MessageFactory::buildAuthFail(const std::string& reason)
+{
+    return make(MessageTypes::AUTH_FAIL, "", "", reason);
+}
+
+Message MessageFactory::buildError(
+    const std::string& partyId,
+    const std::string& reason)
+{
+    return make(MessageTypes::ERROR, "", partyId, reason);
+}
+
+nlohmann::json MessageFactory::toJson(const Message& msg)
+{
+    return {
+        { "type",      msg.type      },
+        { "sender",    msg.sender    },
+        { "partyId",   msg.partyId   },
+        { "payload",   msg.payload   },
+        { "timestamp", msg.timestamp }
+    };
+}
+
+std::string MessageFactory::toJsonString(const Message& msg)
+{
+    return toJson(msg).dump();
+}
+
+Message MessageFactory::fromJson(const nlohmann::json& j)
+{
+    Message msg;
+    msg.type      = j.value("type",      "");
+    msg.sender    = j.value("sender",    "");
+    msg.partyId   = j.value("partyId",   "");
+    msg.payload   = j.value("payload",   "");
+    msg.timestamp = j.value("timestamp", 0L);
+    return msg;
+}
+
+Message MessageFactory::fromJsonString(const std::string& raw)
+{
+    try
+    {
+        auto j = nlohmann::json::parse(raw);
+        return fromJson(j);
+    }
+    catch (const nlohmann::json::exception&)
+    {
+        Message err;
+        err.type    = MessageTypes::ERROR;
+        err.payload = "malformed json: " + raw;
+        return err;
+    }
+}
+nlohmann::json MessageFactory::makeLogin(const std::string& username, const std::string& password) {
+    return { {"type", "login"}, {"username", username}, {"password", password} };
+}
+
+nlohmann::json MessageFactory::makeRegister(const std::string& username, const std::string& password) {
+    return { {"type", "register"}, {"username", username}, {"password", password} };
+}
+
+nlohmann::json MessageFactory::makeGetRooms() {
+    return { {"type", "get_rooms"} };
+}
+
+nlohmann::json MessageFactory::makeCreateRoom(const std::string& roomName) {
+    return { {"type", "create_room"}, {"name", roomName} };
+}
+
+nlohmann::json MessageFactory::makeJoinRoom(const std::string& roomId) {
+    return { {"type", "join_room"}, {"room_id", roomId} };
+}
+
+nlohmann::json MessageFactory::makeLeaveRoom() {
+    return { {"type", "leave_room"} };
+}
+
+nlohmann::json MessageFactory::makeCodeUpdate(const std::string& roomId, const std::string& code) {
+    return { {"type", "code_update"}, {"room_id", roomId}, {"code", code} };
+}
+
+nlohmann::json MessageFactory::makeChatMsg(const std::string& roomId, const std::string& sender, const std::string& text) {
+    return { {"type", "chat_message"}, {"room_id", roomId}, {"sender", sender}, {"text", text} };
+}
+</file>
+
+<file path="tests/CMakeLists.txt">
+add_executable(all_tests
+    dummy_test.cpp
+    test_auth.cpp
+)
+
+target_link_libraries(all_tests
+    GTest::gtest_main
+    shared
+)
+
+include(GoogleTest)
+gtest_discover_tests(all_tests)
+</file>
+
+<file path="client/main.cpp">
+#include "MainWindow.h"
+#include <QApplication>
+
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+
+    MainWindow w;
+    w.show();
+    return app.exec();
+}
+</file>
+
+<file path="client/CMakeLists.txt">
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
+find_package(Boost REQUIRED COMPONENTS system)
+
+add_executable(client
+    main.cpp
+    MainWindow.cpp
+    MainWindow.h
+    LoginWidget.cpp
+    LoginWidget.h
+    RegisterWidget.cpp
+    RegisterWidget.h
+    DashboardWidget.cpp
+    DashboardWidget.h
+    NetworkClient.cpp
+    NetworkClient.h
+    resources.qrc
+    RoomWidget.cpp
+)
+
+target_link_libraries(client PRIVATE
+    Qt6::Widgets
+    Qt6::Network
+    Boost::system
+    pthread
+    shared
+)
+</file>
+
+<file path="server/server.cpp">
+#include <boost/asio.hpp>
+#include <nlohmann/json.hpp>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <algorithm>
+#include "RoomManager.h"
+
+using boost::asio::ip::tcp;
+using json = nlohmann::json;
+
+class Server;
+
+class Session : public std::enable_shared_from_this<Session>
+{
+public:
+    Session(tcp::socket socket, Server& server, RoomManager& rm)
+        : socket_(std::move(socket)), server_(server), rooms_(rm)
+    {}
+
+    void start() { read_next(); }
+
+    void send(const std::string& msg)
+    {
+        auto self = shared_from_this();
+        auto data = std::make_shared<std::string>(msg + "\n");
+        boost::asio::async_write(socket_, boost::asio::buffer(*data),
+            [self, data](boost::system::error_code, std::size_t){});
+    }
+
+    std::string username;
+
+private:
+    void read_next();
+    void handle(const json& msg);
+    void broadcastToRoom(const std::string& roomId, const std::string& data, Session* exclude);
+
+    tcp::socket    socket_;
+    boost::asio::streambuf buf_;
+    Server&        server_;
+    RoomManager&   rooms_;
+    std::string    current_room;
+};
+
+// ── Server ────────────────────────────────────
+
+class Server
+{
+public:
+    Server(boost::asio::io_context& io, unsigned short port)
+        : acceptor_(io, tcp::endpoint(tcp::v4(), port))
+    {
+        std::cout << "listening on port " << port << "\n";
+        accept_next();
+    }
+
+private:
+    void accept_next()
+    {
+        acceptor_.async_accept(
+            [this](boost::system::error_code ec, tcp::socket socket)
+            {
+                if (!ec)
+                    std::make_shared<Session>(
+                        std::move(socket), *this, roomMgr)->start();
+                accept_next();
+            });
+    }
+
+    tcp::acceptor acceptor_;
+    RoomManager   roomMgr;
+};
+
+// ── Session implementation ────────────────────
+
+void Session::broadcastToRoom(const std::string& roomId,
+                               const std::string& data,
+                               Session* exclude)
+{
+    Room* r = rooms_.getRoom(roomId);
+    if (!r) return;
+    for (auto& wp : r->members) {
+        auto sp = wp.lock();
+        if (!sp || sp.get() == exclude) continue;
+        sp->send(data);
+    }
+}
+
+void Session::read_next()
+{
+    auto self = shared_from_this();
+    boost::asio::async_read_until(socket_, buf_, '\n',
+        [self](boost::system::error_code ec, std::size_t)
+        {
+            if (ec) {
+                std::cout << "client disconnected: " << self->username << "\n";
+                // notify room if user was in one
+                if (!self->current_room.empty()) {
+                    std::lock_guard<std::mutex> lk(self->rooms_.mtx);
+                    self->rooms_.removeMember(self->current_room, self);
+                    self->broadcastToRoom(self->current_room, json({
+                        {"type", "user_left"}, {"username", self->username}
+                    }).dump(), nullptr);
+                }
+                return;
+            }
+
+            std::istream stream(&self->buf_);
+            std::string  line;
+            std::getline(stream, line);
+
+            try {
+                self->handle(json::parse(line));
+            }
+            catch (...) {
+                std::cout << "bad json\n";
+            }
+
+            self->read_next();
+        });
+}
+
+void Session::handle(const json& msg)
+{
+    std::string type = msg.value("type", "");
+
+    // ---- get_rooms ----
+    if (type == "get_rooms") {
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        auto list = rooms_.listRooms();
+        json resp;
+        resp["type"]  = "room_list";
+        resp["rooms"] = json::array();
+        for (auto& [id, name, cnt] : list)
+            resp["rooms"].push_back({{"id", id}, {"name", name}, {"members", cnt}});
+        send(resp.dump());
+        return;
+    }
+
+    // ---- create_room ----
+    if (type == "create_room") {
+        std::string rname = msg.value("name", "Unnamed Room");
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        std::string rid = rooms_.createRoom(rname);
+        rooms_.addMember(rid, shared_from_this());
+        current_room = rid;
+        send(json({{"type", "room_created"}, {"room_id", rid}, {"name", rname}}).dump());
+        return;
+    }
+
+    // ---- join_room ----
+    if (type == "join_room") {
+        std::string rid = msg.value("room_id", "");
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        Room* r = rooms_.getRoom(rid);
+        if (!r) {
+            send(json({{"type", "join_failed"}, {"reason", "room not found"}}).dump());
+            return;
+        }
+        current_room = rid;
+        rooms_.addMember(rid, shared_from_this());
+        // send current code state to the new joiner
+        send(json({{"type", "room_joined"}, {"room_id", rid}, {"code", r->current_code}}).dump());
+        // tell everyone else
+        broadcastToRoom(rid, json({{"type", "user_joined"}, {"username", username}}).dump(), this);
+        return;
+    }
+
+    // ---- leave_room ----
+    if (type == "leave_room") {
+        if (!current_room.empty()) {
+            std::lock_guard<std::mutex> lk(rooms_.mtx);
+            rooms_.removeMember(current_room, shared_from_this());
+            broadcastToRoom(current_room, json({
+                {"type", "user_left"}, {"username", username}
+            }).dump(), this);
+            current_room.clear();
+        }
+        return;
+    }
+
+    // ---- code_update ----
+    if (type == "code_update") {
+        if (current_room.empty()) return;
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        Room* r = rooms_.getRoom(current_room);
+        if (!r) return;
+        r->current_code = msg.value("code", "");
+        broadcastToRoom(current_room, msg.dump(), this); // don't echo back to sender
+        return;
+    }
+
+    // ---- chat_message ----
+    if (type == "chat_message") {
+        if (current_room.empty()) return;
+        broadcastToRoom(current_room, msg.dump(), nullptr); // everyone including sender
+        return;
+    }
+
+    // ---- login (store username) ----
+    if (type == "login") {
+        username = msg.value("username", "");
+        // existing login logic stays here unchanged
+        return;
+    }
+}
+
+// ── main ─────────────────────────────────────
+
+int main()
+{
+    try {
+        boost::asio::io_context io;
+        Server server(io, 12345);
+        io.run();
+    }
+    catch (std::exception& e) {
+        std::cerr << "error: " << e.what() << "\n";
+    }
+}
+</file>
+
+<file path="CMakeLists.txt">
+cmake_minimum_required(VERSION 3.20)
+project(CodeBROs CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(GTest REQUIRED)
+find_package(nlohmann_json REQUIRED)
+
+enable_testing()
+add_subdirectory(shared)
+add_subdirectory(tests)
+add_subdirectory(client)
+add_subdirectory(server)
+</file>
+
+<file path="shared/CMakeLists.txt">
+add_library(shared STATIC)
+
+target_sources(shared PRIVATE src/MessageFactory.cpp src/UserStore.cpp src/SessionStore.cpp)
+
+target_include_directories(shared PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(shared PUBLIC
+    nlohmann_json::nlohmann_json
+)
+</file>
+
+<file path="client/MainWindow.h">
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include <QStackedWidget>
+#include <QString>
+#include "LoginWidget.h"
+#include "RegisterWidget.h"
+#include "RoomWidget.h"
+#include "DashboardWidget.h"
+#include "NetworkClient.h"
+#include "SessionStore.h"
+
+class MainWindow : public QMainWindow {
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
+
+private slots:
+    void onLoginAttempt(const QString& username, const QString& password);
+    void onRegisterAttempt(const QString& username, const QString& password);
+
+private:
+    QStackedWidget*  stack;
+    LoginWidget*     loginPage;     // index 0
+    RegisterWidget*  registerPage;  // index 1
+    RoomWidget*      roomPage;      // index 2
+    DashboardWidget* dashboardPage; // index 3
+
+    NetworkClient* network;
+    SessionStore*  sessions;
+    QString        currentUser;
+    QString        currentRoomId;
+
+    void logout();
+    void setupDebugToolbar();
+};
+
+#endif
+</file>
+
+<file path="client/MainWindow.cpp">
+#include "MainWindow.h"
+#include "MessageFactory.h"
+#include <QToolBar>
+#include <QMenuBar>
+
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent)
+{
+    setWindowTitle("CodeBROs");
+    setMinimumSize(900, 600);
+
+    sessions = new SessionStore("data/sessions.json");
+    network  = new NetworkClient(this);
+
+    stack = new QStackedWidget(this);
+    setCentralWidget(stack);
+
+    loginPage     = new LoginWidget(this);
+    registerPage  = new RegisterWidget(this);
+    roomPage      = new RoomWidget(network, this);
+    dashboardPage = new DashboardWidget(this);
+
+    stack->addWidget(loginPage);      // 0
+    stack->addWidget(registerPage);   // 1
+    stack->addWidget(roomPage);       // 2
+    stack->addWidget(dashboardPage);  // 3
+
+    // ── LoginWidget ──────────────────────────────────────────
+    connect(loginPage, &LoginWidget::goToRegisterRequested,
+            [this]{ stack->setCurrentIndex(1); });
+    connect(loginPage, &LoginWidget::loginRequested,
+            this, &MainWindow::onLoginAttempt);
+
+    // ── RegisterWidget ───────────────────────────────────────
+    connect(registerPage, &RegisterWidget::goToLoginRequested,
+            [this]{ stack->setCurrentIndex(0); });
+    connect(registerPage, &RegisterWidget::registerRequested,
+            this, &MainWindow::onRegisterAttempt);
+
+    // ── Network: auth responses ──────────────────────────────
+    connect(network, &NetworkClient::loginSuccess, this,
+            [this](QString username){
+        currentUser = username;
+        sessions->createSession(username.toStdString());
+        roomPage->setUsername(username);
+        roomPage->refresh();
+        stack->setCurrentWidget(roomPage);
+        loginPage->setLoading(false);
+    });
+
+    connect(network, &NetworkClient::loginFailed, this,
+            [this](QString reason){
+        loginPage->showError(reason);
+        loginPage->setLoading(false);
+    });
+
+    connect(network, &NetworkClient::registerSuccess, this, [this]{
+        stack->setCurrentIndex(0);
+        loginPage->showError("Account created! You can now log in.");
+        registerPage->setLoading(false);
+    });
+
+    connect(network, &NetworkClient::registerFailed, this,
+            [this](QString reason){
+        registerPage->showError(reason);
+        registerPage->setLoading(false);
+    });
+
+    // ── RoomWidget → DashboardWidget ─────────────────────────
+    connect(roomPage, &RoomWidget::roomEntered, this,
+            [this](const QString& roomId, const QString& initialCode){
+        currentRoomId = roomId;
+        dashboardPage->setRoomCode(roomId);
+        dashboardPage->applyRemoteCode(initialCode);
+        stack->setCurrentWidget(dashboardPage);
+    });
+
+    // ── DashboardWidget signals ───────────────────────────────
+    connect(dashboardPage, &DashboardWidget::logoutRequested,
+            this, &MainWindow::logout);
+
+    connect(dashboardPage, &DashboardWidget::chatMessageEntered,
+            [this](QString text){
+        network->sendMessage(MessageFactory::makeChatMsg(
+            currentRoomId.toStdString(),
+            currentUser.toStdString(),
+            text.toStdString()));
+        dashboardPage->appendChatMessage(currentUser, text);
+    });
+
+    connect(dashboardPage, &DashboardWidget::codeSyncTriggered,
+            [this](QString code){
+        network->sendMessage(MessageFactory::makeCodeUpdate(
+            currentRoomId.toStdString(),
+            code.toStdString()));
+    });
+
+    // ── Network: room events → DashboardWidget ───────────────
+    connect(network, &NetworkClient::codeUpdated, this,
+            [this](QString code){
+        dashboardPage->applyRemoteCode(code);
+    });
+
+    connect(network, &NetworkClient::chatReceived, this,
+            [this](QString sender, QString text){
+        dashboardPage->appendChatMessage(sender, text);
+    });
+
+    connect(network, &NetworkClient::userJoined, this,
+            [this](QString username){
+        dashboardPage->appendChatMessage("System", username + " joined the room");
+    });
+
+    connect(network, &NetworkClient::userLeft, this,
+            [this](QString username){
+        dashboardPage->appendChatMessage("System", username + " left the room");
+    });
+
+    // ── Menu bar ─────────────────────────────────────────────
+    auto* logoutAction = menuBar()->addAction("Log Out");
+    connect(logoutAction, &QAction::triggered, this, &MainWindow::logout);
+
+    setupDebugToolbar();
+
+    // ── Connect to server then check saved session ────────────
+    try {
+        network->connect("127.0.0.1", 12345);
+        QString saved = QString::fromStdString(sessions->checkSession());
+        if (!saved.isEmpty()) {
+            currentUser = saved;
+            roomPage->setUsername(saved);
+            roomPage->refresh();
+            stack->setCurrentWidget(roomPage);
+        } else {
+            stack->setCurrentWidget(loginPage);
+        }
+    } catch (...) {
+        stack->setCurrentWidget(loginPage);
+    }
+}
+
+void MainWindow::onLoginAttempt(const QString& username, const QString& password)
+{
+    loginPage->setLoading(true);
+    network->sendMessage(MessageFactory::makeLogin(
+        username.toStdString(), password.toStdString()));
+}
+
+void MainWindow::onRegisterAttempt(const QString& username, const QString& password)
+{
+    registerPage->setLoading(true);
+    network->sendMessage(MessageFactory::makeRegister(
+        username.toStdString(), password.toStdString()));
+}
+
+void MainWindow::logout()
+{
+    sessions->clearSession();
+    currentUser.clear();
+    currentRoomId.clear();
+    network->sendMessage(MessageFactory::makeLeaveRoom());
+    loginPage->setLoading(false);
+    loginPage->clearError();
+    stack->setCurrentWidget(loginPage);
+}
+
+void MainWindow::setupDebugToolbar()
+{
+    QToolBar* bar = addToolBar("Debug");
+    bar->addAction("Login",     [this]{ stack->setCurrentIndex(0); });
+    bar->addAction("Register",  [this]{ stack->setCurrentIndex(1); });
+    bar->addAction("Rooms",     [this]{ stack->setCurrentIndex(2); });
+    bar->addAction("Dashboard", [this]{ stack->setCurrentIndex(3); });
+}
+
+MainWindow::~MainWindow()
+{
+    delete sessions;
+}
+</file>
+
+</files>

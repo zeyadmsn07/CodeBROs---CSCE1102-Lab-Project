@@ -25,6 +25,18 @@ public:
     static std::string    toJsonString(const Message& msg);
     static Message fromJson(const nlohmann::json& j);
     static Message fromJsonString(const std::string& raw);
+    // room + editor methods (task 17)
+    static nlohmann::json makeLogin(const std::string& username, const std::string& password);
+    static nlohmann::json makeRegister(const std::string& username, const std::string& password);
+    static nlohmann::json makeGetRooms();
+    static nlohmann::json makeCreateRoom(const std::string& roomName);
+    static nlohmann::json makeJoinRoom(const std::string& roomId);
+    static nlohmann::json makeLeaveRoom();
+    static nlohmann::json makeCodeUpdate(const std::string& roomId, const std::string& code);
+    static nlohmann::json makeChatMsg(const std::string& roomId, const std::string& sender, const std::string& text);
+   
+    static nlohmann::json makeSessionRestore(const std::string& username);
+ 
 };
 
 #endif

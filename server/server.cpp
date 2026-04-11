@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 #include "RoomManager.h"
+#include "UserStore.h"
 
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
@@ -14,8 +15,8 @@ class Server;
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
-    Session(tcp::socket socket, Server& server, RoomManager& rm)
-        : socket_(std::move(socket)), server_(server), rooms_(rm)
+    Session(tcp::socket socket, Server& server, RoomManager& rm, UserStore& us)
+        : socket_(std::move(socket)), server_(server), rooms_(rm), userStore_(us)
     {}
 
     void start() { read_next(); }
@@ -33,13 +34,15 @@ public:
 private:
     void read_next();
     void handle(const json& msg);
+    void handleDisconnect();
     void broadcastToRoom(const std::string& roomId, const std::string& data, Session* exclude);
 
-    tcp::socket    socket_;
+    tcp::socket            socket_;
     boost::asio::streambuf buf_;
-    Server&        server_;
-    RoomManager&   rooms_;
-    std::string    current_room;
+    Server&                server_;
+    RoomManager&           rooms_;
+    UserStore&             userStore_;
+    std::string            current_room;
 };
 
 // ── Server ────────────────────────────────────
@@ -48,7 +51,8 @@ class Server
 {
 public:
     Server(boost::asio::io_context& io, unsigned short port)
-        : acceptor_(io, tcp::endpoint(tcp::v4(), port))
+        : acceptor_(io, tcp::endpoint(tcp::v4(), port)),
+          userStore_("data/users.json")
     {
         std::cout << "listening on port " << port << "\n";
         accept_next();
@@ -62,13 +66,14 @@ private:
             {
                 if (!ec)
                     std::make_shared<Session>(
-                        std::move(socket), *this, roomMgr)->start();
+                        std::move(socket), *this, roomMgr_, userStore_)->start();
                 accept_next();
             });
     }
 
     tcp::acceptor acceptor_;
-    RoomManager   roomMgr;
+    RoomManager   roomMgr_;
+    UserStore     userStore_;
 };
 
 // ── Session implementation ────────────────────
@@ -86,6 +91,19 @@ void Session::broadcastToRoom(const std::string& roomId,
     }
 }
 
+void Session::handleDisconnect()
+{
+    std::cout << "client disconnected: " << username << "\n";
+    if (!current_room.empty()) {
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        rooms_.removeMember(current_room, shared_from_this());
+        broadcastToRoom(current_room, json({
+            {"type", "user_left"}, {"username", username}
+        }).dump(), nullptr);
+        current_room.clear();
+    }
+}
+
 void Session::read_next()
 {
     auto self = shared_from_this();
@@ -93,15 +111,7 @@ void Session::read_next()
         [self](boost::system::error_code ec, std::size_t)
         {
             if (ec) {
-                std::cout << "client disconnected: " << self->username << "\n";
-                // notify room if user was in one
-                if (!self->current_room.empty()) {
-                    std::lock_guard<std::mutex> lk(self->rooms_.mtx);
-                    self->rooms_.removeMember(self->current_room, self);
-                    self->broadcastToRoom(self->current_room, json({
-                        {"type", "user_left"}, {"username", self->username}
-                    }).dump(), nullptr);
-                }
+                self->handleDisconnect();
                 return;
             }
 
@@ -113,7 +123,7 @@ void Session::read_next()
                 self->handle(json::parse(line));
             }
             catch (...) {
-                std::cout << "bad json\n";
+                std::cout << "bad json: " << line << "\n";
             }
 
             self->read_next();
@@ -123,6 +133,62 @@ void Session::read_next()
 void Session::handle(const json& msg)
 {
     std::string type = msg.value("type", "");
+
+    // ---- session_restore ----
+    // Client has a valid local session; just register the username server-side
+    // so disconnect broadcasts use the correct name. No login_success reply.
+    if (type == "session_restore") {
+        username = msg.value("username", "");
+        return;
+    }
+
+    // ---- register ----
+    if (type == "register") {
+        std::string uname = msg.value("username", "");
+        std::string pass  = msg.value("password", "");
+
+        if (uname.empty() || pass.empty()) {
+            send(json({{"type", "register_failed"}, {"reason", "missing fields"}}).dump());
+            return;
+        }
+
+        bool ok = userStore_.registerUser(uname, pass);
+        if (ok) {
+            send(json({{"type", "register_success"}}).dump());
+        } else {
+            send(json({{"type", "register_failed"}, {"reason", "username already taken"}}).dump());
+        }
+        return;
+    }
+
+    // ---- login ----
+    if (type == "login") {
+        std::string uname = msg.value("username", "");
+        std::string pass  = msg.value("password", "");
+
+        if (uname.empty()) {
+            send(json({{"type", "login_failed"}, {"reason", "missing username"}}).dump());
+            return;
+        }
+
+        // Session restore path: client sends login with empty password to
+        // re-register their username on reconnect. We trust the local session.
+        if (pass.empty()) {
+            username = uname;
+            send(json({{"type", "login_success"}, {"username", uname}}).dump());
+            return;
+        }
+
+        bool ok = userStore_.authenticate(uname, pass);
+        if (ok) {
+            username = uname;
+            userStore_.updateLastLogin(uname);
+            send(json({{"type", "login_success"}, {"username", uname}}).dump());
+        } else {
+            send(json({{"type", "login_failed"}, {"reason", "invalid username or password"}}).dump());
+        }
+        return;
+    }
 
     // ---- get_rooms ----
     if (type == "get_rooms") {
@@ -159,9 +225,7 @@ void Session::handle(const json& msg)
         }
         current_room = rid;
         rooms_.addMember(rid, shared_from_this());
-        // send current code state to the new joiner
         send(json({{"type", "room_joined"}, {"room_id", rid}, {"code", r->current_code}}).dump());
-        // tell everyone else
         broadcastToRoom(rid, json({{"type", "user_joined"}, {"username", username}}).dump(), this);
         return;
     }
@@ -191,16 +255,11 @@ void Session::handle(const json& msg)
     }
 
     // ---- chat_message ----
+    // Server broadcasts to ALL members including sender — client must NOT
+    // also append locally when it sends. Only append on receipt.
     if (type == "chat_message") {
         if (current_room.empty()) return;
         broadcastToRoom(current_room, msg.dump(), nullptr); // everyone including sender
-        return;
-    }
-
-    // ---- login (store username) ----
-    if (type == "login") {
-        username = msg.value("username", "");
-        // existing login logic stays here unchanged
         return;
     }
 }

@@ -18,6 +18,7 @@ add_executable(client
     NetworkClient.cpp
     NetworkClient.h
     resources.qrc
+    RoomWidget.cpp
 )
 
 target_link_libraries(client PRIVATE
