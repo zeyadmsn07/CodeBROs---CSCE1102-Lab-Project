@@ -2,6 +2,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 
 add_executable(server
     server.cpp
+    RoomManager.cpp
 )
 
 target_link_libraries(server PRIVATE
