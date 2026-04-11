@@ -3,9 +3,8 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <map>
-#include <vector>
 #include <algorithm>
+#include "RoomManager.h"
 
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
@@ -15,8 +14,8 @@ class Server;
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
-    Session(tcp::socket socket, Server& server)
-        : socket_(std::move(socket)), server_(server)
+    Session(tcp::socket socket, Server& server, RoomManager& rm)
+        : socket_(std::move(socket)), server_(server), rooms_(rm)
     {}
 
     void start() { read_next(); }
@@ -29,16 +28,18 @@ public:
             [self, data](boost::system::error_code, std::size_t){});
     }
 
-    std::string partyId;
     std::string username;
 
 private:
     void read_next();
     void handle(const json& msg);
+    void broadcastToRoom(const std::string& roomId, const std::string& data, Session* exclude);
 
-    tcp::socket            socket_;
+    tcp::socket    socket_;
     boost::asio::streambuf buf_;
-    Server&                server_;
+    Server&        server_;
+    RoomManager&   rooms_;
+    std::string    current_room;
 };
 
 // ── Server ────────────────────────────────────
@@ -53,54 +54,6 @@ public:
         accept_next();
     }
 
-    void addToRoom(const std::string& partyId,
-                   std::shared_ptr<Session> s)
-    {
-        rooms_[partyId].push_back(s);
-    }
-
-    void removeFromRoom(const std::string& partyId,
-                        Session* s)
-    {
-        auto& vec = rooms_[partyId];
-        vec.erase(std::remove_if(vec.begin(), vec.end(),
-            [s](auto& wp){
-                auto sp = wp.lock();
-                return !sp || sp.get() == s;
-            }), vec.end());
-    }
-
-    void broadcast(const std::string& partyId,
-                   const json& msg,
-                   Session* exclude = nullptr)
-    {
-        if (rooms_.find(partyId) == rooms_.end()) return;
-
-        std::string line = msg.dump();
-        auto& vec = rooms_[partyId];
-
-        for (auto it = vec.begin(); it != vec.end(); ) {
-            auto sp = it->lock();
-            if (!sp) { it = vec.erase(it); continue; }
-            if (sp.get() != exclude)
-                sp->send(line);
-            ++it;
-        }
-    }
-
-    std::vector<std::string> getMemberNames(const std::string& partyId)
-    {
-        std::vector<std::string> names;
-        if (rooms_.find(partyId) == rooms_.end()) return names;
-
-        for (auto& wp : rooms_[partyId]) {
-            auto sp = wp.lock();
-            if (sp && !sp->username.empty())
-                names.push_back(sp->username);
-        }
-        return names;
-    }
-
 private:
     void accept_next()
     {
@@ -109,17 +62,29 @@ private:
             {
                 if (!ec)
                     std::make_shared<Session>(
-                        std::move(socket), *this)->start();
+                        std::move(socket), *this, roomMgr)->start();
                 accept_next();
             });
     }
 
     tcp::acceptor acceptor_;
-    std::map<std::string,
-             std::vector<std::weak_ptr<Session>>> rooms_;
+    RoomManager   roomMgr;
 };
 
 // ── Session implementation ────────────────────
+
+void Session::broadcastToRoom(const std::string& roomId,
+                               const std::string& data,
+                               Session* exclude)
+{
+    Room* r = rooms_.getRoom(roomId);
+    if (!r) return;
+    for (auto& wp : r->members) {
+        auto sp = wp.lock();
+        if (!sp || sp.get() == exclude) continue;
+        sp->send(data);
+    }
+}
 
 void Session::read_next()
 {
@@ -128,20 +93,14 @@ void Session::read_next()
         [self](boost::system::error_code ec, std::size_t)
         {
             if (ec) {
-                std::cout << "client disconnected: "
-                          << self->username << "\n";
-                if (!self->partyId.empty()) {
-                    self->server_.removeFromRoom(
-                        self->partyId, self.get());
-
-                    json memberList;
-                    memberList["type"]    = "MEMBER_LIST";
-                    memberList["partyId"] = self->partyId;
-                    memberList["payload"] = json(
-                        self->server_.getMemberNames(
-                            self->partyId)).dump();
-                    self->server_.broadcast(
-                        self->partyId, memberList);
+                std::cout << "client disconnected: " << self->username << "\n";
+                // notify room if user was in one
+                if (!self->current_room.empty()) {
+                    std::lock_guard<std::mutex> lk(self->rooms_.mtx);
+                    self->rooms_.removeMember(self->current_room, self);
+                    self->broadcastToRoom(self->current_room, json({
+                        {"type", "user_left"}, {"username", self->username}
+                    }).dump(), nullptr);
                 }
                 return;
             }
@@ -165,43 +124,83 @@ void Session::handle(const json& msg)
 {
     std::string type = msg.value("type", "");
 
-    if (type == "JOIN") {
-        username = msg.value("sender",  "");
-        partyId  = msg.value("partyId", "");
-
-        server_.addToRoom(partyId, shared_from_this());
-        std::cout << username << " joined " << partyId << "\n";
-
-        json memberList;
-        memberList["type"]    = "MEMBER_LIST";
-        memberList["partyId"] = partyId;
-        memberList["payload"] = json(
-            server_.getMemberNames(partyId)).dump();
-        server_.broadcast(partyId, memberList);
+    // ---- get_rooms ----
+    if (type == "get_rooms") {
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        auto list = rooms_.listRooms();
+        json resp;
+        resp["type"]  = "room_list";
+        resp["rooms"] = json::array();
+        for (auto& [id, name, cnt] : list)
+            resp["rooms"].push_back({{"id", id}, {"name", name}, {"members", cnt}});
+        send(resp.dump());
         return;
     }
 
-    if (type == "LEAVE") {
-        server_.removeFromRoom(partyId, this);
-
-        json memberList;
-        memberList["type"]    = "MEMBER_LIST";
-        memberList["partyId"] = partyId;
-        memberList["payload"] = json(
-            server_.getMemberNames(partyId)).dump();
-        server_.broadcast(partyId, memberList);
-
-        partyId.clear();
+    // ---- create_room ----
+    if (type == "create_room") {
+        std::string rname = msg.value("name", "Unnamed Room");
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        std::string rid = rooms_.createRoom(rname);
+        rooms_.addMember(rid, shared_from_this());
+        current_room = rid;
+        send(json({{"type", "room_created"}, {"room_id", rid}, {"name", rname}}).dump());
         return;
     }
 
-    if (type == "CHAT" || type == "TYPING") {
-        server_.broadcast(partyId, msg, this);
+    // ---- join_room ----
+    if (type == "join_room") {
+        std::string rid = msg.value("room_id", "");
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        Room* r = rooms_.getRoom(rid);
+        if (!r) {
+            send(json({{"type", "join_failed"}, {"reason", "room not found"}}).dump());
+            return;
+        }
+        current_room = rid;
+        rooms_.addMember(rid, shared_from_this());
+        // send current code state to the new joiner
+        send(json({{"type", "room_joined"}, {"room_id", rid}, {"code", r->current_code}}).dump());
+        // tell everyone else
+        broadcastToRoom(rid, json({{"type", "user_joined"}, {"username", username}}).dump(), this);
         return;
     }
 
-    if (type == "CODE_SYNC") {
-        server_.broadcast(partyId, msg, this);
+    // ---- leave_room ----
+    if (type == "leave_room") {
+        if (!current_room.empty()) {
+            std::lock_guard<std::mutex> lk(rooms_.mtx);
+            rooms_.removeMember(current_room, shared_from_this());
+            broadcastToRoom(current_room, json({
+                {"type", "user_left"}, {"username", username}
+            }).dump(), this);
+            current_room.clear();
+        }
+        return;
+    }
+
+    // ---- code_update ----
+    if (type == "code_update") {
+        if (current_room.empty()) return;
+        std::lock_guard<std::mutex> lk(rooms_.mtx);
+        Room* r = rooms_.getRoom(current_room);
+        if (!r) return;
+        r->current_code = msg.value("code", "");
+        broadcastToRoom(current_room, msg.dump(), this); // don't echo back to sender
+        return;
+    }
+
+    // ---- chat_message ----
+    if (type == "chat_message") {
+        if (current_room.empty()) return;
+        broadcastToRoom(current_room, msg.dump(), nullptr); // everyone including sender
+        return;
+    }
+
+    // ---- login (store username) ----
+    if (type == "login") {
+        username = msg.value("username", "");
+        // existing login logic stays here unchanged
         return;
     }
 }

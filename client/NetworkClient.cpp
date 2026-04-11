@@ -1,9 +1,13 @@
 #include "NetworkClient.h"
+#include <QMetaObject>
+#include <QJsonObject>
+#include <QString>
 #include <iostream>
 
-NetworkClient::NetworkClient(): socket_(io_) {}
+NetworkClient::NetworkClient(QObject* parent)
+    : QObject(parent), socket_(io_) {}
 
-NetworkClient::~NetworkClient() {disconnect();}
+NetworkClient::~NetworkClient() { disconnect(); }
 
 void NetworkClient::connect(const std::string& host, int port)
 {
@@ -12,8 +16,7 @@ void NetworkClient::connect(const std::string& host, int port)
     boost::asio::connect(socket_, endpoints);
 
     read_next();
-
-    ioThread_ = std::thread([this]{ io_.run(); });
+    ioThread_ = std::thread([this]{ io_.run(); }); // boost runs on its own thread so Qt doesn't freeze
 }
 
 void NetworkClient::disconnect()
@@ -29,13 +32,78 @@ void NetworkClient::sendMessage(const nlohmann::json& msg)
 {
     std::string line = msg.dump() + "\n";
     auto buf = std::make_shared<std::string>(line);
-
     boost::asio::async_write(socket_, boost::asio::buffer(*buf),
         [buf](boost::system::error_code, std::size_t){});
 }
 
+void NetworkClient::dispatch(const nlohmann::json& j)
+{
+    std::string type = j.value("type", "");
+
+    // boost is on a worker thread, Qt UI is on main thread — invokeMethod bridges that gap
+    if (type == "login_success") {
+        QString u = QString::fromStdString(j.value("username", ""));
+        QMetaObject::invokeMethod(this, [this, u]{ emit loginSuccess(u); }, Qt::QueuedConnection);
+
+    } else if (type == "login_failed") {
+        QString r = QString::fromStdString(j.value("reason", ""));
+        QMetaObject::invokeMethod(this, [this, r]{ emit loginFailed(r); }, Qt::QueuedConnection);
+
+    } else if (type == "register_success") {
+        QMetaObject::invokeMethod(this, [this]{ emit registerSuccess(); }, Qt::QueuedConnection);
+
+    } else if (type == "register_failed") {
+        QString r = QString::fromStdString(j.value("reason", ""));
+        QMetaObject::invokeMethod(this, [this, r]{ emit registerFailed(r); }, Qt::QueuedConnection);
+
+    } else if (type == "room_list") {
+        // nlohmann uses std::string, Qt wants QString — convert each field manually
+        QJsonArray arr;
+        for (auto& item : j["rooms"]) {
+            QJsonObject o;
+            o["id"]      = QString::fromStdString(item.value("id", ""));
+            o["name"]    = QString::fromStdString(item.value("name", ""));
+            o["members"] = item.value("members", 0);
+            arr.append(o);
+        }
+        QMetaObject::invokeMethod(this, [this, arr]{ emit roomListReceived(arr); }, Qt::QueuedConnection);
+
+    } else if (type == "room_created") {
+        QString id   = QString::fromStdString(j.value("room_id", ""));
+        QString name = QString::fromStdString(j.value("name", ""));
+        QMetaObject::invokeMethod(this, [this, id, name]{ emit roomCreated(id, name); }, Qt::QueuedConnection);
+
+    } else if (type == "room_joined") {
+        QString id   = QString::fromStdString(j.value("room_id", ""));
+        QString code = QString::fromStdString(j.value("code", ""));
+        QMetaObject::invokeMethod(this, [this, id, code]{ emit roomJoined(id, code); }, Qt::QueuedConnection);
+
+    } else if (type == "join_failed") {
+        QString r = QString::fromStdString(j.value("reason", ""));
+        QMetaObject::invokeMethod(this, [this, r]{ emit joinFailed(r); }, Qt::QueuedConnection);
+
+    } else if (type == "code_update") {
+        QString code = QString::fromStdString(j.value("code", ""));
+        QMetaObject::invokeMethod(this, [this, code]{ emit codeUpdated(code); }, Qt::QueuedConnection);
+
+    } else if (type == "chat_message") {
+        QString sender = QString::fromStdString(j.value("sender", ""));
+        QString text   = QString::fromStdString(j.value("text", ""));
+        QMetaObject::invokeMethod(this, [this, sender, text]{ emit chatReceived(sender, text); }, Qt::QueuedConnection);
+
+    } else if (type == "user_joined") {
+        QString u = QString::fromStdString(j.value("username", ""));
+        QMetaObject::invokeMethod(this, [this, u]{ emit userJoined(u); }, Qt::QueuedConnection);
+
+    } else if (type == "user_left") {
+        QString u = QString::fromStdString(j.value("username", ""));
+        QMetaObject::invokeMethod(this, [this, u]{ emit userLeft(u); }, Qt::QueuedConnection);
+    }
+}
+
 void NetworkClient::read_next()
 {
+    // keep listening for the next newline-terminated message
     boost::asio::async_read_until(socket_, buf_, '\n',
         [this](boost::system::error_code ec, std::size_t)
         {
@@ -45,16 +113,14 @@ void NetworkClient::read_next()
             }
 
             std::istream stream(&buf_);
-            std::string line;
+            std::string  line;
             std::getline(stream, line);
 
             try {
-                auto j = nlohmann::json::parse(line);
-                if (onMessageReceived)
-                    onMessageReceived(j);
+                dispatch(nlohmann::json::parse(line));
             }
             catch (...) {
-                std::cout << "bad json from server: " << line << "\n";
+                std::cout << "bad json: " << line << "\n";
             }
 
             read_next();

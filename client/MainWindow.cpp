@@ -36,13 +36,6 @@ MainWindow::MainWindow(QWidget* parent)
 
     stack->setCurrentIndex(0);
 
-    network->onMessageReceived = [this](nlohmann::json j) {
-    QString raw = QString::fromStdString(j.dump());
-    QMetaObject::invokeMethod(this, [this, raw]() {
-        auto msg = nlohmann::json::parse(raw.toStdString());
-        onNetworkMessage(msg);
-    }, Qt::QueuedConnection);
-    };
 
     // ── LoginWidget signals ───────────────────────────────────
     connect(loginPage, &LoginWidget::goToRegisterRequested,
