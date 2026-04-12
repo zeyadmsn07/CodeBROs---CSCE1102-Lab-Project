@@ -13,11 +13,11 @@ AiHelper::AiHelper(QObject* parent) : QObject(parent) {}
 
 void AiHelper::ask(const QString& code)
 {
-    const std::string API_KEY  = "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";
+    const std::string API_KEY  = "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";
     const std::string endpoint = "https://openrouter.ai/api/v1/chat/completions";
 
     nlohmann::json body = {
-        {"model", "nvidia/nemotron-3-super-120b-a12b:free"},
+        {"model", "meta-llama/llama-3.3-70b-instruct:free"},
         {"messages", {{
             {"role", "user"},
             {"content", "Review this C++ code and suggest improvements:\n\n"

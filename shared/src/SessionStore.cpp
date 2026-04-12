@@ -30,6 +30,8 @@ std::string SessionStore::generateToken()
 
 std::string SessionStore::createSession(const std::string& username)
 {
+	    std::filesystem::create_directories(
+        std::filesystem::path(filePath_).parent_path());
     std::string token = generateToken();
     long expiry = now() + 604800; // 7 days
 

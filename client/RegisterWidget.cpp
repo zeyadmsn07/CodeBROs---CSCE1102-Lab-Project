@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPixmap>
+#include <QFont>
 #include <QRegularExpression>
 
 RegisterWidget::RegisterWidget(QWidget* parent)
@@ -17,81 +18,111 @@ void RegisterWidget::buildUi()
 {
     QWidget* card = new QWidget(this);
     card->setObjectName("card");
-    card->setFixedWidth(380);
+    card->setMinimumWidth(580);
+    card->setMaximumWidth(740);
 
-    QLabel* title = new QLabel("Create your account", card);
+    // left panel — logo
+    QWidget* leftPanel = new QWidget(card);
+    leftPanel->setObjectName("leftPanel");
+
+    QLabel* title = new QLabel(">_CodeBROs", leftPanel);
     title->setObjectName("titleLabel");
-    title->setAlignment(Qt::AlignCenter);
+    QFont monoFont("Courier New", 28);
+    monoFont.setBold(true);
+    title->setFont(monoFont);
 
-    QLabel* subtitle = new QLabel("Join a party and start coding", card);
+    QLabel* subtitle = new QLabel(
+        "// collaborative coding\n// for beginners", leftPanel);
     subtitle->setObjectName("subtitleLabel");
-    subtitle->setAlignment(Qt::AlignCenter);
 
-    QLabel* userLbl = new QLabel("USERNAME", card);
+    QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
+    leftLayout->setContentsMargins(32, 36, 24, 36);
+    leftLayout->addStretch();
+    leftLayout->addWidget(title);
+    leftLayout->addSpacing(8);
+    leftLayout->addWidget(subtitle);
+    leftLayout->addStretch();
+
+    // right panel — form
+    QWidget* rightPanel = new QWidget(card);
+
+    QLabel* formTitle = new QLabel("// register", rightPanel);
+    formTitle->setObjectName("formTitle");
+
+    QLabel* userLbl = new QLabel("USERNAME", rightPanel);
     userLbl->setObjectName("fieldLabel");
-    usernameInput = new QLineEdit(card);
+    usernameInput = new QLineEdit(rightPanel);
     usernameInput->setObjectName("inputField");
-    usernameInput->setPlaceholderText("Choose a username");
-    usernameInput->setMinimumHeight(42);
+    usernameInput->setPlaceholderText("choose a username");
+    usernameInput->setMinimumHeight(38);
 
-    QLabel* passLbl = new QLabel("PASSWORD", card);
+    QLabel* passLbl = new QLabel("PASSWORD", rightPanel);
     passLbl->setObjectName("fieldLabel");
-    passwordInput = new QLineEdit(card);
+    passwordInput = new QLineEdit(rightPanel);
     passwordInput->setObjectName("inputField");
-    passwordInput->setPlaceholderText("Choose a password");
+    passwordInput->setPlaceholderText("choose a password");
     passwordInput->setEchoMode(QLineEdit::Password);
-    passwordInput->setMinimumHeight(42);
+    passwordInput->setMinimumHeight(38);
 
-    QLabel* confirmLbl = new QLabel("CONFIRM PASSWORD", card);
+    QLabel* confirmLbl = new QLabel("CONFIRM PASSWORD", rightPanel);
     confirmLbl->setObjectName("fieldLabel");
-    confirmInput = new QLineEdit(card);
+    confirmInput = new QLineEdit(rightPanel);
     confirmInput->setObjectName("inputField");
-    confirmInput->setPlaceholderText("Repeat your password");
+    confirmInput->setPlaceholderText("repeat your password");
     confirmInput->setEchoMode(QLineEdit::Password);
-    confirmInput->setMinimumHeight(42);
+    confirmInput->setMinimumHeight(38);
 
-    errorLabel = new QLabel("", card);
+    errorLabel = new QLabel("", rightPanel);
     errorLabel->setObjectName("errorLabel");
-    errorLabel->setAlignment(Qt::AlignCenter);
     errorLabel->setWordWrap(true);
     errorLabel->hide();
 
-    registerBtn = new QPushButton("Create Account", card);
+    registerBtn = new QPushButton("[ CREATE ACCOUNT ]", rightPanel);
     registerBtn->setObjectName("registerBtn");
-    registerBtn->setMinimumHeight(44);
+    registerBtn->setMinimumHeight(40);
     registerBtn->setCursor(Qt::PointingHandCursor);
 
-    backLink = new QPushButton("Already have an account? Log in", card);
+    backLink = new QPushButton(
+        "already have one? log in", rightPanel);
     backLink->setObjectName("backLink");
     backLink->setFlat(true);
     backLink->setCursor(Qt::PointingHandCursor);
 
-    QVBoxLayout* cardLayout = new QVBoxLayout(card);
-    cardLayout->setSpacing(10);
-    cardLayout->setContentsMargins(36, 36, 36, 36);
-    cardLayout->addWidget(title);
-    cardLayout->addWidget(subtitle);
-    cardLayout->addSpacing(14);
-    cardLayout->addWidget(userLbl);
-    cardLayout->addWidget(usernameInput);
-    cardLayout->addSpacing(6);
-    cardLayout->addWidget(passLbl);
-    cardLayout->addWidget(passwordInput);
-    cardLayout->addSpacing(6);
-    cardLayout->addWidget(confirmLbl);
-    cardLayout->addWidget(confirmInput);
-    cardLayout->addSpacing(6);
-    cardLayout->addWidget(errorLabel);
-    cardLayout->addSpacing(10);
-    cardLayout->addWidget(registerBtn);
-    cardLayout->addWidget(backLink);
+    QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
+    rightLayout->setContentsMargins(24, 36, 32, 36);
+    rightLayout->addWidget(formTitle);
+    rightLayout->addSpacing(14);
+    rightLayout->addWidget(userLbl);
+    rightLayout->addWidget(usernameInput);
+    rightLayout->addSpacing(8);
+    rightLayout->addWidget(passLbl);
+    rightLayout->addWidget(passwordInput);
+    rightLayout->addSpacing(8);
+    rightLayout->addWidget(confirmLbl);
+    rightLayout->addWidget(confirmInput);
+    rightLayout->addSpacing(8);
+    rightLayout->addWidget(errorLabel);
+    rightLayout->addSpacing(12);
+    rightLayout->addWidget(registerBtn);
+    rightLayout->addSpacing(6);
+    rightLayout->addWidget(backLink);
+    rightLayout->addStretch();
 
+    // card: two panels side by side
+    QHBoxLayout* cardLayout = new QHBoxLayout(card);
+    cardLayout->setContentsMargins(0, 0, 0, 0);
+    cardLayout->setSpacing(0);
+    cardLayout->addWidget(leftPanel, 1);
+    cardLayout->addWidget(rightPanel, 2);
+
+    // center card in window
     QVBoxLayout* outer = new QVBoxLayout(this);
+    outer->setContentsMargins(20, 20, 20, 20);
     outer->addStretch();
     QHBoxLayout* row = new QHBoxLayout();
-    row->addStretch(2);
+    row->addStretch();
     row->addWidget(card);
-    row->addStretch(1);
+    row->addStretch();
     outer->addLayout(row);
     outer->addStretch();
 
@@ -107,7 +138,7 @@ void RegisterWidget::buildUi()
             registerBtn, &QPushButton::click);
 
     connect(backLink, &QPushButton::clicked,
-            [this]() { emit goToLoginRequested(); });
+            [this](){ emit goToLoginRequested(); });
 }
 
 bool RegisterWidget::validate()
@@ -117,23 +148,23 @@ bool RegisterWidget::validate()
     QString c = confirmInput->text();
 
     if (u.isEmpty() || p.isEmpty() || c.isEmpty()) {
-        showError("Please fill in all fields.");
+        showError("please fill in all fields.");
         return false;
     }
 
     QRegularExpression rx("^[a-zA-Z0-9_]{3,20}$");
     if (!rx.match(u).hasMatch()) {
-        showError("Username must be 3-20 characters.\nLetters, numbers and _ only.");
+        showError("username: 3-20 chars, letters/numbers/_ only.");
         return false;
     }
 
     if (p.length() < 6) {
-        showError("Password must be at least 6 characters.");
+        showError("password must be at least 6 characters.");
         return false;
     }
 
     if (p != c) {
-        showError("Passwords do not match.");
+        showError("passwords do not match.");
         return false;
     }
 
@@ -145,68 +176,83 @@ void RegisterWidget::applyStyles()
 {
     setStyleSheet(
         "QWidget#card {"
-        "  background-color: rgba(0,0,0,0.82);"
-        "  border: 1px solid rgba(255,255,255,0.10);"
-        "  border-radius: 18px;"
+        "  background-color: rgba(0,0,0,0.55);"
+        "  border: 1px solid rgba(57,255,20,0.25);"
+        "  border-radius: 6px;"
+        "}"
+        "QWidget#leftPanel {"
+        "  border-right: 1px solid rgba(57,255,20,0.15);"
         "}"
         "QLabel#titleLabel {"
-        "  color: #ffffff;"
-        "  font-size: 24px;"
-        "  font-weight: bold;"
+        "  color: #39ff14;"
+        "  font-family: 'Courier New';"
         "}"
         "QLabel#subtitleLabel {"
-        "  color: rgba(255,255,255,0.45);"
-        "  font-size: 13px;"
+        "  color: rgba(57,255,20,0.45);"
+        "  font-family: 'Courier New';"
+        "  font-size: 12px;"
+        "}"
+        "QLabel#formTitle {"
+        "  color: rgba(57,255,20,0.50);"
+        "  font-family: 'Courier New';"
+        "  font-size: 12px;"
         "}"
         "QLabel#fieldLabel {"
-        "  color: rgba(255,255,255,0.40);"
-        "  font-size: 11px;"
+        "  color: rgba(57,255,20,0.45);"
+        "  font-family: 'Courier New';"
+        "  font-size: 10px;"
+        "  letter-spacing: 1px;"
         "}"
         "QLineEdit#inputField {"
-        "  background-color: rgba(255,255,255,0.07);"
-        "  border: 1px solid rgba(255,255,255,0.12);"
-        "  border-radius: 8px;"
+        "  background-color: rgba(57,255,20,0.04);"
+        "  border: 1px solid rgba(57,255,20,0.20);"
+        "  border-radius: 3px;"
         "  color: #ffffff;"
-        "  font-size: 14px;"
-        "  padding: 0 12px;"
+        "  font-family: 'Courier New';"
+        "  font-size: 13px;"
+        "  padding: 0 10px;"
         "}"
         "QLineEdit#inputField:focus {"
-        "  border: 1px solid rgba(127,119,221,0.80);"
+        "  border: 1px solid rgba(57,255,20,0.60);"
         "}"
         "QPushButton#registerBtn {"
-        "  background-color: #7F77DD;"
-        "  color: #ffffff;"
-        "  border: none;"
-        "  border-radius: 8px;"
-        "  font-size: 15px;"
-        "  font-weight: bold;"
+        "  background-color: transparent;"
+        "  color: #39ff14;"
+        "  border: 1px solid #39ff14;"
+        "  border-radius: 3px;"
+        "  font-family: 'Courier New';"
+        "  font-size: 13px;"
+        "  letter-spacing: 2px;"
         "}"
         "QPushButton#registerBtn:hover {"
-        "  background-color: #9189E8;"
+        "  background-color: rgba(57,255,20,0.10);"
         "}"
         "QPushButton#registerBtn:pressed {"
-        "  background-color: #6B63C4;"
+        "  background-color: rgba(57,255,20,0.20);"
         "}"
         "QPushButton#registerBtn:disabled {"
-        "  background-color: rgba(127,119,221,0.35);"
+        "  color: rgba(57,255,20,0.30);"
+        "  border-color: rgba(57,255,20,0.20);"
         "}"
         "QPushButton#backLink {"
-        "  color: #AFA9EC;"
-        "  font-size: 13px;"
+        "  color: rgba(57,255,20,0.50);"
+        "  font-family: 'Courier New';"
+        "  font-size: 11px;"
         "  border: none;"
         "  background: transparent;"
         "}"
         "QPushButton#backLink:hover {"
-        "  color: #ffffff;"
+        "  color: #39ff14;"
         "}"
         "QLabel#errorLabel {"
-        "  color: #F09595;"
+        "  color: #ff5555;"
+        "  font-family: 'Courier New';"
         "  font-size: 12px;"
         "}"
     );
 }
 
-void RegisterWidget::paintEvent(QPaintEvent* e)
+void RegisterWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     QPixmap bg(":/images/background.jpg");
@@ -215,7 +261,7 @@ void RegisterWidget::paintEvent(QPaintEvent* e)
         bg.scaled(size(),
                   Qt::KeepAspectRatioByExpanding,
                   Qt::SmoothTransformation));
-    QWidget::paintEvent(e);
+    QWidget::paintEvent(event);
 }
 
 void RegisterWidget::showError(const QString& msg)
@@ -233,7 +279,8 @@ void RegisterWidget::clearError()
 void RegisterWidget::setLoading(bool on)
 {
     registerBtn->setEnabled(!on);
-    registerBtn->setText(on ? "Creating account..." : "Create Account");
+    registerBtn->setText(
+        on ? "[ creating account... ]" : "[ CREATE ACCOUNT ]");
     usernameInput->setEnabled(!on);
     passwordInput->setEnabled(!on);
     confirmInput->setEnabled(!on);
