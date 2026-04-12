@@ -9,6 +9,8 @@
 #include <QLabel>
 #include <QSplitter>
 #include <QTimer>
+#include <QThread>
+#include "AiHelper.h"
 
 class DashboardWidget : public QWidget {
     Q_OBJECT
@@ -37,7 +39,7 @@ private:
     QListWidget*    chatList;
     QLineEdit*      chatInput;
     QPushButton*    sendButton;
-
+    QPushButton*    aiBtn;
     // Right side — sidebar
     QLabel*         roomCodeLabel;
     QListWidget*    memberList;

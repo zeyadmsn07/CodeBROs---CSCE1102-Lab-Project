@@ -29,6 +29,7 @@ void DashboardWidget::buildUi()
     chatList->setObjectName("chatList");
     chatList->setWordWrap(true);
     chatList->setSpacing(2);
+    chatList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
     // ── chat input row ───────────────────────────────────────
     chatInput = new QLineEdit();
@@ -80,6 +81,10 @@ void DashboardWidget::buildUi()
     tasksButton->setObjectName("tasksButton");
     tasksButton->setMinimumHeight(36);
 
+    aiBtn = new QPushButton("Ask AI");
+    aiBtn->setObjectName("tasksButton");
+    aiBtn->setMinimumHeight(36);
+
     logoutButton = new QPushButton("Log Out");
     logoutButton->setObjectName("logoutButton");
     logoutButton->setMinimumHeight(36);
@@ -93,6 +98,7 @@ void DashboardWidget::buildUi()
     sidebarLayout->addWidget(typingLabel);
     sidebarLayout->addStretch();
     sidebarLayout->addWidget(tasksButton);
+    sidebarLayout->addWidget(aiBtn);
     sidebarLayout->addWidget(logoutButton);
 
     QWidget* sidebar = new QWidget();
@@ -136,6 +142,37 @@ void DashboardWidget::buildUi()
             [this]() { emit openTasksRequested(); });
     connect(logoutButton, &QPushButton::clicked,
             [this]() { emit logoutRequested(); });
+            
+    // ── Ask AI button ─────────────────────────────────────────
+    connect(aiBtn, &QPushButton::clicked, this, [this]() {
+        aiBtn->setEnabled(false);
+        aiBtn->setText("Thinking...");
+
+        QString code = codeEditor->toPlainText();
+        if (code.trimmed().isEmpty()) {
+            appendChatMessage("AI", "Please write some code first.");
+            aiBtn->setEnabled(true);
+            aiBtn->setText("Ask AI");
+            return;
+        }
+
+        QThread*  t  = new QThread(this);
+        AiHelper* ai = new AiHelper;
+        ai->moveToThread(t);
+
+        connect(t,  &QThread::started,  ai, [ai, code]() { ai->ask(code); });
+
+        connect(ai, &AiHelper::replyReady, this, [this, t, ai](QString reply) {
+            appendChatMessage("AI", reply);
+            aiBtn->setEnabled(true);
+            aiBtn->setText("Ask AI");
+            t->quit();
+            ai->deleteLater();
+        });
+
+        connect(t, &QThread::finished, t, &QThread::deleteLater);
+        t->start();
+    });
 }
 
 // ── public slots ─────────────────────────────────────────────
@@ -144,7 +181,18 @@ void DashboardWidget::appendChatMessage(const QString& sender,
                                         const QString& text)
 {
     QString time = QTime::currentTime().toString("HH:mm");
-    chatList->addItem(QString("[%1] %2: %3").arg(time, sender, text));
+    QString full = QString("[%1] %2: %3").arg(time, sender, text);
+
+    QListWidgetItem* item = new QListWidgetItem(full, chatList);
+    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+
+    // Calculate proper height for wrapped text
+    QFontMetrics fm(chatList->font());
+    int width = chatList->viewport()->width() - 10;
+    QRect rect = fm.boundingRect(0, 0, width, 10000,
+                                 Qt::TextWordWrap, full);
+    item->setSizeHint(QSize(width, rect.height() + 8));
+
     chatList->scrollToBottom();
 }
 

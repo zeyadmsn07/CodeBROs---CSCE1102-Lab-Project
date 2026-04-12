@@ -4,6 +4,7 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
 find_package(Boost REQUIRED COMPONENTS system)
+find_package(CURL REQUIRED) 
 
 add_executable(client
     main.cpp
@@ -19,6 +20,7 @@ add_executable(client
     NetworkClient.h
     resources.qrc
     RoomWidget.cpp
+    AiHelper.cpp
 )
 
 target_link_libraries(client PRIVATE
@@ -27,4 +29,5 @@ target_link_libraries(client PRIVATE
     Boost::system
     pthread
     shared
+    CURL::libcurl
 )
