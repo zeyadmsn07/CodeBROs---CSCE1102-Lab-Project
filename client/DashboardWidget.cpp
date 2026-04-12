@@ -6,6 +6,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QTextCursor>
+#include "Highlighter.h"
 
 DashboardWidget::DashboardWidget(QWidget* parent)
     : QWidget(parent)
@@ -23,6 +24,13 @@ void DashboardWidget::buildUi()
     codeEditor->setTabStopDistance(40);
     codeEditor->setLineWrapMode(QPlainTextEdit::NoWrap);
     codeEditor->setPlaceholderText("// Start coding here...");
+    QPalette p = codeEditor->palette();
+    p.setColor(QPalette::Text,       QColor("#d4d4d4"));
+    p.setColor(QPalette::Base,       QColor("#1e1e1e"));
+    p.setColor(QPalette::Window,     QColor("#1e1e1e"));
+    codeEditor->setPalette(p);
+    codeEditor->setStyleSheet("QPlainTextEdit { background-color: #1e1e1e; }"); 
+    new Highlighter(codeEditor->document());
 
     // ── chat list ────────────────────────────────────────────
     chatList = new QListWidget();
@@ -238,13 +246,7 @@ void DashboardWidget::applyRemoteCode(const QString& code)
 void DashboardWidget::applyStyles()
 {
     setStyleSheet(
-        "QPlainTextEdit#codeEditor {"
-        "  background-color: #1e1e1e;"
-        "  color: #d4d4d4;"
-        "  border: none;"
-        "  font-family: 'Courier New';"
-        "  font-size: 11pt;"
-        "}"
+        
         "QListWidget#chatList {"
         "  background-color: #252526;"
         "  color: #cccccc;"

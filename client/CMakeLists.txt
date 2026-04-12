@@ -21,6 +21,8 @@ add_executable(client
     resources.qrc
     RoomWidget.cpp
     AiHelper.cpp
+    Highlighter.cpp
+    Highlighter.h
 )
 
 target_link_libraries(client PRIVATE
