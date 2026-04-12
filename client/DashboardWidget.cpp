@@ -8,8 +8,7 @@
 #include <QTextCursor>
 #include "Highlighter.h"
 
-DashboardWidget::DashboardWidget(QWidget* parent)
-    : QWidget(parent)
+DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent)
 {
     buildUi();
     applyStyles();
@@ -17,29 +16,31 @@ DashboardWidget::DashboardWidget(QWidget* parent)
 
 void DashboardWidget::buildUi()
 {
-    // ── code editor ──────────────────────────────────────────
+    // setup code editor
     codeEditor = new QPlainTextEdit();
     codeEditor->setObjectName("codeEditor");
-    codeEditor->setFont(QFont("Courier New", 11));
+    
+    QFont editorFont("Courier New", 11);
+    codeEditor->setFont(editorFont);
     codeEditor->setTabStopDistance(40);
     codeEditor->setLineWrapMode(QPlainTextEdit::NoWrap);
     codeEditor->setPlaceholderText("// Start coding here...");
+    
     QPalette p = codeEditor->palette();
-    p.setColor(QPalette::Text,       QColor("#d4d4d4"));
-    p.setColor(QPalette::Base,       QColor("#1e1e1e"));
-    p.setColor(QPalette::Window,     QColor("#1e1e1e"));
+    p.setColor(QPalette::Text, QColor("#d4d4d4"));
+    p.setColor(QPalette::Base, QColor("#1e1e1e"));
+    p.setColor(QPalette::Window, QColor("#1e1e1e"));
     codeEditor->setPalette(p);
     codeEditor->setStyleSheet("QPlainTextEdit { background-color: #1e1e1e; }"); 
-    new Highlighter(codeEditor->document());
+    
+    Highlighter* h = new Highlighter(codeEditor->document());
 
-    // ── chat list ────────────────────────────────────────────
     chatList = new QListWidget();
     chatList->setObjectName("chatList");
     chatList->setWordWrap(true);
     chatList->setSpacing(2);
     chatList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-    // ── chat input row ───────────────────────────────────────
     chatInput = new QLineEdit();
     chatInput->setObjectName("chatInput");
     chatInput->setPlaceholderText("Type a message...");
@@ -55,7 +56,6 @@ void DashboardWidget::buildUi()
     inputRow->addWidget(chatInput);
     inputRow->addWidget(sendButton);
 
-    // ── chat area (list + input row) ─────────────────────────
     QWidget* chatArea = new QWidget();
     QVBoxLayout* chatLayout = new QVBoxLayout(chatArea);
     chatLayout->setContentsMargins(0, 0, 0, 0);
@@ -63,14 +63,12 @@ void DashboardWidget::buildUi()
     chatLayout->addWidget(chatList);
     chatLayout->addLayout(inputRow);
 
-    // ── splitter (editor top, chat bottom) ───────────────────
-    QSplitter* splitter = new QSplitter(Qt::Vertical);
+    QSplitter* splitter = new QSplitter(Qt::Vertical);  // split screen between editor and chat
     splitter->addWidget(codeEditor);
     splitter->addWidget(chatArea);
     splitter->setStretchFactor(0, 3);
     splitter->setStretchFactor(1, 1);
 
-    // ── right sidebar ────────────────────────────────────────
     QLabel* partyLabel = new QLabel("Party");
     partyLabel->setObjectName("partyLabel");
 
@@ -113,62 +111,64 @@ void DashboardWidget::buildUi()
     sidebar->setObjectName("sidebar");
     sidebar->setLayout(sidebarLayout);
 
-    // ── root layout ──────────────────────────────────────────
+    // root layout
     QHBoxLayout* root = new QHBoxLayout(this);
     root->setContentsMargins(0, 0, 0, 0);
     root->setSpacing(0);
     root->addWidget(splitter, 3);
-    root->addWidget(sidebar,  1);
-
-    // ── sync debounce timer ──────────────────────────────────
+    root->addWidget(sidebar, 1);
     syncTimer = new QTimer(this);
     syncTimer->setSingleShot(true);
     syncTimer->setInterval(300);
 
-    // ── connections ──────────────────────────────────────────
-
-    // Send button + Enter key → emit chatMessageEntered
     auto sendChat = [this]() {
-        QString text = chatInput->text().trimmed();
-        if (text.isEmpty()) return;
+        QString text = chatInput->text();
+        text = text.trimmed();
+        if (text == "") {
+            return;
+        }
         chatInput->clear();
         emit chatMessageEntered(text);
     };
+    
     connect(sendButton, &QPushButton::clicked, sendChat);
-    connect(chatInput,  &QLineEdit::returnPressed, sendChat);
+    connect(chatInput, &QLineEdit::returnPressed, sendChat);
 
-    // Code editor changes → debounced sync
     connect(codeEditor, &QPlainTextEdit::textChanged, [this]() {
-        syncTimer->start();   // restart the 300ms timer on every keystroke
+        syncTimer->start(); 
     });
+    
     connect(syncTimer, &QTimer::timeout, [this]() {
-        emit codeSyncTriggered(codeEditor->toPlainText());
+        QString currentText = codeEditor->toPlainText();
+        emit codeSyncTriggered(currentText);
     });
 
-    // Sidebar buttons
-    connect(tasksButton,  &QPushButton::clicked,
-            [this]() { emit openTasksRequested(); });
-    connect(logoutButton, &QPushButton::clicked,
-            [this]() { emit logoutRequested(); });
-            
-    // ── Ask AI button ─────────────────────────────────────────
+    connect(tasksButton, &QPushButton::clicked, [this]() { 
+        emit openTasksRequested(); 
+    });
+    
+    connect(logoutButton, &QPushButton::clicked, [this]() { 
+        emit logoutRequested(); 
+    });
+
     connect(aiBtn, &QPushButton::clicked, this, [this]() {
         aiBtn->setEnabled(false);
         aiBtn->setText("Thinking...");
 
         QString code = codeEditor->toPlainText();
-        if (code.trimmed().isEmpty()) {
+        if (code.trimmed() == "") {
             appendChatMessage("AI", "Please write some code first.");
             aiBtn->setEnabled(true);
             aiBtn->setText("Ask AI");
             return;
         }
-
-        QThread*  t  = new QThread(this);
-        AiHelper* ai = new AiHelper;
+        QThread* t = new QThread(this); // Put AI in a separate thread so the GUI doesn't freeze
+        AiHelper* ai = new AiHelper();
         ai->moveToThread(t);
 
-        connect(t,  &QThread::started,  ai, [ai, code]() { ai->ask(code); });
+        connect(t, &QThread::started, ai, [ai, code]() { 
+            ai->ask(code); 
+        });
 
         connect(ai, &AiHelper::replyReady, this, [this, t, ai](QString reply) {
             appendChatMessage("AI", reply);
@@ -183,23 +183,20 @@ void DashboardWidget::buildUi()
     });
 }
 
-// ── public slots ─────────────────────────────────────────────
-
-void DashboardWidget::appendChatMessage(const QString& sender,
-                                        const QString& text)
+void DashboardWidget::appendChatMessage(const QString& sender, const QString& text)
 {
     QString time = QTime::currentTime().toString("HH:mm");
-    QString full = QString("[%1] %2: %3").arg(time, sender, text);
+    QString fullMessage = "[" + time + "] " + sender + ": " + text;
 
-    QListWidgetItem* item = new QListWidgetItem(full, chatList);
+    QListWidgetItem* item = new QListWidgetItem(fullMessage, chatList);
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
-    // Calculate proper height for wrapped text
     QFontMetrics fm(chatList->font());
     int width = chatList->viewport()->width() - 10;
-    QRect rect = fm.boundingRect(0, 0, width, 10000,
-                                 Qt::TextWordWrap, full);
-    item->setSizeHint(QSize(width, rect.height() + 8));
+    QRect rect = fm.boundingRect(0, 0, width, 10000, Qt::TextWordWrap, fullMessage);
+    
+    QSize itemSize(width, rect.height() + 8);
+    item->setSizeHint(itemSize);
 
     chatList->scrollToBottom();
 }
@@ -207,16 +204,19 @@ void DashboardWidget::appendChatMessage(const QString& sender,
 void DashboardWidget::updateMemberList(const QStringList& members)
 {
     memberList->clear();
-    for (const QString& m : members)
-        memberList->addItem(m);
+    
+    // basic for loop instead of range loop
+    for (int i = 0; i < members.size(); i++) {
+        memberList->addItem(members[i]);
+    }
 }
 
 void DashboardWidget::showTypingIndicator(const QString& username)
 {
-    typingLabel->setText(username + " is typing...");
+    QString msg = username + " is typing...";
+    typingLabel->setText(msg);
     typingLabel->show();
-    // Auto-hide after 2 seconds
-    QTimer::singleShot(2000, typingLabel, &QLabel::hide);
+    QTimer::singleShot(2000, typingLabel, &QLabel::hide); // hide after 2 seconds
 }
 
 void DashboardWidget::setRoomCode(const QString& code)
@@ -224,29 +224,28 @@ void DashboardWidget::setRoomCode(const QString& code)
     roomCodeLabel->setText(code);
 }
 
-// CRITICAL: blockSignals prevents the infinite update loop
-// (remote change → setPlainText → textChanged → emit sync → remote change → ...)
 void DashboardWidget::applyRemoteCode(const QString& code)
 {
-    // Save cursor position so the user's caret doesn't jump
+    // save position
     int savedPos = codeEditor->textCursor().position();
-
     codeEditor->blockSignals(true);
     codeEditor->setPlainText(code);
     codeEditor->blockSignals(false);
-
-    // Restore cursor to saved position (clamped to document length)
     int docLen = codeEditor->document()->characterCount();
     QTextCursor cursor = codeEditor->textCursor();
-    cursor.setPosition(qMin(savedPos, docLen - 1));
+    
+    int newPos = savedPos;
+    if (newPos > docLen - 1) {
+        newPos = docLen - 1;
+    }
+    
+    cursor.setPosition(newPos);
     codeEditor->setTextCursor(cursor);
 }
 
-// ── styles ────────────────────────────────────────────────────
 void DashboardWidget::applyStyles()
 {
     setStyleSheet(
-        
         "QListWidget#chatList {"
         "  background-color: #252526;"
         "  color: #cccccc;"

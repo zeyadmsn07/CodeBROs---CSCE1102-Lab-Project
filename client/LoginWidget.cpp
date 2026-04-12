@@ -19,8 +19,6 @@ void LoginWidget::setupUi()
     card->setObjectName("card");
     card->setMinimumWidth(580);
     card->setMaximumWidth(740);
-
-    // left panel — logo
     QWidget* leftPanel = new QWidget(card);
     leftPanel->setObjectName("leftPanel");
 
@@ -98,15 +96,13 @@ void LoginWidget::setupUi()
     rightLayout->addWidget(registerLink);
     rightLayout->addStretch();
 
-    // card: two panels side by side
-    QHBoxLayout* cardLayout = new QHBoxLayout(card);
+    QHBoxLayout* cardLayout = new QHBoxLayout(card); // card: two panels side by side
     cardLayout->setContentsMargins(0, 0, 0, 0);
     cardLayout->setSpacing(0);
     cardLayout->addWidget(leftPanel, 1);
     cardLayout->addWidget(rightPanel, 2);
 
-    // center card in window
-    QVBoxLayout* outer = new QVBoxLayout(this);
+    QVBoxLayout* outer = new QVBoxLayout(this); // center card in window
     outer->setContentsMargins(20, 20, 20, 20);
     outer->addStretch();
     QHBoxLayout* row = new QHBoxLayout();

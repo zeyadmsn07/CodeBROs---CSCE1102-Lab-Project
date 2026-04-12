@@ -1,16 +1,16 @@
 #include "Highlighter.h"
 #include <QFont>
 #include <QColor>
+#include <QRegularExpressionMatch>
+#include <QRegularExpressionMatchIterator>
 
-Highlighter::Highlighter(QTextDocument* parent)
-    : QSyntaxHighlighter(parent)
+Highlighter::Highlighter(QTextDocument* parent) : QSyntaxHighlighter(parent)
 {
-    // ── keywords (blue) ──────────────────────────────────────
     QTextCharFormat kwFmt;
     kwFmt.setForeground(QColor("#569cd6"));
     kwFmt.setFontWeight(QFont::Bold);
 
-    const QStringList keywords = {
+    QStringList keywords = {
         "\\bauto\\b",      "\\bbool\\b",      "\\bbreak\\b",
         "\\bcase\\b",      "\\bchar\\b",       "\\bclass\\b",
         "\\bconst\\b",     "\\bcontinue\\b",   "\\bdefault\\b",
@@ -27,31 +27,29 @@ Highlighter::Highlighter(QTextDocument* parent)
         "\\bwhile\\b",     "\\bstd\\b",        "\\bnamespace\\b",
         "\\boverride\\b",  "\\bexplicit\\b",   "\\binline\\b"
     };
-    for (const auto& kw : keywords)
-        rules.push_back({ QRegularExpression(kw), kwFmt });
 
-    // ── string literals (orange) ─────────────────────────────
+    // loop to add all the keywords
+    for (int i = 0; i < keywords.size(); i++) {
+        rules.push_back({ QRegularExpression(keywords[i]), kwFmt });
+    }
+
     QTextCharFormat strFmt;
     strFmt.setForeground(QColor("#ce9178"));
     rules.push_back({ QRegularExpression("\"[^\"]*\""), strFmt });
     rules.push_back({ QRegularExpression("'[^']*'"),    strFmt });
 
-    // ── single-line comments (green) ─────────────────────────
     QTextCharFormat slFmt;
     slFmt.setForeground(QColor("#6a9955"));
     rules.push_back({ QRegularExpression("//[^\n]*"), slFmt });
 
-    // ── preprocessor lines: #include, #define … (purple) ─────
     QTextCharFormat ppFmt;
     ppFmt.setForeground(QColor("#c586c0"));
     rules.push_back({ QRegularExpression("^\\s*#[^\n]*"), ppFmt });
 
-    // ── numbers (light green) ────────────────────────────────
     QTextCharFormat numFmt;
     numFmt.setForeground(QColor("#b5cea8"));
     rules.push_back({ QRegularExpression("\\b[0-9]+(\\.[0-9]+)?\\b"), numFmt });
 
-    // ── multi-line comment format (used in highlightBlock) ───
     commentFmt.setForeground(QColor("#6a9955"));
     commentStart = QRegularExpression("/\\*");
     commentEnd   = QRegularExpression("\\*/");
@@ -59,34 +57,29 @@ Highlighter::Highlighter(QTextDocument* parent)
 
 void Highlighter::highlightBlock(const QString& text)
 {
-    // Apply all single-line rules first
-    for (const auto& rule : rules) {
-        auto it = rule.pattern.globalMatch(text);
+    for (int i = 0; i < rules.size(); i++) {
+        QRegularExpressionMatchIterator it = rules[i].pattern.globalMatch(text);
         while (it.hasNext()) {
-            auto m = it.next();
-            setFormat(m.capturedStart(), m.capturedLength(), rule.fmt);
+            QRegularExpressionMatch m = it.next();
+            setFormat(m.capturedStart(), m.capturedLength(), rules[i].fmt);
         }
     }
 
-    // ── multi-line comment handling ───────────────────────────
-    // previousBlockState() == 1 means the previous line was inside a /* comment */
     setCurrentBlockState(0);
 
     int startIdx = 0;
-    if (previousBlockState() != 1)
+    if (previousBlockState() != 1) {
         startIdx = text.indexOf(commentStart);
-
+    }
     while (startIdx >= 0) {
-        auto endMatch  = commentEnd.match(text, startIdx);
-        int  commentLen;
+        QRegularExpressionMatch endMatch = commentEnd.match(text, startIdx);
+        int commentLen;
 
-        if (!endMatch.hasMatch()) {
-            // Comment continues onto the next line
+        if (endMatch.hasMatch() == false) {
             setCurrentBlockState(1);
             commentLen = text.length() - startIdx;
         } else {
-            commentLen = endMatch.capturedStart() - startIdx
-                         + endMatch.capturedLength();
+            commentLen = endMatch.capturedStart() - startIdx + endMatch.capturedLength();
         }
 
         setFormat(startIdx, commentLen, commentFmt);
