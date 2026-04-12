@@ -69,12 +69,12 @@ MainWindow::MainWindow(QWidget* parent)
 
     // ── RoomWidget → DashboardWidget ─────────────────────────
     connect(roomPage, &RoomWidget::roomEntered, this,
-            [this](const QString& roomId, const QString& initialCode){
+            [this](const QString& roomId, const QString& roomName, const QString& initialCode){
         currentRoomId = roomId;
-        dashboardPage->setRoomCode(roomId);
+        dashboardPage->setRoomCode(roomName);
         dashboardPage->applyRemoteCode(initialCode);
         stack->setCurrentWidget(dashboardPage);
-    });
+});
 
     // ── DashboardWidget signals ───────────────────────────────
     connect(dashboardPage, &DashboardWidget::logoutRequested,

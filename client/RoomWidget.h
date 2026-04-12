@@ -16,7 +16,7 @@ public:
     void refresh();
 
 signals:
-    void roomEntered(const QString& roomId, const QString& initialCode);
+    void roomEntered(const QString& roomId, const QString& roomName, const QString& initialCode);
 
 protected:
     void paintEvent(QPaintEvent* e) override;

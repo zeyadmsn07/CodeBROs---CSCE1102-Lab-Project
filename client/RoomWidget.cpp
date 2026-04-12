@@ -171,12 +171,21 @@ void RoomWidget::onRoomList(QJsonArray rooms) {
     }
 }
 
-void RoomWidget::onRoomCreated(QString roomId, QString name) {
-    emit roomEntered(roomId, "");
+void RoomWidget::onRoomCreated(QString roomId, QString name)
+{
+    emit roomEntered(roomId, name, "");
 }
 
-void RoomWidget::onRoomJoined(QString roomId, QString code) {
-    emit roomEntered(roomId, code);
+void RoomWidget::onRoomJoined(QString roomId, QString code)
+{
+    QString name = roomId;
+    for (int i = 0; i < roomList->count(); i++) {
+        if (roomList->item(i)->data(Qt::UserRole).toString() == roomId) {
+            name = roomList->item(i)->text();
+            break;
+        }
+    }
+    emit roomEntered(roomId, name, code);
 }
 
 void RoomWidget::onJoinFailed(QString reason) {
