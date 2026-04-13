@@ -15,12 +15,9 @@ class Server;
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
-    Session(tcp::socket socket, Server& server, RoomManager& rm, UserStore& us)
-        : socket_(std::move(socket)), server_(server), rooms_(rm), userStore_(us)
-    {}
-
+    Session(tcp::socket socket, Server& server, RoomManager& rm, UserStore& us) :
+    socket_(std::move(socket)), server_(server), rooms_(rm), userStore_(us) {}
     void start() { read_next(); }
-
     void send(const std::string& msg)
     {
         auto self = shared_from_this();
@@ -28,7 +25,6 @@ public:
         boost::asio::async_write(socket_, boost::asio::buffer(*data),
             [self, data](boost::system::error_code, std::size_t){});
     }
-
     std::string username;
 
 private:
@@ -44,8 +40,6 @@ private:
     UserStore&             userStore_;
     std::string            current_room;
 };
-
-// ── Server ────────────────────────────────────
 
 class Server
 {
@@ -75,8 +69,6 @@ private:
     RoomManager   roomMgr_;
     UserStore     userStore_;
 };
-
-// ── Session implementation ────────────────────
 
 void Session::broadcastToRoom(const std::string& roomId,
                                const std::string& data,
@@ -133,10 +125,6 @@ void Session::read_next()
 void Session::handle(const json& msg)
 {
     std::string type = msg.value("type", "");
-
-    // ---- session_restore ----
-    // Client has a valid local session; just register the username server-side
-    // so disconnect broadcasts use the correct name. No login_success reply.
     if (type == "session_restore") {
         username = msg.value("username", "");
         return;
@@ -160,8 +148,6 @@ void Session::handle(const json& msg)
         }
         return;
     }
-
-    // ---- login ----
     if (type == "login") {
         std::string uname = msg.value("username", "");
         std::string pass  = msg.value("password", "");
@@ -170,9 +156,6 @@ void Session::handle(const json& msg)
             send(json({{"type", "login_failed"}, {"reason", "missing username"}}).dump());
             return;
         }
-
-        // Session restore path: client sends login with empty password to
-        // re-register their username on reconnect. We trust the local session.
         if (pass.empty()) {
             username = uname;
             send(json({{"type", "login_success"}, {"username", uname}}).dump());
@@ -190,7 +173,6 @@ void Session::handle(const json& msg)
         return;
     }
 
-    // ---- get_rooms ----
     if (type == "get_rooms") {
         std::lock_guard<std::mutex> lk(rooms_.mtx);
         auto list = rooms_.listRooms();
@@ -203,7 +185,6 @@ void Session::handle(const json& msg)
         return;
     }
 
-    // ---- create_room ----
     if (type == "create_room") {
         std::string rname = msg.value("name", "Unnamed Room");
         std::lock_guard<std::mutex> lk(rooms_.mtx);
@@ -214,7 +195,6 @@ void Session::handle(const json& msg)
         return;
     }
 
-    // ---- join_room ----
     if (type == "join_room") {
         std::string rid = msg.value("room_id", "");
         std::lock_guard<std::mutex> lk(rooms_.mtx);
@@ -230,7 +210,6 @@ void Session::handle(const json& msg)
         return;
     }
 
-    // ---- leave_room ----
     if (type == "leave_room") {
         if (!current_room.empty()) {
             std::lock_guard<std::mutex> lk(rooms_.mtx);
@@ -243,7 +222,6 @@ void Session::handle(const json& msg)
         return;
     }
 
-    // ---- code_update ----
     if (type == "code_update") {
         if (current_room.empty()) return;
         std::lock_guard<std::mutex> lk(rooms_.mtx);
@@ -253,18 +231,13 @@ void Session::handle(const json& msg)
         broadcastToRoom(current_room, msg.dump(), this); // don't echo back to sender
         return;
     }
-
-    // ---- chat_message ----
-    // Server broadcasts to ALL members including sender — client must NOT
-    // also append locally when it sends. Only append on receipt.
+    
     if (type == "chat_message") {
         if (current_room.empty()) return;
         broadcastToRoom(current_room, msg.dump(), nullptr); // everyone including sender
         return;
     }
 }
-
-// ── main ─────────────────────────────────────
 
 int main()
 {

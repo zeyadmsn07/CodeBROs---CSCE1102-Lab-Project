@@ -9,19 +9,13 @@ int main()
     try
     {
         boost::asio::io_context io_ctx;
-
         tcp::resolver resolver(io_ctx);
         auto endpoints = resolver.resolve("127.0.0.1", "12345");
-
         tcp::socket socket(io_ctx);
         boost::asio::connect(socket, endpoints);
-
         std::cout << "[client] connected to server\n";
-
         std::string message = "HELLO\n";
-        boost::asio::write(socket,
-                           boost::asio::buffer(message));
-
+        boost::asio::write(socket, boost::asio::buffer(message));
         std::cout << "[client] sent: HELLO\n";
 
         boost::asio::streambuf response;

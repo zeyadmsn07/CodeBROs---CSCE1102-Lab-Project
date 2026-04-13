@@ -9,8 +9,6 @@
 using json = nlohmann::json;
 
 static long now() { return static_cast<long>(std::time(nullptr)); }
-
-// ── constructor ──────────────────────────────
 UserStore::UserStore(const std::string& filePath)
     : filePath_(filePath)
 {
@@ -24,7 +22,6 @@ UserStore::UserStore(const std::string& filePath)
     loadFromFile();
 }
 
-// ── private helpers ──────────────────────────
 void UserStore::loadFromFile()
 {
     std::ifstream in(filePath_);
@@ -43,7 +40,7 @@ void UserStore::loadFromFile()
         }
     }
     catch (...) {
-        users_.clear();   // corrupt file — start fresh
+        users_.clear();
     }
 }
 
@@ -52,7 +49,6 @@ std::string UserStore::hashPassword(const std::string& password) const
     return picosha2::hash256_hex_string(password);
 }
 
-// ── public methods ───────────────────────────
 bool UserStore::registerUser(const std::string& username,
                              const std::string& password)
 {
@@ -106,8 +102,6 @@ void UserStore::saveToFile()
             { "lastLogin",    u.lastLogin    }
         });
     }
-
-    // Atomic write — write to .tmp then rename
     std::string tmp = filePath_ + ".tmp";
     std::ofstream out(tmp);
     out << arr.dump(2);
