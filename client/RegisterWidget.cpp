@@ -1,21 +1,19 @@
 #include "RegisterWidget.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QPixmap>
-#include <QFont>
-#include <QRegularExpression>
 
-RegisterWidget::RegisterWidget(QWidget* parent)
-    : QWidget(parent)
-{
+#include <QFont>
+#include <QHBoxLayout>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <QRegularExpression>
+#include <QVBoxLayout>
+
+RegisterWidget::RegisterWidget(QWidget* parent) : QWidget(parent) {
     buildUi();
     applyStyles();
 }
 
-void RegisterWidget::buildUi()
-{
+void RegisterWidget::buildUi() {
     QWidget* card = new QWidget(this);
     card->setObjectName("card");
     card->setMinimumWidth(580);
@@ -31,8 +29,7 @@ void RegisterWidget::buildUi()
     monoFont.setBold(true);
     title->setFont(monoFont);
 
-    QLabel* subtitle = new QLabel(
-        "// collaborative coding\n// for beginners", leftPanel);
+    QLabel* subtitle = new QLabel("// collaborative coding\n// for beginners", leftPanel);
     subtitle->setObjectName("subtitleLabel");
 
     QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
@@ -82,8 +79,7 @@ void RegisterWidget::buildUi()
     registerBtn->setMinimumHeight(40);
     registerBtn->setCursor(Qt::PointingHandCursor);
 
-    backLink = new QPushButton(
-        "already have one? log in", rightPanel);
+    backLink = new QPushButton("already have one? log in", rightPanel);
     backLink->setObjectName("backLink");
     backLink->setFlat(true);
     backLink->setCursor(Qt::PointingHandCursor);
@@ -129,20 +125,15 @@ void RegisterWidget::buildUi()
     connect(registerBtn, &QPushButton::clicked, [this]() {
         if (!validate()) return;
         setLoading(true);
-        emit registerRequested(
-            usernameInput->text().trimmed(),
-            passwordInput->text());
+        emit registerRequested(usernameInput->text().trimmed(), passwordInput->text());
     });
 
-    connect(confirmInput, &QLineEdit::returnPressed,
-            registerBtn, &QPushButton::click);
+    connect(confirmInput, &QLineEdit::returnPressed, registerBtn, &QPushButton::click);
 
-    connect(backLink, &QPushButton::clicked,
-            [this](){ emit goToLoginRequested(); });
+    connect(backLink, &QPushButton::clicked, [this]() { emit goToLoginRequested(); });
 }
 
-bool RegisterWidget::validate()
-{
+bool RegisterWidget::validate() {
     QString u = usernameInput->text().trimmed();
     QString p = passwordInput->text();
     QString c = confirmInput->text();
@@ -172,8 +163,7 @@ bool RegisterWidget::validate()
     return true;
 }
 
-void RegisterWidget::applyStyles()
-{
+void RegisterWidget::applyStyles() {
     setStyleSheet(
         "QWidget#card {"
         "  background-color: rgba(0,0,0,0.55);"
@@ -248,39 +238,30 @@ void RegisterWidget::applyStyles()
         "  color: #ff5555;"
         "  font-family: 'Courier New';"
         "  font-size: 12px;"
-        "}"
-    );
+        "}");
 }
 
-void RegisterWidget::paintEvent(QPaintEvent* event)
-{
+void RegisterWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     QPixmap bg(":/images/background.jpg");
-    painter.drawPixmap(
-        rect(),
-        bg.scaled(size(),
-                  Qt::KeepAspectRatioByExpanding,
-                  Qt::SmoothTransformation));
+    painter.drawPixmap(rect(),
+                       bg.scaled(size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     QWidget::paintEvent(event);
 }
 
-void RegisterWidget::showError(const QString& msg)
-{
+void RegisterWidget::showError(const QString& msg) {
     errorLabel->setText(msg);
     errorLabel->show();
 }
 
-void RegisterWidget::clearError()
-{
+void RegisterWidget::clearError() {
     errorLabel->clear();
     errorLabel->hide();
 }
 
-void RegisterWidget::setLoading(bool on)
-{
+void RegisterWidget::setLoading(bool on) {
     registerBtn->setEnabled(!on);
-    registerBtn->setText(
-        on ? "[ creating account... ]" : "[ CREATE ACCOUNT ]");
+    registerBtn->setText(on ? "[ creating account... ]" : "[ CREATE ACCOUNT ]");
     usernameInput->setEnabled(!on);
     passwordInput->setEnabled(!on);
     confirmInput->setEnabled(!on);

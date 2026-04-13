@@ -1,20 +1,18 @@
 #include "LoginWidget.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QPixmap>
-#include <QFont>
 
-LoginWidget::LoginWidget(QWidget* parent)
-    : QWidget(parent)
-{
+#include <QFont>
+#include <QHBoxLayout>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <QVBoxLayout>
+
+LoginWidget::LoginWidget(QWidget* parent) : QWidget(parent) {
     setupUi();
     applyStyles();
 }
 
-void LoginWidget::setupUi()
-{
+void LoginWidget::setupUi() {
     QWidget* card = new QWidget(this);
     card->setObjectName("card");
     card->setMinimumWidth(580);
@@ -28,8 +26,7 @@ void LoginWidget::setupUi()
     monoFont.setBold(true);
     title->setFont(monoFont);
 
-    QLabel* subtitle = new QLabel(
-        "// collaborative coding\n// for beginners", leftPanel);
+    QLabel* subtitle = new QLabel("// collaborative coding\n// for beginners", leftPanel);
     subtitle->setObjectName("subtitleLabel");
 
     QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
@@ -73,8 +70,7 @@ void LoginWidget::setupUi()
     loginButton->setMinimumHeight(40);
     loginButton->setCursor(Qt::PointingHandCursor);
 
-    registerLink = new QPushButton(
-        "no account? create one", rightPanel);
+    registerLink = new QPushButton("no account? create one", rightPanel);
     registerLink->setObjectName("registerLink");
     registerLink->setFlat(true);
     registerLink->setCursor(Qt::PointingHandCursor);
@@ -96,13 +92,13 @@ void LoginWidget::setupUi()
     rightLayout->addWidget(registerLink);
     rightLayout->addStretch();
 
-    QHBoxLayout* cardLayout = new QHBoxLayout(card); // card: two panels side by side
+    QHBoxLayout* cardLayout = new QHBoxLayout(card);  // card: two panels side by side
     cardLayout->setContentsMargins(0, 0, 0, 0);
     cardLayout->setSpacing(0);
     cardLayout->addWidget(leftPanel, 1);
     cardLayout->addWidget(rightPanel, 2);
 
-    QVBoxLayout* outer = new QVBoxLayout(this); // center card in window
+    QVBoxLayout* outer = new QVBoxLayout(this);  // center card in window
     outer->setContentsMargins(20, 20, 20, 20);
     outer->addStretch();
     QHBoxLayout* row = new QHBoxLayout();
@@ -124,15 +120,12 @@ void LoginWidget::setupUi()
         emit loginRequested(u, p);
     });
 
-    connect(passwordInput, &QLineEdit::returnPressed,
-            loginButton, &QPushButton::click);
+    connect(passwordInput, &QLineEdit::returnPressed, loginButton, &QPushButton::click);
 
-    connect(registerLink, &QPushButton::clicked,
-            [this](){ emit goToRegisterRequested(); });
+    connect(registerLink, &QPushButton::clicked, [this]() { emit goToRegisterRequested(); });
 }
 
-void LoginWidget::applyStyles()
-{
+void LoginWidget::applyStyles() {
     setStyleSheet(
         "QWidget#card {"
         "  background-color: rgba(0,0,0,0.55);"
@@ -207,36 +200,28 @@ void LoginWidget::applyStyles()
         "  color: #ff5555;"
         "  font-family: 'Courier New';"
         "  font-size: 12px;"
-        "}"
-    );
+        "}");
 }
 
-void LoginWidget::paintEvent(QPaintEvent* event)
-{
+void LoginWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     QPixmap bg(":/images/background.jpg");
-    painter.drawPixmap(
-        rect(),
-        bg.scaled(size(),
-                  Qt::KeepAspectRatioByExpanding,
-                  Qt::SmoothTransformation));
+    painter.drawPixmap(rect(),
+                       bg.scaled(size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     QWidget::paintEvent(event);
 }
 
-void LoginWidget::showError(const QString& msg)
-{
+void LoginWidget::showError(const QString& msg) {
     errorLabel->setText(msg);
     errorLabel->show();
 }
 
-void LoginWidget::clearError()
-{
+void LoginWidget::clearError() {
     errorLabel->clear();
     errorLabel->hide();
 }
 
-void LoginWidget::setLoading(bool on)
-{
+void LoginWidget::setLoading(bool on) {
     loginButton->setEnabled(!on);
     loginButton->setText(on ? "[ logging in... ]" : "[ LOG IN ]");
     usernameInput->setEnabled(!on);

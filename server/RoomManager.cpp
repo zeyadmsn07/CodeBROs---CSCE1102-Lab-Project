@@ -1,9 +1,10 @@
 #include "RoomManager.h"
+
 #include <algorithm>
 
 std::string RoomManager::createRoom(const std::string& name) {
     std::string id = "room_" + std::to_string(nextId++);
-    rooms[id] = Room{ id, name, "", {} };
+    rooms[id] = Room{id, name, "", {}};
     return id;
 }
 
@@ -19,7 +20,7 @@ std::vector<std::tuple<std::string, std::string, int>> RoomManager::listRooms() 
         int alive = 0;
         for (auto& wp : r.members)
             if (!wp.expired()) alive++;
-        out.push_back({ id, r.name, alive });
+        out.push_back({id, r.name, alive});
     }
     return out;
 }
@@ -34,12 +35,10 @@ void RoomManager::removeMember(const std::string& roomId, std::shared_ptr<Sessio
     auto* r = getRoom(roomId);
     if (!r) return;
     // remove expired pointers and the given session
-    r->members.erase(
-        std::remove_if(r->members.begin(), r->members.end(),
-            [&](std::weak_ptr<Session>& wp) {
-                auto sp = wp.lock();
-                return !sp || sp.get() == s.get();
-            }),
-        r->members.end()
-    );
+    r->members.erase(std::remove_if(r->members.begin(), r->members.end(),
+                                    [&](std::weak_ptr<Session>& wp) {
+                                        auto sp = wp.lock();
+                                        return !sp || sp.get() == s.get();
+                                    }),
+                     r->members.end());
 }

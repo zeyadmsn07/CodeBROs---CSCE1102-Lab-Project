@@ -4,10 +4,8 @@
 
 using boost::asio::ip::tcp;
 
-int main()
-{
-    try
-    {
+int main() {
+    try {
         boost::asio::io_context io_ctx;
         tcp::resolver resolver(io_ctx);
         auto endpoints = resolver.resolve("127.0.0.1", "12345");
@@ -29,9 +27,7 @@ int main()
 
         socket.close();
         std::cout << "[client] disconnected\n";
-    }
-    catch (std::exception& e)
-    {
+    } catch (std::exception& e) {
         std::cerr << "[client] error: " << e.what() << "\n";
     }
 

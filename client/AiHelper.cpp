@@ -1,11 +1,12 @@
 #include "AiHelper.h"
+
 #include <curl/curl.h>
+
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <iostream>
 
-static size_t writeCallback(char* ptr, size_t size, size_t nmemb, std::string* out)
-{
+static size_t writeCallback(char* ptr, size_t size, size_t nmemb, std::string* out) {
     int totalSize = size * nmemb;
     out->append(ptr, totalSize);
     return totalSize;
@@ -13,9 +14,9 @@ static size_t writeCallback(char* ptr, size_t size, size_t nmemb, std::string* o
 
 AiHelper::AiHelper(QObject* parent) : QObject(parent) {}
 
-void AiHelper::ask(const QString& code)
-{
-    std::string API_KEY  = "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";
+void AiHelper::ask(const QString& code) {
+    std::string API_KEY =
+        "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";
     std::string endpoint = "https://openrouter.ai/api/v1/chat/completions";
 
     nlohmann::json body;
@@ -23,15 +24,15 @@ void AiHelper::ask(const QString& code)
 
     nlohmann::json messageObj;
     messageObj["role"] = "user";
-    
+
     std::string promptText = "Review this C++ code and suggest improvements:\n\n";
-    promptText += code.toStdString(); 
-    
+    promptText += code.toStdString();
+
     messageObj["content"] = promptText;
 
     nlohmann::json messageArray = nlohmann::json::array();
     messageArray.push_back(messageObj);
-    
+
     body["messages"] = messageArray;
 
     std::string responseStr = "";
@@ -44,14 +45,14 @@ void AiHelper::ask(const QString& code)
 
     struct curl_slist* headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/json");
-    headers = curl_slist_append(headers, "HTTP-Referer: http://localhost"); 
-    
+    headers = curl_slist_append(headers, "HTTP-Referer: http://localhost");
+
     std::string authString = "Authorization: Bearer ";
     authString = authString + API_KEY;
     headers = curl_slist_append(headers, authString.c_str());
 
     std::string bodyStr = body.dump();
-    
+
     curl_easy_setopt(curl, CURLOPT_URL, endpoint.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, bodyStr.c_str());
@@ -73,7 +74,7 @@ void AiHelper::ask(const QString& code)
 
     try {
         nlohmann::json resp = nlohmann::json::parse(responseStr);
-        
+
         if (resp.contains("error")) {
             std::string apiError = resp["error"]["message"];
             emit replyReady(QString::fromStdString("API Error: " + apiError));
@@ -88,8 +89,7 @@ void AiHelper::ask(const QString& code)
             QString rawStr = QString::fromStdString("Unexpected structure: " + responseStr);
             emit replyReady(rawStr);
         }
-    }
-    catch (...) {
+    } catch (...) {
         QString crashStr = QString::fromStdString("Could not parse JSON. Raw: " + responseStr);
         emit replyReady(crashStr);
     }

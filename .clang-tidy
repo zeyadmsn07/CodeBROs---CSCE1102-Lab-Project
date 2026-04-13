@@ -1,0 +1,9 @@
+Checks: >
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  modernize-use-nullptr,
+  modernize-use-override,
+  readability-braces-around-statements,
+  readability-identifier-naming
+WarningsAsErrors: ''
+HeaderFilterRegex: '(client|server|shared)/.*'

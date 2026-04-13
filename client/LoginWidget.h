@@ -1,35 +1,34 @@
 #ifndef LOGINWIDGET_H
 #define LOGINWIDGET_H
 
-#include <QWidget>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QLabel>
+#include <QWidget>
 
 class LoginWidget : public QWidget {
     Q_OBJECT
 
-public:
+   public:
     explicit LoginWidget(QWidget* parent = nullptr);
 
     void showError(const QString& message);
     void clearError();
     void setLoading(bool loading);
 
-signals:
-    void loginRequested(const QString& username,
-                        const QString& password);
+   signals:
+    void loginRequested(const QString& username, const QString& password);
     void goToRegisterRequested();
 
-protected:
+   protected:
     void paintEvent(QPaintEvent* event) override;
 
-private:
-    QLineEdit*   usernameInput;
-    QLineEdit*   passwordInput;
+   private:
+    QLineEdit* usernameInput;
+    QLineEdit* passwordInput;
     QPushButton* loginButton;
     QPushButton* registerLink;
-    QLabel*      errorLabel;
+    QLabel* errorLabel;
 
     void setupUi();
     void applyStyles();

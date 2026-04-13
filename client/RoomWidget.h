@@ -1,27 +1,28 @@
 #ifndef ROOMWIDGET_H
 #define ROOMWIDGET_H
 
-#include <QWidget>
+#include <QJsonArray>
+#include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
-#include <QLabel>
-#include <QJsonArray>
+#include <QWidget>
+
 #include "NetworkClient.h"
 
 class RoomWidget : public QWidget {
     Q_OBJECT
-public:
+   public:
     explicit RoomWidget(NetworkClient* net, QWidget* parent = nullptr);
     void setUsername(const QString& name);
     void refresh();
 
-signals:
+   signals:
     void roomEntered(const QString& roomId, const QString& roomName, const QString& initialCode);
 
-protected:
+   protected:
     void paintEvent(QPaintEvent* e) override;
 
-private slots:
+   private slots:
     void onCreateClicked();
     void onJoinClicked();
     void onRoomList(QJsonArray rooms);
@@ -29,15 +30,15 @@ private slots:
     void onRoomJoined(QString roomId, QString code);
     void onJoinFailed(QString reason);
 
-private:
+   private:
     void applyStyles();
 
     NetworkClient* net;
-    QLabel*        welcomeLabel;
-    QListWidget*   roomList;
-    QPushButton*   createBtn;
-    QPushButton*   joinBtn;
-    QPushButton*   refreshBtn;
+    QLabel* welcomeLabel;
+    QListWidget* roomList;
+    QPushButton* createBtn;
+    QPushButton* joinBtn;
+    QPushButton* refreshBtn;
 };
 
 #endif

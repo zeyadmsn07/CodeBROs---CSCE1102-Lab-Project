@@ -1,19 +1,19 @@
 #ifndef NETWORKCLIENT_H
 #define NETWORKCLIENT_H
 
-#include <QObject>
 #include <QJsonArray>
+#include <QObject>
 #include <QString>
 #include <boost/asio.hpp>
 #include <nlohmann/json.hpp>
-#include <thread>
 #include <string>
+#include <thread>
 
 using boost::asio::ip::tcp;
 
 class NetworkClient : public QObject {
     Q_OBJECT
-public:
+   public:
     explicit NetworkClient(QObject* parent = nullptr);
     ~NetworkClient();
 
@@ -21,7 +21,7 @@ public:
     void disconnect();
     void sendMessage(const nlohmann::json& msg);
 
-signals:
+   signals:
     void loginSuccess(QString username);
     void loginFailed(QString reason);
     void registerSuccess();
@@ -36,14 +36,14 @@ signals:
     void userJoined(QString username);
     void userLeft(QString username);
 
-private:
+   private:
     void read_next();
     void dispatch(const nlohmann::json& j);
 
     boost::asio::io_context io_;
-    tcp::socket             socket_;
-    boost::asio::streambuf  buf_;
-    std::thread             ioThread_;
+    tcp::socket socket_;
+    boost::asio::streambuf buf_;
+    std::thread ioThread_;
 };
 
 #endif

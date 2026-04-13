@@ -4,10 +4,10 @@
 
 class AiHelper : public QObject {
     Q_OBJECT
-public:
+   public:
     explicit AiHelper(QObject* parent = nullptr);
     void ask(const QString& code);
 
-signals:
+   signals:
     void replyReady(QString reply);
 };
