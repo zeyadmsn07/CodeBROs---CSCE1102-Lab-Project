@@ -1,7 +1,6 @@
 #include "AiHelper.h"
-
 #include <curl/curl.h>
-
+#include "config.h"
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -14,9 +13,7 @@ static size_t writeCallback(char* ptr, size_t size, size_t nmemb, std::string* o
 
 AiHelper::AiHelper(QObject* parent) : QObject(parent) {}
 
-void AiHelper::ask(const QString& code) {
-    std::string API_KEY =
-        "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";
+void AiHelper::ask(const QString& code) {;
     std::string endpoint = "https://openrouter.ai/api/v1/chat/completions";
 
     nlohmann::json body;

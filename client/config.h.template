@@ -1,0 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+const std::string API_KEY = "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";
+
+#endif
