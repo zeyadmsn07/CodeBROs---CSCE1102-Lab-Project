@@ -149,7 +149,7 @@ What we're still working on for Milestone 3:
 ## Honest note on development
 
 This project pushed us way beyond what we'd covered in class. Boost.Asio async networking,
-Qt signals/slots across threads, session persistence, real-time sync with loop guards — none
+Qt signals/slots across threads, session persistence, real-time sync with loop guards, fnone
 of this was material we had seen before. We spent a lot of time reading documentation and
 trying things that didn't work before finding approaches that did.
 
