@@ -31,3 +31,6 @@ QLineEdit:focus {
 QLabel {
     font-family: "Press Start 2P";
 }
+QPlainTextEdit {
+    font-family: "Courier New";
+}
