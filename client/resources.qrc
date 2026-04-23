@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="/">
+    <file>style.qss</file>
     <file>images/background.jpg</file>
+    <file>PressStart2P-Regular.ttf</file>
   </qresource>
 </RCC>

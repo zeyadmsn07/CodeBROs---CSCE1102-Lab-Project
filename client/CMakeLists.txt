@@ -23,6 +23,7 @@ add_executable(client
     AiHelper.cpp
     Highlighter.cpp
     Highlighter.h
+    config.h
 )
 
 target_link_libraries(client PRIVATE
