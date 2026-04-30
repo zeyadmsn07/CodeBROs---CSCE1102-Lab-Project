@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Hello World",
+    "description": "Print exactly: Hello World",
+    "hint": "cout << \"Hello World\" << endl;",
+    "type": "output_match",
+    "expectedOutput": "Hello World"
+  },
+  {
+    "id": 2,
+    "title": "Sum 1 to 10",
+    "description": "Print the sum of all numbers from 1 to 10",
+    "hint": "Use a for loop. Add each number to a total variable.",
+    "type": "output_match",
+    "expectedOutput": "55"
+  },
+  {
+    "id": 3,
+    "title": "First 5 even numbers",
+    "description": "Print the first 5 even numbers, one per line",
+    "hint": "Even numbers: 2, 4, 6, 8, 10",
+    "type": "output_match",
+    "expectedOutput": "2\n4\n6\n8\n10"
+  },
+  {
+    "id": 4,
+    "title": "Right triangle",
+    "description": "Print a right triangle of stars with 3 rows",
+    "hint": "Row 1 has 1 star, row 2 has 2, row 3 has 3",
+    "type": "output_match",
+    "expectedOutput": "*\n**\n***"
+  },
+  {
+    "id": 5,
+    "title": "Reverse a string",
+    "description": "Print the string ABCDE reversed",
+    "hint": "Just print the characters in reverse order",
+    "type": "output_match",
+    "expectedOutput": "EDCBA"
+  }
+]

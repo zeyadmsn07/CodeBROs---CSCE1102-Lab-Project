@@ -24,6 +24,8 @@ add_executable(client
     Highlighter.cpp
     Highlighter.h
     config.h
+    TaskWidget.cpp
+    TaskWidget.h
 )
 
 target_link_libraries(client PRIVATE

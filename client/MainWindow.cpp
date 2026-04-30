@@ -20,12 +20,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     registerPage = new RegisterWidget(this);
     roomPage = new RoomWidget(network, this);
     dashboardPage = new DashboardWidget(this);
+    taskPage = new TaskWidget();
 
-    stack->addWidget(loginPage);      // 0
-    stack->addWidget(registerPage);   // 1
+    stack->addWidget(loginPage);    // 0
+    stack->addWidget(registerPage);  // 1
     stack->addWidget(roomPage);       // 2
     stack->addWidget(dashboardPage);  // 3
-
+    stack->addWidget(taskPage); // 4
+    
     // navigation signals
     connect(loginPage, &LoginWidget::goToRegisterRequested,
             [this]() { stack->setCurrentIndex(1); });
@@ -91,6 +93,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
                 network->sendMessage(MessageFactory::makeCodeUpdate(roomStr, codeStr));
             });
+    connect(dashboardPage, &DashboardWidget::openTasksRequested,
+        [this]() { stack->setCurrentIndex(4); });
+
+connect(taskPage, &TaskWidget::backRequested,
+        [this]() { stack->setCurrentIndex(3); });
 
     connect(network, &NetworkClient::codeUpdated, this,
             [this](QString code) { dashboardPage->applyRemoteCode(code); });
@@ -164,13 +171,14 @@ void MainWindow::logout() {
     stack->setCurrentWidget(loginPage);
 }
 
-void MainWindow::setupDebugToolbar() {
+void MainWindow::setupDebugToolbar()
+{
     QToolBar* bar = addToolBar("Debug");
-
-    bar->addAction("Login", [this]() { stack->setCurrentIndex(0); });
-    bar->addAction("Register", [this]() { stack->setCurrentIndex(1); });
-    bar->addAction("Rooms", [this]() { stack->setCurrentIndex(2); });
+    bar->addAction("Login",     [this]() { stack->setCurrentIndex(0); });
+    bar->addAction("Register",  [this]() { stack->setCurrentIndex(1); });
+    bar->addAction("Rooms",     [this]() { stack->setCurrentIndex(2); });
     bar->addAction("Dashboard", [this]() { stack->setCurrentIndex(3); });
+    bar->addAction("Tasks",     [this]() { stack->setCurrentIndex(4); });
 }
 
 MainWindow::~MainWindow() { delete sessions; }
