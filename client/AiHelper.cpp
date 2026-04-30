@@ -17,17 +17,21 @@ void AiHelper::ask(const QString& code) {
     std::string endpoint = "https://openrouter.ai/api/v1/chat/completions";
 
     nlohmann::json body;
-    body["model"] = "nvidia/nemotron-3-super-120b-a12b:free";
-
-    nlohmann::json messageObj;
-    messageObj["role"] = "user";
-
+    body["model"] = "poolside/laguna-xs.2:free";
+    
     std::string promptText = "Review this C++ code and suggest improvements:\n\n";
     promptText += code.toStdString();
-
-    messageObj["content"] = promptText;
-
     nlohmann::json messageArray = nlohmann::json::array();
+
+    nlohmann::json sysObj;
+    sysObj["role"]    = "system";
+    sysObj["content"] = "You are a concise C++ tutor for beginners. "
+                    "Keep answers short and direct.";
+    messageArray.push_back(sysObj);
+
+    nlohmann::json messageObj;
+    messageObj["role"]    = "user";
+    messageObj["content"] = promptText;
     messageArray.push_back(messageObj);
 
     body["messages"] = messageArray;

@@ -2,40 +2,40 @@
   {
     "id": 1,
     "title": "Hello World",
-    "description": "Print exactly: Hello World",
-    "hint": "cout << \"Hello World\" << endl;",
+    "description": "Write a C++ program that prints: Hello World\n\nYour program must print exactly that — nothing more, nothing less.",
+    "hint": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"Hello World\" << endl;\n    return 0;\n}",
     "type": "output_match",
     "expectedOutput": "Hello World"
   },
   {
     "id": 2,
     "title": "Sum 1 to 10",
-    "description": "Print the sum of all numbers from 1 to 10",
-    "hint": "Use a for loop. Add each number to a total variable.",
+    "description": "Write a C++ program that prints the sum of all numbers from 1 to 10.",
+    "hint": "#include <iostream>\nusing namespace std;\nint main() {\n    int sum = 0;\n    for (int i = 1; i <= 10; i++)\n        sum += i;\n    cout << sum << endl;\n    return 0;\n}",
     "type": "output_match",
     "expectedOutput": "55"
   },
   {
     "id": 3,
     "title": "First 5 even numbers",
-    "description": "Print the first 5 even numbers, one per line",
-    "hint": "Even numbers: 2, 4, 6, 8, 10",
+    "description": "Write a C++ program that prints the first 5 even numbers, one per line.",
+    "hint": "#include <iostream>\nusing namespace std;\nint main() {\n    for (int i = 2; i <= 10; i += 2)\n        cout << i << endl;\n    return 0;\n}",
     "type": "output_match",
     "expectedOutput": "2\n4\n6\n8\n10"
   },
   {
     "id": 4,
     "title": "Right triangle",
-    "description": "Print a right triangle of stars with 3 rows",
-    "hint": "Row 1 has 1 star, row 2 has 2, row 3 has 3",
+    "description": "Write a C++ program that prints a right triangle of stars with 3 rows.\nRow 1 has 1 star, row 2 has 2 stars, row 3 has 3 stars.",
+    "hint": "#include <iostream>\nusing namespace std;\nint main() {\n    for (int i = 1; i <= 3; i++) {\n        for (int j = 0; j < i; j++)\n            cout << \"*\";\n        cout << endl;\n    }\n    return 0;\n}",
     "type": "output_match",
     "expectedOutput": "*\n**\n***"
   },
   {
     "id": 5,
     "title": "Reverse a string",
-    "description": "Print the string ABCDE reversed",
-    "hint": "Just print the characters in reverse order",
+    "description": "Write a C++ program that prints the string ABCDE reversed.",
+    "hint": "#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\nint main() {\n    string s = \"ABCDE\";\n    reverse(s.begin(), s.end());\n    cout << s << endl;\n    return 0;\n}",
     "type": "output_match",
     "expectedOutput": "EDCBA"
   }

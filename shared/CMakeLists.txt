@@ -6,6 +6,7 @@ target_sources(shared PRIVATE
     src/SessionStore.cpp
     src/TaskLoader.cpp
     src/TaskValidator.cpp
+    src/CodeRunner.cpp
 )
 
 target_include_directories(shared PUBLIC

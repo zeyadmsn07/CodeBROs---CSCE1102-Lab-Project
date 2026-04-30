@@ -1,4 +1,5 @@
 #include "TaskValidator.h"
+#include "CodeRunner.h"
 #include <algorithm>
 
 std::string TaskValidator::normalize(const std::string& s)
@@ -11,13 +12,27 @@ std::string TaskValidator::normalize(const std::string& s)
 }
 
 ValidationResult TaskValidator::validate(const Task& task,
-                                         const std::string& submission)
+                                         const std::string& code)
 {
+    RunResult run = CodeRunner::run(code);
+
+    if (!run.success) {
+        return {
+            false,
+            "Compilation error:\n" + run.errorMsg
+        };
+    }
+
     std::string expected = normalize(task.expectedOutput);
-    std::string actual   = normalize(submission);
+    std::string actual   = normalize(run.output);
 
     if (actual == expected)
         return { true, "Correct!" };
 
-    return { false, "Expected:\n" + expected + "\n\nGot:\n" + actual };
+    return {
+        false,
+        "Your program compiled and ran, but the output was wrong.\n\n"
+        "Expected:\n" + expected + "\n\n"
+        "Got:\n" + actual
+    };
 }

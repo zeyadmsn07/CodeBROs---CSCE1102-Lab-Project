@@ -18,6 +18,9 @@ void TaskWidget::buildUi()
     descLabel->setWordWrap(true);
     descLabel->setObjectName("descLabel");
 
+    QLabel* editorLbl = new QLabel("YOUR CODE:", this);
+    editorLbl->setObjectName("fieldLabel");
+
     hintBtn = new QPushButton("Show Hint", this);
     hintBtn->setObjectName("hintBtn");
 
@@ -28,7 +31,14 @@ void TaskWidget::buildUi()
 
     answerEditor = new QPlainTextEdit(this);
     answerEditor->setFont(QFont("Courier New", 11));
-    answerEditor->setPlaceholderText("Type your answer here...");
+    answerEditor->setPlaceholderText(
+        "// Write your C++ code here\n"
+        "#include <iostream>\n"
+        "using namespace std;\n"
+        "int main() {\n"
+        "    \n"
+        "    return 0;\n"
+        "}");
     answerEditor->setMinimumHeight(80);
 
     submitBtn = new QPushButton("[ SUBMIT ]", this);
@@ -51,6 +61,7 @@ void TaskWidget::buildUi()
     layout->addWidget(descLabel);
     layout->addWidget(hintBtn);
     layout->addWidget(hintLabel);
+    layout->addWidget(editorLbl);
     layout->addWidget(answerEditor);
     layout->addWidget(submitBtn);
     layout->addWidget(feedbackLabel);
@@ -96,10 +107,13 @@ void TaskWidget::buildUi()
         "  font-family: 'Courier New';"
         "}"
         "QLabel#hintLabel {"
-        "  color: rgba(57,255,20,0.60);"
-        "  font-size: 12px;"
+        "  color: rgba(57,255,20,0.70);"
+        "  font-size: 11px;"
         "  font-family: 'Courier New';"
-        "  font-style: italic;"
+        "  background: rgba(57,255,20,0.04);"
+        "  border: 1px solid rgba(57,255,20,0.15);"
+        "  border-radius: 3px;"
+        "  padding: 8px;"
         "}"
         "QPlainTextEdit {"
         "  background: rgba(0,0,0,0.60);"
@@ -144,6 +158,12 @@ void TaskWidget::buildUi()
         "  border: none;"
         "}"
         "QPushButton#backBtn:hover { color: #39ff14; }"
+        "QLabel#fieldLabel {"
+        "  color: rgba(57,255,20,0.45);"
+        "  font-family: 'Courier New';"
+        "  font-size: 10px;"
+        "  letter-spacing: 1px;"
+        "}"
     );
 }
 
