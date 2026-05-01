@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include "CodeRunner.h"
 #include "Highlighter.h"
 
 DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
@@ -91,6 +92,17 @@ void DashboardWidget::buildUi() {
     aiBtn->setObjectName("tasksButton");
     aiBtn->setMinimumHeight(36);
 
+    runBtn = new QPushButton("▶  Run Code");
+    runBtn->setObjectName("runBtn");
+    runBtn->setMinimumHeight(36);
+
+    outputPane = new QPlainTextEdit();
+    outputPane->setObjectName("outputPane");
+    outputPane->setReadOnly(true);
+    outputPane->setPlaceholderText("Output will appear here...");
+    outputPane->setMaximumHeight(120);
+    outputPane->setFont(QFont("Courier New", 10));
+
     logoutButton = new QPushButton("Log Out");
     logoutButton->setObjectName("logoutButton");
     logoutButton->setMinimumHeight(36);
@@ -103,6 +115,8 @@ void DashboardWidget::buildUi() {
     sidebarLayout->addWidget(memberList);
     sidebarLayout->addWidget(typingLabel);
     sidebarLayout->addStretch();
+    sidebarLayout->addWidget(runBtn);       // ← NEW
+    sidebarLayout->addWidget(outputPane);   // ← NEW
     sidebarLayout->addWidget(tasksButton);
     sidebarLayout->addWidget(aiBtn);
     sidebarLayout->addWidget(logoutButton);
@@ -173,6 +187,38 @@ void DashboardWidget::buildUi() {
         connect(t, &QThread::finished, t, &QThread::deleteLater);
         t->start();
     });
+    connect(runBtn, &QPushButton::clicked, this, [this]() {
+        QString code = codeEditor->toPlainText();
+        if (code.trimmed().isEmpty()) {
+            outputPane->setPlainText("// Nothing to run.");
+            return;
+        }
+        runBtn->setEnabled(false);
+        runBtn->setText("Compiling…");
+        outputPane->setPlainText("");
+
+        // Run in a detached thread; post result back to main thread via invokeMethod
+        QThread* t = new QThread(this);
+        connect(t, &QThread::started, this, [this, code, t]() {
+            RunResult r = CodeRunner::run(code.toStdString());
+            QString result;
+            if (!r.success)
+                result = "Compile error:\n" + QString::fromStdString(r.errorMsg);
+            else if (r.output.empty())
+                result = "(no output)";
+            else
+                result = QString::fromStdString(r.output);
+
+            QMetaObject::invokeMethod(this, [this, result, t]() {
+                outputPane->setPlainText(result);
+                runBtn->setEnabled(true);
+                runBtn->setText("▶  Run Code");
+                t->quit();
+            }, Qt::QueuedConnection);
+        });
+        connect(t, &QThread::finished, t, &QThread::deleteLater);
+        t->start();
+    });
 }
 
 void DashboardWidget::appendChatMessage(const QString& sender, const QString& text) {
@@ -232,9 +278,10 @@ void DashboardWidget::applyStyles() {
     setStyleSheet(
         "QListWidget#chatList {"
         "  background-color: #252526;"
-        "  color: #cccccc;"
+        "  color: #e8e8e8;"
         "  border: none;"
-        "  font-size: 13px;"
+        "  font-family: 'Segoe UI', Arial, sans-serif;"
+        "  font-size: 15px;"
         "}"
         "QLineEdit#chatInput {"
         "  background-color: #3c3c3c;"
@@ -294,4 +341,22 @@ void DashboardWidget::applyStyles() {
         "QPushButton#logoutButton:hover {"
         "  background-color: rgba(240,149,149,0.10);"
         "}");
+        "QPushButton#runBtn {"
+        "  background-color: #3d8b3d;"
+        "  color: #ffffff;"
+        "  border: none;"
+        "  border-radius: 6px;"
+        "  font-weight: bold;"
+        "}"
+        "QPushButton#runBtn:hover  { background-color: #4caa4c; }"
+        "QPushButton#runBtn:pressed { background-color: #2e6b2e; }"
+        "QPushButton#runBtn:disabled { background-color: #555555; color: #999999; }"
+        "QPlainTextEdit#outputPane {"
+        "  background-color: #1a1a1a;"
+        "  color: #98e498;"
+        "  border: 1px solid #3d8b3d;"
+        "  border-radius: 4px;"
+        "  font-family: 'Courier New';"
+        "  font-size: 11px;"
+        "}";
 }

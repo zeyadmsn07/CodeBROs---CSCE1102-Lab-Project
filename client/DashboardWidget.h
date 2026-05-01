@@ -34,16 +34,18 @@ class DashboardWidget : public QWidget {
 
    private:
     QPlainTextEdit* codeEditor;
-    QListWidget* chatList;
-    QLineEdit* chatInput;
-    QPushButton* sendButton;
-    QPushButton* aiBtn;
-    QLabel* roomCodeLabel;
-    QListWidget* memberList;
-    QLabel* typingLabel;
-    QPushButton* tasksButton;
-    QPushButton* logoutButton;
-    QTimer* syncTimer;
+    QListWidget*    chatList;
+    QLineEdit*      chatInput;
+    QPushButton*    sendButton;
+    QPushButton*    aiBtn;
+    QPushButton*    runBtn;           // ← NEW
+    QPlainTextEdit* outputPane;       // ← NEW
+    QLabel*         roomCodeLabel;
+    QListWidget*    memberList;
+    QLabel*         typingLabel;
+    QPushButton*    tasksButton;
+    QPushButton*    logoutButton;
+    QTimer*         syncTimer;
 
     void buildUi();
     void applyStyles();
