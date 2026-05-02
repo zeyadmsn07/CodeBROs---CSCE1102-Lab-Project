@@ -5,36 +5,43 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
+#include <QString>
 #include <QWidget>
 
 #include "NetworkClient.h"
 
 class RoomWidget : public QWidget {
     Q_OBJECT
-   public:
+public:
     explicit RoomWidget(NetworkClient* net, QWidget* parent = nullptr);
+
     void setUsername(const QString& name);
+    void setCurrentRoomId(const QString& roomId);
     void refresh();
 
-   signals:
-    void roomEntered(const QString& roomId, const QString& roomName, const QString& initialCode);
+signals:
+    void roomEntered(const QString& roomId,
+                     const QString& roomName,
+                     const QString& initialCode);
 
-   protected:
+protected:
     void paintEvent(QPaintEvent* e) override;
 
-   private slots:
+private slots:
     void onCreateClicked();
     void onJoinClicked();
     void onRoomList(QJsonArray rooms);
     void onRoomCreated(QString roomId, QString name);
-    void onRoomJoined(QString roomId, QString code);
+    void onRoomJoined(QString roomId, QString roomName, QString code);
     void onJoinFailed(QString reason);
 
-   private:
+private:
     void applyStyles();
 
     NetworkClient* net;
-    QLabel* welcomeLabel;
+    QString        currentRoomId_;
+
+    QLabel*      welcomeLabel;
     QListWidget* roomList;
     QPushButton* createBtn;
     QPushButton* joinBtn;

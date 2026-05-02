@@ -2,16 +2,18 @@
 
 #include <QHBoxLayout>
 #include <QInputDialog>
-#include <QJsonObject>
 #include <QMessageBox>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPixmap>
 #include <QVBoxLayout>
+#include <QJsonObject>
 
 #include "MessageFactory.h"
 
-RoomWidget::RoomWidget(NetworkClient* net, QWidget* parent) : QWidget(parent), net(net) {
+RoomWidget::RoomWidget(NetworkClient* net, QWidget* parent)
+    : QWidget(parent), net(net)
+{
     auto* vbox = new QVBoxLayout(this);
     vbox->setContentsMargins(32, 32, 32, 32);
     vbox->setSpacing(16);
@@ -24,7 +26,8 @@ RoomWidget::RoomWidget(NetworkClient* net, QWidget* parent) : QWidget(parent), n
     welcomeLabel->setFont(f);
     vbox->addWidget(welcomeLabel);
 
-    QLabel* subtitle = new QLabel("Select a room to join, or create a new one.", this);
+    QLabel* subtitle = new QLabel(
+        "Select a room to join, or create a new one.", this);
     subtitle->setObjectName("subtitleLabel");
     vbox->addWidget(subtitle);
 
@@ -34,15 +37,19 @@ RoomWidget::RoomWidget(NetworkClient* net, QWidget* parent) : QWidget(parent), n
 
     auto* hbox = new QHBoxLayout;
     hbox->setSpacing(10);
-    createBtn = new QPushButton("＋  Create Room", this);
-    joinBtn = new QPushButton("→  Join Room", this);
-    refreshBtn = new QPushButton("↻  Refresh", this);
+
+    createBtn  = new QPushButton("\uFF0B  Create Room", this);
+    joinBtn    = new QPushButton("\u2192  Join Room",   this);
+    refreshBtn = new QPushButton("\u21BB  Refresh",     this);
+
     createBtn->setObjectName("primaryBtn");
     joinBtn->setObjectName("primaryBtn");
     refreshBtn->setObjectName("secondaryBtn");
+
     createBtn->setMinimumHeight(40);
     joinBtn->setMinimumHeight(40);
     refreshBtn->setMinimumHeight(40);
+
     hbox->addWidget(createBtn);
     hbox->addWidget(joinBtn);
     hbox->addWidget(refreshBtn);
@@ -50,28 +57,116 @@ RoomWidget::RoomWidget(NetworkClient* net, QWidget* parent) : QWidget(parent), n
 
     applyStyles();
 
-    connect(createBtn, &QPushButton::clicked, this, &RoomWidget::onCreateClicked);
-    connect(joinBtn, &QPushButton::clicked, this, &RoomWidget::onJoinClicked);
+    connect(createBtn,  &QPushButton::clicked, this, &RoomWidget::onCreateClicked);
+    connect(joinBtn,    &QPushButton::clicked, this, &RoomWidget::onJoinClicked);
     connect(refreshBtn, &QPushButton::clicked, this, &RoomWidget::refresh);
 
     connect(net, &NetworkClient::roomListReceived, this, &RoomWidget::onRoomList);
-    connect(net, &NetworkClient::roomCreated, this, &RoomWidget::onRoomCreated);
-    connect(net, &NetworkClient::roomJoined, this, &RoomWidget::onRoomJoined);
-    connect(net, &NetworkClient::joinFailed, this, &RoomWidget::onJoinFailed);
+    connect(net, &NetworkClient::roomCreated,      this, &RoomWidget::onRoomCreated);
+    connect(net, &NetworkClient::roomJoined,       this, &RoomWidget::onRoomJoined);
+    connect(net, &NetworkClient::joinFailed,       this, &RoomWidget::onJoinFailed);
 }
 
-// draws the same background image used on the login/register pages
-void RoomWidget::paintEvent(QPaintEvent* e) {
+void RoomWidget::setUsername(const QString& name)
+{
+    welcomeLabel->setText("Welcome, " + name + "!");
+}
+
+void RoomWidget::setCurrentRoomId(const QString& roomId)
+{
+    currentRoomId_ = roomId;
+}
+
+void RoomWidget::refresh()
+{
+    net->sendMessage(MessageFactory::makeGetRooms());
+}
+
+void RoomWidget::paintEvent(QPaintEvent* e)
+{
     QPainter painter(this);
-    QPixmap bg(":/images/background.jpg");
+    QPixmap  bg(":/images/background.jpg");
     painter.drawPixmap(rect(),
-                       bg.scaled(size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+        bg.scaled(size(),
+                  Qt::KeepAspectRatioByExpanding,
+                  Qt::SmoothTransformation));
     QWidget::paintEvent(e);
 }
 
-void RoomWidget::applyStyles() {
+void RoomWidget::onCreateClicked()
+{
+    // client-side guard: already in a room
+    if (!currentRoomId_.isEmpty()) {
+        QMessageBox::warning(this, "Already in a room",
+            "You are already in a room.\n"
+            "Log out first if you want to switch rooms.");
+        return;
+    }
+
+    bool    ok;
+    QString name = QInputDialog::getText(
+        this, "New Room", "Room name:",
+        QLineEdit::Normal, "", &ok);
+
+    if (!ok || name.trimmed().isEmpty()) return;
+
+    net->sendMessage(MessageFactory::makeCreateRoom(name.toStdString()));
+}
+
+void RoomWidget::onJoinClicked()
+{
+    // client-side guard: already in a room
+    if (!currentRoomId_.isEmpty()) {
+        QMessageBox::warning(this, "Already in a room",
+            "You are already in a room.\n"
+            "Log out first if you want to switch rooms.");
+        return;
+    }
+
+    QListWidgetItem* item = roomList->currentItem();
+    if (!item) {
+        QMessageBox::warning(this, "No selection", "Pick a room first.");
+        return;
+    }
+
+    QString roomId = item->data(Qt::UserRole).toString();
+    net->sendMessage(MessageFactory::makeJoinRoom(roomId.toStdString()));
+}
+
+void RoomWidget::onRoomList(QJsonArray rooms)
+{
+    roomList->clear();
+    for (auto val : rooms) {
+        QJsonObject r     = val.toObject();
+        QString     label = r["name"].toString()
+                          + "  ["
+                          + QString::number(r["members"].toInt())
+                          + " online]";
+        auto* item = new QListWidgetItem(label, roomList);
+        item->setData(Qt::UserRole,      r["id"].toString());
+        item->setData(Qt::UserRole + 1,  r["name"].toString()); // store clean name
+    }
+}
+
+void RoomWidget::onRoomCreated(QString roomId, QString name)
+{
+    emit roomEntered(roomId, name, "");
+}
+
+void RoomWidget::onRoomJoined(QString roomId, QString roomName, QString code)
+{
+    // roomName comes directly from the server now — no need to parse list text
+    emit roomEntered(roomId, roomName, code);
+}
+
+void RoomWidget::onJoinFailed(QString reason)
+{
+    QMessageBox::warning(this, "Could not join", reason);
+}
+
+void RoomWidget::applyStyles()
+{
     setStyleSheet(
-        // labels — white so they show over the image
         "QLabel#welcomeLabel {"
         "  color: #ffffff;"
         "  font-size: 18px;"
@@ -81,8 +176,6 @@ void RoomWidget::applyStyles() {
         "  color: rgba(255,255,255,0.55);"
         "  font-size: 13px;"
         "}"
-
-        // semi-transparent dark card so the list is readable over the image
         "QListWidget#roomList {"
         "  background-color: rgba(0,0,0,0.65);"
         "  color: #ffffff;"
@@ -102,8 +195,6 @@ void RoomWidget::applyStyles() {
         "QListWidget#roomList::item:hover {"
         "  background-color: rgba(255,255,255,0.08);"
         "}"
-
-        // primary buttons — same purple as login button
         "QPushButton#primaryBtn {"
         "  background-color: #7F77DD;"
         "  color: #ffffff;"
@@ -115,8 +206,6 @@ void RoomWidget::applyStyles() {
         "}"
         "QPushButton#primaryBtn:hover   { background-color: #9189E8; }"
         "QPushButton#primaryBtn:pressed { background-color: #6B63C4; }"
-
-        // secondary button — dark transparent
         "QPushButton#secondaryBtn {"
         "  background-color: rgba(0,0,0,0.50);"
         "  color: #cccccc;"
@@ -125,55 +214,6 @@ void RoomWidget::applyStyles() {
         "  font-size: 14px;"
         "  padding: 0 16px;"
         "}"
-        "QPushButton#secondaryBtn:hover { background-color: rgba(0,0,0,0.70); }");
+        "QPushButton#secondaryBtn:hover { background-color: rgba(0,0,0,0.70); }"
+    );
 }
-
-void RoomWidget::setUsername(const QString& name) {
-    welcomeLabel->setText("Welcome, " + name + "!");
-}
-
-void RoomWidget::refresh() { net->sendMessage(MessageFactory::makeGetRooms()); }
-
-void RoomWidget::onCreateClicked() {
-    bool ok;
-    QString name =
-        QInputDialog::getText(this, "New Room", "Room name:", QLineEdit::Normal, "", &ok);
-    if (!ok || name.trimmed().isEmpty()) return;
-    net->sendMessage(MessageFactory::makeCreateRoom(name.toStdString()));
-}
-
-void RoomWidget::onJoinClicked() {
-    QListWidgetItem* item = roomList->currentItem();
-    if (!item) {
-        QMessageBox::warning(this, "No selection", "Pick a room first.");
-        return;
-    }
-    QString roomId = item->data(Qt::UserRole).toString();
-    net->sendMessage(MessageFactory::makeJoinRoom(roomId.toStdString()));
-}
-
-void RoomWidget::onRoomList(QJsonArray rooms) {
-    roomList->clear();
-    for (auto val : rooms) {
-        QJsonObject r = val.toObject();
-        QString label =
-            r["name"].toString() + "  [" + QString::number(r["members"].toInt()) + " online]";
-        auto* item = new QListWidgetItem(label, roomList);
-        item->setData(Qt::UserRole, r["id"].toString());
-    }
-}
-
-void RoomWidget::onRoomCreated(QString roomId, QString name) { emit roomEntered(roomId, name, ""); }
-
-void RoomWidget::onRoomJoined(QString roomId, QString code) {
-    QString name = roomId;
-    for (int i = 0; i < roomList->count(); i++) {
-        if (roomList->item(i)->data(Qt::UserRole).toString() == roomId) {
-            name = roomList->item(i)->text();
-            break;
-        }
-    }
-    emit roomEntered(roomId, name, code);
-}
-
-void RoomWidget::onJoinFailed(QString reason) { QMessageBox::warning(this, "Join failed", reason); }

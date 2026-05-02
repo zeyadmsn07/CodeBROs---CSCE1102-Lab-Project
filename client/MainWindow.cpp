@@ -2,7 +2,7 @@
 
 #include <QMenuBar>
 #include <QToolBar>
-#include <iostream>  // often left in by beginners for debugging
+#include <iostream>
 
 #include "MessageFactory.h"
 
@@ -11,40 +11,42 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     setMinimumSize(900, 600);
 
     sessions = new SessionStore("data/sessions.json");
-    network = new NetworkClient(this);
+    network  = new NetworkClient(this);
 
     stack = new QStackedWidget(this);
     setCentralWidget(stack);
 
-    loginPage = new LoginWidget(this);
-    registerPage = new RegisterWidget(this);
-    roomPage = new RoomWidget(network, this);
+    loginPage     = new LoginWidget(this);
+    registerPage  = new RegisterWidget(this);
+    roomPage      = new RoomWidget(network, this);
     dashboardPage = new DashboardWidget(this);
-    taskPage = new TaskWidget();
 
-    stack->addWidget(loginPage);    // 0
+    stack->addWidget(loginPage);     // 0
     stack->addWidget(registerPage);  // 1
-    stack->addWidget(roomPage);       // 2
-    stack->addWidget(dashboardPage);  // 3
-    stack->addWidget(taskPage); // 4
-    
-    // navigation signals
+    stack->addWidget(roomPage);      // 2
+    stack->addWidget(dashboardPage); // 3
+
+    // ── navigation ───────────────────────────────────────────
+
     connect(loginPage, &LoginWidget::goToRegisterRequested,
             [this]() { stack->setCurrentIndex(1); });
 
-    connect(loginPage, &LoginWidget::loginRequested, this, &MainWindow::onLoginAttempt);
+    connect(loginPage, &LoginWidget::loginRequested,
+            this, &MainWindow::onLoginAttempt);
 
     connect(registerPage, &RegisterWidget::goToLoginRequested,
             [this]() { stack->setCurrentIndex(0); });
 
-    connect(registerPage, &RegisterWidget::registerRequested, this, &MainWindow::onRegisterAttempt);
+    connect(registerPage, &RegisterWidget::registerRequested,
+            this, &MainWindow::onRegisterAttempt);
 
-    // auth responses from server
+    // ── auth responses ────────────────────────────────────────
+
     connect(network, &NetworkClient::loginSuccess, this, [this](QString username) {
         currentUser = username;
-        std::string userStr = username.toStdString();
-        sessions->createSession(userStr);
+        sessions->createSession(username.toStdString());
         roomPage->setUsername(username);
+        roomPage->setCurrentRoomId("");   // fresh login — not in any room
         roomPage->refresh();
         stack->setCurrentWidget(roomPage);
         loginPage->setLoading(false);
@@ -66,71 +68,102 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         registerPage->setLoading(false);
     });
 
-    // switch to dashboard when entering a room
+    // ── entering a room → switch to dashboard ────────────────
+
     connect(roomPage, &RoomWidget::roomEntered, this,
-            [this](const QString& roomId, const QString& roomName, const QString& initialCode) {
-                currentRoomId = roomId;
-                dashboardPage->setRoomCode(roomName);
-                dashboardPage->applyRemoteCode(initialCode);
-                stack->setCurrentWidget(dashboardPage);
-            });
+        [this](const QString& roomId,
+               const QString& roomName,
+               const QString& initialCode) {
+            currentRoomId = roomId;
+            roomPage->setCurrentRoomId(roomId);   // block further joins
 
-    connect(dashboardPage, &DashboardWidget::logoutRequested, this, &MainWindow::logout);
+            dashboardPage->setRoomCode(roomName); // show room name in sidebar
+            dashboardPage->applyRemoteCode(initialCode);
+            stack->setCurrentWidget(dashboardPage);
+        });
 
-    // handle chat messages
-    connect(dashboardPage, &DashboardWidget::chatMessageEntered, [this](QString text) {
-        std::string roomStr = currentRoomId.toStdString();
-        std::string userStr = currentUser.toStdString();
-        std::string textStr = text.toStdString();
+    // ── member list updates ───────────────────────────────────
 
-        network->sendMessage(MessageFactory::makeChatMsg(roomStr, userStr, textStr));
-    });
+    connect(network, &NetworkClient::memberListReceived, this,
+        [this](QStringList members) {
+            dashboardPage->updateMemberList(members);
+        });
+
+    // ── logout ────────────────────────────────────────────────
+
+    connect(dashboardPage, &DashboardWidget::logoutRequested,
+            this, &MainWindow::logout);
+
+    // ── chat ──────────────────────────────────────────────────
+
+    connect(dashboardPage, &DashboardWidget::chatMessageEntered,
+        [this](QString text) {
+            network->sendMessage(MessageFactory::makeChatMsg(
+                currentRoomId.toStdString(),
+                currentUser.toStdString(),
+                text.toStdString()));
+        });
+
+    // ── code sync ─────────────────────────────────────────────
 
     connect(dashboardPage, &DashboardWidget::codeSyncTriggered,
-            [this](QString code) {  // handle code updates
-                std::string roomStr = currentRoomId.toStdString();
-                std::string codeStr = code.toStdString();
-
-                network->sendMessage(MessageFactory::makeCodeUpdate(roomStr, codeStr));
-            });
-    connect(dashboardPage, &DashboardWidget::openTasksRequested,
-        [this]() { stack->setCurrentIndex(4); });
-
-connect(taskPage, &TaskWidget::backRequested,
-        [this]() { stack->setCurrentIndex(3); });
+        [this](QString code) {
+            network->sendMessage(MessageFactory::makeCodeUpdate(
+                currentRoomId.toStdString(),
+                code.toStdString()));
+        });
 
     connect(network, &NetworkClient::codeUpdated, this,
-            [this](QString code) { dashboardPage->applyRemoteCode(code); });
+        [this](QString code) { dashboardPage->applyRemoteCode(code); });
 
-    connect(network, &NetworkClient::chatReceived, this, [this](QString sender, QString text) {
-        dashboardPage->appendChatMessage(sender, text);
-    });
+    // ── incoming chat ─────────────────────────────────────────
 
-    connect(network, &NetworkClient::userJoined, this, [this](QString username) {
-        QString msg = username + " joined the room";
-        dashboardPage->appendChatMessage("System", msg);
-    });
+    connect(network, &NetworkClient::chatReceived, this,
+        [this](QString sender, QString text) {
+            dashboardPage->appendChatMessage(sender, text);
+        });
 
-    connect(network, &NetworkClient::userLeft, this, [this](QString username) {
-        QString msg = username + " left the room";
-        dashboardPage->appendChatMessage("System", msg);
-    });
+    // ── join/leave notifications ──────────────────────────────
+
+    connect(network, &NetworkClient::userJoined, this,
+        [this](QString username) {
+            dashboardPage->appendChatMessage(
+                "System", username + " joined the room");
+        });
+
+    connect(network, &NetworkClient::userLeft, this,
+        [this](QString username) {
+            dashboardPage->appendChatMessage(
+                "System", username + " left the room");
+        });
+
+    // ── join failed (e.g. already in room) ───────────────────
+
+    connect(network, &NetworkClient::joinFailed, this,
+        [this](QString reason) {
+            // only show if we're on the room page
+            // (the RoomWidget already shows its own QMessageBox,
+            //  but the server-side check sends this too)
+        });
+
+    // ── menu bar logout ───────────────────────────────────────
 
     QAction* logoutAction = menuBar()->addAction("Log Out");
     connect(logoutAction, &QAction::triggered, this, &MainWindow::logout);
 
     setupDebugToolbar();
+
+    // ── startup: connect and check session ───────────────────
+
     try {
         network->connect("127.0.0.1", 12345);
 
-        std::string sessionStr = sessions->checkSession();
-        QString saved = QString::fromStdString(sessionStr);
-
-        if (saved != "") {
-            currentUser = saved;
-            std::string savedStd = saved.toStdString();
-            network->sendMessage(MessageFactory::makeSessionRestore(savedStd));
-            roomPage->setUsername(saved);
+        std::string saved = sessions->checkSession();
+        if (!saved.empty()) {
+            currentUser = QString::fromStdString(saved);
+            network->sendMessage(MessageFactory::makeSessionRestore(saved));
+            roomPage->setUsername(currentUser);
+            roomPage->setCurrentRoomId("");
             roomPage->refresh();
             stack->setCurrentWidget(roomPage);
         } else {
@@ -141,28 +174,26 @@ connect(taskPage, &TaskWidget::backRequested,
     }
 }
 
-void MainWindow::onLoginAttempt(const QString& username, const QString& password) {
+void MainWindow::onLoginAttempt(const QString& username,
+                                const QString& password) {
     loginPage->setLoading(true);
-
-    std::string userStr = username.toStdString();
-    std::string passStr = password.toStdString();
-
-    network->sendMessage(MessageFactory::makeLogin(userStr, passStr));
+    network->sendMessage(MessageFactory::makeLogin(
+        username.toStdString(), password.toStdString()));
 }
 
-void MainWindow::onRegisterAttempt(const QString& username, const QString& password) {
+void MainWindow::onRegisterAttempt(const QString& username,
+                                   const QString& password) {
     registerPage->setLoading(true);
-
-    std::string userStr = username.toStdString();
-    std::string passStr = password.toStdString();
-
-    network->sendMessage(MessageFactory::makeRegister(userStr, passStr));
+    network->sendMessage(MessageFactory::makeRegister(
+        username.toStdString(), password.toStdString()));
 }
 
 void MainWindow::logout() {
     sessions->clearSession();
     currentUser.clear();
     currentRoomId.clear();
+
+    roomPage->setCurrentRoomId("");   // reset the guard
 
     network->sendMessage(MessageFactory::makeLeaveRoom());
 
@@ -171,14 +202,12 @@ void MainWindow::logout() {
     stack->setCurrentWidget(loginPage);
 }
 
-void MainWindow::setupDebugToolbar()
-{
+void MainWindow::setupDebugToolbar() {
     QToolBar* bar = addToolBar("Debug");
     bar->addAction("Login",     [this]() { stack->setCurrentIndex(0); });
     bar->addAction("Register",  [this]() { stack->setCurrentIndex(1); });
     bar->addAction("Rooms",     [this]() { stack->setCurrentIndex(2); });
     bar->addAction("Dashboard", [this]() { stack->setCurrentIndex(3); });
-    bar->addAction("Tasks",     [this]() { stack->setCurrentIndex(4); });
 }
 
 MainWindow::~MainWindow() { delete sessions; }
