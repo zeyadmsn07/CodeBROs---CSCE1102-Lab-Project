@@ -211,6 +211,19 @@ void Session::handle(const json& msg) {
 
         std::string rname = msg.value("name", "Unnamed Room");
         std::lock_guard<std::mutex> lk(rooms_.mtx);
+
+        // global check: prevent joining if already in ANY room with same username
+        if (!username.empty()) {
+            for (auto& wp : rooms_.getAllMembers()) {
+                auto sp = wp.lock();
+                if (sp && sp->username == username) {
+                    send(json({{"type", "join_failed"},
+                               {"reason", "You are already in a room."}}).dump());
+                    return;
+                }
+            }
+        }
+
         std::string rid = rooms_.createRoom(rname);
         rooms_.addMember(rid, shared_from_this());
         current_room = rid;
@@ -236,6 +249,18 @@ void Session::handle(const json& msg) {
             send(json({{"type", "join_failed"},
                        {"reason", "room not found"}}).dump());
             return;
+        }
+
+        // global check: prevent joining if already in ANY room with same username
+        if (!username.empty()) {
+            for (auto& wp : rooms_.getAllMembers()) {
+                auto sp = wp.lock();
+                if (sp && sp->username == username) {
+                    send(json({{"type", "join_failed"},
+                               {"reason", "You are already in a room."}}).dump());
+                    return;
+                }
+            }
         }
 
         current_room = rid;

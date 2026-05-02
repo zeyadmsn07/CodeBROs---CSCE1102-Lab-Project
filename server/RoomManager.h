@@ -22,6 +22,7 @@ class RoomManager {
     listRooms();  // returns list of {id, name, member count}
     void addMember(const std::string& roomId, std::shared_ptr<Session> s);
     void removeMember(const std::string& roomId, std::shared_ptr<Session> s);
+    std::vector<std::weak_ptr<Session>> getAllMembers();
     std::mutex mtx;
 
    private:

@@ -42,3 +42,13 @@ void RoomManager::removeMember(const std::string& roomId, std::shared_ptr<Sessio
                                     }),
                      r->members.end());
 }
+
+std::vector<std::weak_ptr<Session>> RoomManager::getAllMembers() {
+    std::vector<std::weak_ptr<Session>> all;
+    for (auto& [id, r] : rooms) {
+        for (auto& wp : r.members) {
+            all.push_back(wp);
+        }
+    }
+    return all;
+}
