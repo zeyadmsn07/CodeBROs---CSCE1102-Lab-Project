@@ -104,7 +104,10 @@ MainWindow::MainWindow(QWidget* parent)
             currentRoomId.toStdString(),
             currentUser.toStdString(),
             text.toStdString()));
-        dashboardPage->appendChatMessage(currentUser, text);
+        // Do NOT call appendChatMessage here.
+        // The server echoes every chat message back to all clients
+        // (including the sender), so chatReceived below will display it.
+        // Appending locally too would show it twice.
     });
 
     connect(dashboardPage, &DashboardWidget::codeSyncTriggered,
