@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget* parent)
     sessions = new SessionStore("data/sessions.json");
     network  = new NetworkClient(this);
 
-    // ── Stack ─────────────────────────────────────────────────
     stack = new QStackedWidget(this);
     setCentralWidget(stack);
 
@@ -26,20 +25,13 @@ MainWindow::MainWindow(QWidget* parent)
     stack->addWidget(dashboardPage);  // 3
 
     // ── Menu bar (hidden until logged in) ─────────────────────
-    // Start with an empty, invisible menu bar
     menuBar()->setVisible(false);
-
-    // "Back to Rooms" — shown only while in Dashboard
     backToRoomsAction = menuBar()->addAction("← Rooms");
     connect(backToRoomsAction, &QAction::triggered, this, [this] {
         roomPage->refresh();
         showPage(roomPage);
     });
-
-    // Spacer-style separator
     menuBar()->addSeparator();
-
-    // Logged-in user display — we update the text dynamically
     logoutAction = menuBar()->addAction("Log Out");
     connect(logoutAction, &QAction::triggered, this, &MainWindow::logout);
 
@@ -86,10 +78,11 @@ MainWindow::MainWindow(QWidget* parent)
     });
 
     // ── RoomWidget → DashboardWidget ──────────────────────────
+    // FIX: signal now carries roomName as second parameter
     connect(roomPage, &RoomWidget::roomEntered, this,
-            [this](const QString& roomId, const QString& initialCode) {
+            [this](const QString& roomId, const QString& roomName, const QString& initialCode) {
         currentRoomId = roomId;
-        dashboardPage->setRoomCode(roomId);
+        dashboardPage->setRoomName(roomName);      // FIX: show room name, not ROOM_1
         dashboardPage->applyRemoteCode(initialCode);
         showPage(dashboardPage);
     });
@@ -104,10 +97,8 @@ MainWindow::MainWindow(QWidget* parent)
             currentRoomId.toStdString(),
             currentUser.toStdString(),
             text.toStdString()));
-        // Do NOT call appendChatMessage here.
-        // The server echoes every chat message back to all clients
-        // (including the sender), so chatReceived below will display it.
-        // Appending locally too would show it twice.
+        // Do NOT appendChatMessage here — server echoes it back to all clients
+        // including the sender, so chatReceived below will display it once.
     });
 
     connect(dashboardPage, &DashboardWidget::codeSyncTriggered,
@@ -138,22 +129,17 @@ MainWindow::MainWindow(QWidget* parent)
         dashboardPage->appendChatMessage("System", username + " left the room");
     });
 
-    // ── Startup: try saved session, else show login ───────────
+    // FIX: wire up member list — was missing in the latest version
+    connect(network, &NetworkClient::memberListReceived, this,
+            [this](QStringList members) {
+        dashboardPage->updateMemberList(members);
+    });
+
+    // ── Startup: FIX — always show login, never auto-restore session ──
     try {
         network->connect("127.0.0.1", 12345);
-        QString saved = QString::fromStdString(sessions->checkSession());
-        if (!saved.isEmpty()) {
-            currentUser = saved;
-            roomPage->setUsername(saved);
-            roomPage->refresh();
-            setLoggedIn(true);
-            showPage(roomPage);
-        } else {
-            showPage(loginPage);
-        }
-    } catch (...) {
-        showPage(loginPage);
-    }
+    } catch (...) {}
+    showPage(loginPage);
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -161,8 +147,6 @@ MainWindow::MainWindow(QWidget* parent)
 void MainWindow::showPage(QWidget* page)
 {
     stack->setCurrentWidget(page);
-
-    // "← Rooms" only makes sense when inside the dashboard
     backToRoomsAction->setVisible(page == dashboardPage);
 }
 

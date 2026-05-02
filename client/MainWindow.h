@@ -1,10 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QAction>
 #include <QMainWindow>
 #include <QStackedWidget>
-#include <QMenuBar>
-#include <QAction>
 #include <QString>
 #include "LoginWidget.h"
 #include "RegisterWidget.h"
@@ -31,18 +30,17 @@ private:
     RoomWidget*      roomPage;      // index 2
     DashboardWidget* dashboardPage; // index 3
 
+    QAction* backToRoomsAction;
+    QAction* logoutAction;
+
     NetworkClient* network;
     SessionStore*  sessions;
     QString        currentUser;
     QString        currentRoomId;
 
-    // Menu bar actions (shown only when logged in)
-    QAction* logoutAction;
-    QAction* backToRoomsAction;
-
+    void showPage(QWidget* page);
+    void setLoggedIn(bool loggedIn);
     void logout();
-    void setLoggedIn(bool loggedIn);   // toggles menu bar visibility
-    void showPage(QWidget* page);      // sets current page + updates menu
 };
 
 #endif

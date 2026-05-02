@@ -95,7 +95,6 @@ void RoomWidget::paintEvent(QPaintEvent* e)
 
 void RoomWidget::onCreateClicked()
 {
-    // client-side guard: already in a room
     if (!currentRoomId_.isEmpty()) {
         QMessageBox::warning(this, "Already in a room",
             "You are already in a room.\n"
@@ -115,7 +114,6 @@ void RoomWidget::onCreateClicked()
 
 void RoomWidget::onJoinClicked()
 {
-    // client-side guard: already in a room
     if (!currentRoomId_.isEmpty()) {
         QMessageBox::warning(this, "Already in a room",
             "You are already in a room.\n"
@@ -143,8 +141,8 @@ void RoomWidget::onRoomList(QJsonArray rooms)
                           + QString::number(r["members"].toInt())
                           + " online]";
         auto* item = new QListWidgetItem(label, roomList);
-        item->setData(Qt::UserRole,      r["id"].toString());
-        item->setData(Qt::UserRole + 1,  r["name"].toString()); // store clean name
+        item->setData(Qt::UserRole,     r["id"].toString());
+        item->setData(Qt::UserRole + 1, r["name"].toString());
     }
 }
 
@@ -155,7 +153,6 @@ void RoomWidget::onRoomCreated(QString roomId, QString name)
 
 void RoomWidget::onRoomJoined(QString roomId, QString roomName, QString code)
 {
-    // roomName comes directly from the server now — no need to parse list text
     emit roomEntered(roomId, roomName, code);
 }
 

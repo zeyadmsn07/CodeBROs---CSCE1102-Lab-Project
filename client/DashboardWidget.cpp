@@ -35,6 +35,7 @@ void DashboardWidget::buildUi() {
     codeEditor->setStyleSheet("QPlainTextEdit { background-color: #1e1e1e; }");
 
     Highlighter* h = new Highlighter(codeEditor->document());
+    (void)h;
 
     chatList = new QListWidget();
     chatList->setObjectName("chatList");
@@ -64,7 +65,7 @@ void DashboardWidget::buildUi() {
     chatLayout->addWidget(chatList);
     chatLayout->addLayout(inputRow);
 
-    QSplitter* splitter = new QSplitter(Qt::Vertical);  // split screen between editor and chat
+    QSplitter* splitter = new QSplitter(Qt::Vertical);
     splitter->addWidget(codeEditor);
     splitter->addWidget(chatArea);
     splitter->setStretchFactor(0, 3);
@@ -73,9 +74,13 @@ void DashboardWidget::buildUi() {
     QLabel* partyLabel = new QLabel("Party");
     partyLabel->setObjectName("partyLabel");
 
-    roomCodeLabel = new QLabel("—");
-    roomCodeLabel->setObjectName("roomCodeLabel");
-    roomCodeLabel->setWordWrap(true);
+    // FIX: replaced roomCodeLabel with roomNameLabel + userCountLabel
+    roomNameLabel = new QLabel("—");
+    roomNameLabel->setObjectName("roomNameLabel");
+    roomNameLabel->setWordWrap(true);
+
+    userCountLabel = new QLabel("");
+    userCountLabel->setObjectName("userCountLabel");
 
     memberList = new QListWidget();
     memberList->setObjectName("memberList");
@@ -111,12 +116,13 @@ void DashboardWidget::buildUi() {
     sidebarLayout->setSpacing(8);
     sidebarLayout->setContentsMargins(8, 8, 8, 8);
     sidebarLayout->addWidget(partyLabel);
-    sidebarLayout->addWidget(roomCodeLabel);
+    sidebarLayout->addWidget(roomNameLabel);   // FIX: room name
+    sidebarLayout->addWidget(userCountLabel);  // FIX: user count
     sidebarLayout->addWidget(memberList);
     sidebarLayout->addWidget(typingLabel);
     sidebarLayout->addStretch();
-    sidebarLayout->addWidget(runBtn);       // ← NEW
-    sidebarLayout->addWidget(outputPane);   // ← NEW
+    sidebarLayout->addWidget(runBtn);
+    sidebarLayout->addWidget(outputPane);
     sidebarLayout->addWidget(tasksButton);
     sidebarLayout->addWidget(aiBtn);
     sidebarLayout->addWidget(logoutButton);
@@ -131,6 +137,7 @@ void DashboardWidget::buildUi() {
     root->setSpacing(0);
     root->addWidget(splitter, 3);
     root->addWidget(sidebar, 1);
+
     syncTimer = new QTimer(this);
     syncTimer->setSingleShot(true);
     syncTimer->setInterval(300);
@@ -170,7 +177,7 @@ void DashboardWidget::buildUi() {
             aiBtn->setText("Ask AI");
             return;
         }
-        QThread* t = new QThread(this);  // Put AI in a separate thread so the GUI doesn't freeze
+        QThread* t = new QThread(this);
         AiHelper* ai = new AiHelper();
         ai->moveToThread(t);
 
@@ -187,6 +194,7 @@ void DashboardWidget::buildUi() {
         connect(t, &QThread::finished, t, &QThread::deleteLater);
         t->start();
     });
+
     connect(runBtn, &QPushButton::clicked, this, [this]() {
         QString code = codeEditor->toPlainText();
         if (code.trimmed().isEmpty()) {
@@ -197,7 +205,6 @@ void DashboardWidget::buildUi() {
         runBtn->setText("Compiling…");
         outputPane->setPlainText("");
 
-        // Run in a detached thread; post result back to main thread via invokeMethod
         QThread* t = new QThread(this);
         connect(t, &QThread::started, this, [this, code, t]() {
             RunResult r = CodeRunner::run(code.toStdString());
@@ -238,26 +245,35 @@ void DashboardWidget::appendChatMessage(const QString& sender, const QString& te
     chatList->scrollToBottom();
 }
 
+// FIX: also updates the user count label
 void DashboardWidget::updateMemberList(const QStringList& members) {
     memberList->clear();
-
-    // basic for loop instead of range loop
     for (int i = 0; i < members.size(); i++) {
         memberList->addItem(members[i]);
     }
+    int count = members.size();
+    userCountLabel->setText(QString("%1 %2 online")
+        .arg(count).arg(count == 1 ? "user" : "users"));
 }
 
 void DashboardWidget::showTypingIndicator(const QString& username) {
     QString msg = username + " is typing...";
     typingLabel->setText(msg);
     typingLabel->show();
-    QTimer::singleShot(2000, typingLabel, &QLabel::hide);  // hide after 2 seconds
+    QTimer::singleShot(2000, typingLabel, &QLabel::hide);
 }
 
-void DashboardWidget::setRoomCode(const QString& code) { roomCodeLabel->setText(code); }
+// FIX: setRoomCode now forwards to setRoomName (keeps old call sites working)
+void DashboardWidget::setRoomCode(const QString& name) {
+    setRoomName(name);
+}
+
+// FIX: new — sets the human-readable room name
+void DashboardWidget::setRoomName(const QString& name) {
+    roomNameLabel->setText(name);
+}
 
 void DashboardWidget::applyRemoteCode(const QString& code) {
-    // save position
     int savedPos = codeEditor->textCursor().position();
     codeEditor->blockSignals(true);
     codeEditor->setPlainText(code);
@@ -309,10 +325,14 @@ void DashboardWidget::applyStyles() {
         "  font-size: 14px;"
         "  font-weight: bold;"
         "}"
-        "QLabel#roomCodeLabel {"
+        "QLabel#roomNameLabel {"
         "  color: #AFA9EC;"
         "  font-size: 13px;"
         "  font-weight: bold;"
+        "}"
+        "QLabel#userCountLabel {"
+        "  color: #888888;"
+        "  font-size: 11px;"
         "}"
         "QListWidget#memberList {"
         "  background-color: transparent;"
@@ -340,7 +360,7 @@ void DashboardWidget::applyStyles() {
         "}"
         "QPushButton#logoutButton:hover {"
         "  background-color: rgba(240,149,149,0.10);"
-        "}");
+        "}"
         "QPushButton#runBtn {"
         "  background-color: #3d8b3d;"
         "  color: #ffffff;"
@@ -358,5 +378,6 @@ void DashboardWidget::applyStyles() {
         "  border-radius: 4px;"
         "  font-family: 'Courier New';"
         "  font-size: 11px;"
-        "}";
+        "}"
+    );
 }
