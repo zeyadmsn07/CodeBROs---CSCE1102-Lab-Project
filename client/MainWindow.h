@@ -3,14 +3,15 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
+#include <QMenuBar>
+#include <QAction>
 #include <QString>
-#include "DashboardWidget.h"
 #include "LoginWidget.h"
-#include "NetworkClient.h"
 #include "RegisterWidget.h"
 #include "RoomWidget.h"
+#include "DashboardWidget.h"
+#include "NetworkClient.h"
 #include "SessionStore.h"
-#include "TaskWidget.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -20,26 +21,28 @@ public:
     ~MainWindow();
 
 private slots:
-    void onLoginAttempt(const QString& username,
-                        const QString& password);
-    void onRegisterAttempt(const QString& username,
-                           const QString& password);
+    void onLoginAttempt(const QString& username, const QString& password);
+    void onRegisterAttempt(const QString& username, const QString& password);
 
 private:
     QStackedWidget*  stack;
-    LoginWidget*     loginPage;      // 0
-    RegisterWidget*  registerPage;   // 1
-    RoomWidget*      roomPage;       // 2
-    DashboardWidget* dashboardPage;  // 3
-    TaskWidget*      taskPage;       // 4
+    LoginWidget*     loginPage;     // index 0
+    RegisterWidget*  registerPage;  // index 1
+    RoomWidget*      roomPage;      // index 2
+    DashboardWidget* dashboardPage; // index 3
 
     NetworkClient* network;
     SessionStore*  sessions;
     QString        currentUser;
     QString        currentRoomId;
 
+    // Menu bar actions (shown only when logged in)
+    QAction* logoutAction;
+    QAction* backToRoomsAction;
+
     void logout();
-    void setupDebugToolbar();
+    void setLoggedIn(bool loggedIn);   // toggles menu bar visibility
+    void showPage(QWidget* page);      // sets current page + updates menu
 };
 
 #endif
