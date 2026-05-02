@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget* parent)
     menuBar()->setVisible(false);
     backToRoomsAction = menuBar()->addAction("← Rooms");
     connect(backToRoomsAction, &QAction::triggered, this, [this] {
+        network->sendMessage(MessageFactory::makeLeaveRoom());
+        currentRoomId.clear();
+        roomPage->setCurrentRoomId("");
         roomPage->refresh();
         showPage(roomPage);
     });
@@ -127,6 +130,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(network, &NetworkClient::userLeft, this,
             [this](QString username) {
         dashboardPage->appendChatMessage("System", username + " left the room");
+        network->sendMessage(MessageFactory::makeGetRooms()); // refresh count
     });
 
     // FIX: wire up member list — was missing in the latest version
