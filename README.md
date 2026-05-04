@@ -122,28 +122,37 @@ independently and is used by both the client and server.
 
 ---
 
-## What's done and what isn't
+## What's implemented
 
-This is Milestone 2 (roughly 66% of the project). What works right now:
+This project is fully completed and includes the following features:
 
 - Full login and registration with persistent accounts
-- Auto-login on relaunch (saved session)
-- Real-time chat between multiple clients
-- Real-time code sync across all party members
-- Member list updating live as people join and leave
-- Typing indicator
-- Task screen with 5 C++ challenges and local answer validation
-- AI assistant via /ask in chat
-- 13 passing unit tests
+- Auto-login on relaunch using saved sessions
+- Room-based system where users can join specific rooms using a code
+- Real-time chat between multiple clients in the same room
+- Real-time code synchronization across all room members
+- Live member list updates as users join and leave
+- Typing indicator for active users
+- Task system with multiple C++ challenges loaded from JSON
+- Local code execution:
+  - Code is compiled using `g++`
+  - Executed safely with a timeout
+  - Output is captured and validated
+- Detailed task feedback including compilation errors and incorrect outputs
+- AI assistant for code review and suggestions
+- Multi-threaded AI requests to prevent UI freezing
+- JSON-based message system for all client-server communication
+- 13+ passing unit tests covering core functionality
 
-What we're still working on for Milestone 3:
+---
 
-- Joining a specific party with a code (right now everyone lands in the same room)
-- Local code execution so you can actually run your C++ answer
-- Polishing the task submission flow through the network
-- More unit tests
-- Final bug fixes and cleanup
+## Remaining limitations
 
+- Task validation is primarily output-based (no deep semantic analysis)
+- No version control or collaborative undo history
+- Conflict resolution uses a simple last-write-wins approach
+- AI responses depend on external API availability
+- Limited number of predefined tasks
 ---
 
 ## Honest note on development
