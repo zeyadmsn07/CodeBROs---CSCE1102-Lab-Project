@@ -155,6 +155,22 @@ This project is fully completed and includes the following features:
 - Limited number of predefined tasks
 ---
 
+## CI / GitHub Actions
+
+Every push to `main` automatically runs the full unit test suite via GitHub Actions.
+
+The pipeline:
+1. Spins up a clean Ubuntu runner
+2. Installs all dependencies (CMake, GTest, Boost, nlohmann_json)
+3. Builds the `shared` library and all test targets
+4. Runs all 13 unit tests with CTest
+
+The client and server are excluded from CI because they require Qt6 and a display — they are built and tested locally. The `TaskValidator` compile-execution tests are also excluded from CI since `CodeRunner` shells out to `g++` with temp files, which is an integration concern better tested locally.
+
+You can view all workflow runs here:
+https://github.com/zeyadmsn07/CodeBROs---CSCE1102-Lab-Project/actions
+---
+
 ## Honest note on development
 
 This project pushed us way beyond what we'd covered in class. Boost.Asio async networking,
