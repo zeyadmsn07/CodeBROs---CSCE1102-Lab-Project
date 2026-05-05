@@ -31,8 +31,7 @@ ValidationResult TaskValidator::validate(const Task& task,
 
     return {
         false,
-        "Your program compiled and ran, but the output was wrong.\n\n"
-        "Expected:\n" + expected + "\n\n"
-        "Got:\n" + actual
+        "Your program compiled but the output was wrong.\n\n"
+        "Expected:\n" + expected + "\n\nGot:\n" + actual
     };
 }

@@ -18,13 +18,14 @@ MainWindow::MainWindow(QWidget* parent)
     registerPage  = new RegisterWidget(this);
     roomPage      = new RoomWidget(network, this);
     dashboardPage = new DashboardWidget(this);
-
+    taskPage = new TaskWidget(this);
+    
     stack->addWidget(loginPage);      // 0
     stack->addWidget(registerPage);   // 1
     stack->addWidget(roomPage);       // 2
     stack->addWidget(dashboardPage);  // 3
+    stack->addWidget(taskPage);      // 4
 
-    // ── Menu bar (hidden until logged in) ─────────────────────
     menuBar()->setVisible(false);
     backToRoomsAction = menuBar()->addAction("← Rooms");
     connect(backToRoomsAction, &QAction::triggered, this, [this] {
@@ -37,20 +38,14 @@ MainWindow::MainWindow(QWidget* parent)
     menuBar()->addSeparator();
     logoutAction = menuBar()->addAction("Log Out");
     connect(logoutAction, &QAction::triggered, this, &MainWindow::logout);
-
-    // ── LoginWidget ───────────────────────────────────────────
     connect(loginPage, &LoginWidget::goToRegisterRequested,
             [this] { showPage(registerPage); });
     connect(loginPage, &LoginWidget::loginRequested,
             this, &MainWindow::onLoginAttempt);
-
-    // ── RegisterWidget ────────────────────────────────────────
     connect(registerPage, &RegisterWidget::goToLoginRequested,
             [this] { showPage(loginPage); });
     connect(registerPage, &RegisterWidget::registerRequested,
             this, &MainWindow::onRegisterAttempt);
-
-    // ── Network: auth responses ───────────────────────────────
     connect(network, &NetworkClient::loginSuccess, this,
             [this](QString username) {
         currentUser = username;
@@ -80,17 +75,14 @@ MainWindow::MainWindow(QWidget* parent)
         registerPage->setLoading(false);
     });
 
-    // ── RoomWidget → DashboardWidget ──────────────────────────
-    // FIX: signal now carries roomName as second parameter
     connect(roomPage, &RoomWidget::roomEntered, this,
             [this](const QString& roomId, const QString& roomName, const QString& initialCode) {
         currentRoomId = roomId;
-        dashboardPage->setRoomName(roomName);      // FIX: show room name, not ROOM_1
+        dashboardPage->setRoomName(roomName);  
         dashboardPage->applyRemoteCode(initialCode);
         showPage(dashboardPage);
     });
 
-    // ── DashboardWidget signals ───────────────────────────────
     connect(dashboardPage, &DashboardWidget::logoutRequested,
             this, &MainWindow::logout);
 
@@ -100,8 +92,14 @@ MainWindow::MainWindow(QWidget* parent)
             currentRoomId.toStdString(),
             currentUser.toStdString(),
             text.toStdString()));
-        // Do NOT appendChatMessage here — server echoes it back to all clients
-        // including the sender, so chatReceived below will display it once.
+    });
+
+    connect(dashboardPage, &DashboardWidget::openTasksRequested, [this]() {
+    showPage(taskPage);
+    });
+
+    connect(taskPage, &TaskWidget::backRequested, [this]() {
+    showPage(dashboardPage);
     });
 
     connect(dashboardPage, &DashboardWidget::codeSyncTriggered,
@@ -110,8 +108,6 @@ MainWindow::MainWindow(QWidget* parent)
             currentRoomId.toStdString(),
             code.toStdString()));
     });
-
-    // ── Network: room events → DashboardWidget ────────────────
     connect(network, &NetworkClient::codeUpdated, this,
             [this](QString code) {
         dashboardPage->applyRemoteCode(code);
@@ -133,20 +129,16 @@ MainWindow::MainWindow(QWidget* parent)
         network->sendMessage(MessageFactory::makeGetRooms()); // refresh count
     });
 
-    // FIX: wire up member list — was missing in the latest version
     connect(network, &NetworkClient::memberListReceived, this,
             [this](QStringList members) {
         dashboardPage->updateMemberList(members);
     });
 
-    // ── Startup: FIX — always show login, never auto-restore session ──
     try {
         network->connect("127.0.0.1", 12345);
     } catch (...) {}
     showPage(loginPage);
 }
-
-// ── Helpers ───────────────────────────────────────────────────
 
 void MainWindow::showPage(QWidget* page)
 {
@@ -162,7 +154,6 @@ void MainWindow::setLoggedIn(bool loggedIn)
     }
 }
 
-// ── Auth actions ──────────────────────────────────────────────
 
 void MainWindow::onLoginAttempt(const QString& username, const QString& password)
 {

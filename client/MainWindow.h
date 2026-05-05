@@ -11,6 +11,7 @@
 #include "DashboardWidget.h"
 #include "NetworkClient.h"
 #include "SessionStore.h"
+#include "TaskWidget.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -29,6 +30,7 @@ private:
     RegisterWidget*  registerPage;  // index 1
     RoomWidget*      roomPage;      // index 2
     DashboardWidget* dashboardPage; // index 3
+    TaskWidget* taskPage; // index 4
 
     QAction* backToRoomsAction;
     QAction* logoutAction;
